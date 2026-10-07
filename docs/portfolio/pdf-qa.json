@@ -1,9 +1,9 @@
 {
-  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v3.pdf",
+  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v4.pdf",
   "pages": [
     {
       "page": 1,
-      "selectable_chars": 788,
+      "selectable_chars": 765,
       "min_font_pt": 11.0,
       "urls": [
         "https://www.woosungfeed.co.kr/m11.php"
@@ -17,7 +17,7 @@
     },
     {
       "page": 3,
-      "selectable_chars": 764,
+      "selectable_chars": 826,
       "min_font_pt": 11.0,
       "urls": [
         "https://github.com/Kimhyuntae9665/grainworks-agent",
@@ -30,5 +30,15 @@
     1280,
     720
   ],
-  "margin_footer_checks": "PASS"
+  "margin_footer_checks": "PASS",
+  "logo_flow_pixel_review": "PASS: official symbols, external labels, request/response arrows, brand colors",
+  "all_pages_visual_review": "PASS",
+  "pdf_sha256": "08180db830a0443db4d0f049d3d5809ea2d45f173b31685060bd4874c36d4bb8",
+  "previous_v3_preserved": true,
+  "caption_review": {
+    "route": "light",
+    "change_rate_percent": 0.0,
+    "gate": "PASS"
+  },
+  "runtime_code_changed": false
 }

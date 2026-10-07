@@ -50,5 +50,16 @@
     "baseline_kg": 40000,
     "branch_kg": 44500,
     "original_unchanged": true
+  },
+  "architecture_flow": {
+    "file": "flow/architecture-flow.png",
+    "svg": "flow/architecture-flow.svg",
+    "manifest": "flow/assets-manifest.json",
+    "source_revision": "635b0731fcb2f247d2aec68625d79f18d5e3c5b1",
+    "caption_review": {
+      "route": "light",
+      "change_rate_percent": 0.0,
+      "gate": "PASS"
+    }
   }
 }

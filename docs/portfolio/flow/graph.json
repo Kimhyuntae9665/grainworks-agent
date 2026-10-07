@@ -1,0 +1,48 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "name": "Python API",
+      "logo": "logos/python.svg"
+    },
+    {
+      "id": 1,
+      "name": "LangGraph",
+      "logo": "logos/langgraph.png"
+    },
+    {
+      "id": 2,
+      "name": "Ollama",
+      "logo": "logos/ollama.svg"
+    },
+    {
+      "id": 3,
+      "name": "Qwen3 4B",
+      "logo": "logos/qwen.png"
+    }
+  ],
+  "edges": [
+    {
+      "from": 0,
+      "to": 1,
+      "meaning": "request / execution",
+      "return_edge": true
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "meaning": "request / execution",
+      "return_edge": true
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "meaning": "request / execution",
+      "return_edge": true
+    }
+  ],
+  "model": "qwen3:4b-instruct",
+  "hosting": "Qwen model executes inside Ollama; not a separate service",
+  "tool_loop": "LangGraph model -> read-only tools -> model -> synthesis",
+  "human_boundary": "Evidence and proposals returned to UI; manual actions only"
+}

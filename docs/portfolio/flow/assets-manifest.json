@@ -1,0 +1,43 @@
+{
+  "diagram": "Verified local runtime, not company deployment",
+  "code_revision": "635b0731fcb2f247d2aec68625d79f18d5e3c5b1",
+  "verified_on": "2026-10-07",
+  "assets": [
+    {
+      "file": "logos/python.svg",
+      "label": "Python API",
+      "source_url": "https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/files/python-logo-only.svg",
+      "source_page": "https://www.python.org/community/logos/",
+      "sha256": "baec8662a1461c2cacc326b54d2727cb2f1ce07ba02d00f5b826d035104f649f",
+      "license_trademark_note": "Official standalone Python symbol; PSF logo/trademark usage terms apply.",
+      "transformation": "Fit preserving aspect ratio; no artwork or color edits."
+    },
+    {
+      "file": "logos/langgraph.png",
+      "label": "LangGraph",
+      "source_url": "https://raw.githubusercontent.com/langchain-ai/docs/85713b37be888ed867976d7b908a3fe80a92c19e/src/images/brand/langgraph-icon.png",
+      "source_page": "https://www.langchain.com/brand-assets",
+      "sha256": "59e4da757f26d4aa00ea7ccedc5fba916b9615cfea7dc771d502712abfdc8105",
+      "license_trademark_note": "Official documentation standalone icon; preserve artwork. Documentation/presentation use; trademark remains with owner.",
+      "transformation": "Fit preserving aspect ratio; no artwork or color edits."
+    },
+    {
+      "file": "logos/ollama.svg",
+      "label": "Ollama",
+      "source_url": "https://raw.githubusercontent.com/ollama/ollama/f864601538bd283dbcd011244db99e2760b125c1/docs/ollama-logo.svg",
+      "source_page": "https://github.com/ollama/ollama",
+      "sha256": "397a6ee071cce1496edd8a86dd1c91ce005712ec161690e411b3dc7f151181f5",
+      "license_trademark_note": "Official repository symbol; upstream MIT notices apply, no trademark endorsement.",
+      "transformation": "Fit preserving aspect ratio; no artwork or color edits."
+    },
+    {
+      "file": "logos/qwen.png",
+      "label": "Qwen3 4B",
+      "source_url": "https://avatars.githubusercontent.com/u/141221163?s=512&v=4",
+      "source_page": "https://github.com/QwenLM/Qwen3",
+      "sha256": "a6b261b9b688a81e984c20411dadd616215287e90a31e9c5c65fdefbc09f12b3",
+      "license_trademark_note": "Official QwenLM organization family symbol reused for Qwen3 4B. Snapshot SHA identifies mutable avatar; model Apache-2.0 does not grant trademark rights.",
+      "transformation": "Fit preserving aspect ratio; no artwork or color edits."
+    }
+  ]
+}

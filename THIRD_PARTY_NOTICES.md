@@ -14,3 +14,5 @@ The MIT license applies to the original project source. Dependency licenses cont
 Visual references: [Port Wright](https://html.moldandyeast.com/?open=portwright) and [Airsup Warehouse](https://www.airsup.ai/lab/warehouse). No images or 3D models from those sites are redistributed. Geometry in this demo is programmatically created with Three.js.
 
 Business reference: [Woosung's public company overview](https://www.woosungfeed.co.kr/m11.php). This independent prototype is not an internal Woosung system, authorized partner product, HACCP certification tool, or reproduction of its internal operating procedures.
+
+Portfolio technology symbols: Python, LangGraph, Ollama and the QwenLM family mark are retained from official sources for identification. Logo/trademark terms remain separate from this repository MIT license and model/code licenses. Pinned sources, original asset SHA-256 and individual conditions are recorded in [the logo manifest](docs/portfolio/flow/assets-manifest.json).

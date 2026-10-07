@@ -62,13 +62,18 @@ AI 초안의 ‘검토’를 누르면 최신 저장 상태의 해시와 제안�
 
 ## 구조
 
+![로컬 AI 연결 구조](docs/portfolio/flow/architecture-flow.png)
+
+**Python API ↔ LangGraph ↔ Ollama ↔ Qwen3 4B.** Ollama가 모델을 로컬 실행하고, LangGraph가 조회·계산 도구를 반복 호출합니다. [구조 설명·SVG·로고 출처](docs/portfolio/flow/README.md)는 포트폴리오 첫 장에도 반영했습니다.
+
+
 ```mermaid
 flowchart LR
     UI[3D 현장 · AI 작업대] --> API[로컬 Python API]
     API --> DB[(SQLite 운영 상태)]
     API --> GRAPH[LangGraph]
-    GRAPH --> MODEL[Ollama · Qwen3 4B]
-    MODEL --> TOOLS[허용된 읽기 전용 도구]
+    GRAPH <--> MODEL[Ollama · Qwen3 4B]
+    GRAPH <--> TOOLS[허용된 읽기 전용 도구]
     TOOLS --> ENGINE[JS 규칙 · 복제 시뮬레이션]
     API --> DOC[PyMuPDF · RapidOCR]
     TOOLS --> REVIEW[근거 · 제안 · 상태 해시]
