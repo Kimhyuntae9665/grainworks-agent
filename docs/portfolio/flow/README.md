@@ -9,7 +9,7 @@ Python API는 질문과 저장 상태를 LangGraph에 전달합니다. LangGraph
 - 실제 모델 태그: `qwen3:4b-instruct`, Ollama CPU 실행
 - [편집 가능한 SVG](architecture-flow.svg) · [그래프 데이터](graph.json)
 - [공식 로고 출처·SHA-256·사용 조건](assets-manifest.json)
-- [3페이지 포트폴리오](../portfolio.pdf) 첫 장에 삽입
+- [3페이지 포트폴리오](../portfolio.pdf) 3쪽에 삽입 (첫 장은 현장 화면 확대)
 
 각 흰 카드에는 공식 독립 심볼만 배치하고 이름은 카드 아래에 표시했습니다. Qwen3 4B에는 QwenLM 공식 패밀리 심볼을 사용했습니다. 로고는 기술 식별 목적이며 해당 브랜드의 후원이나 회사 협업을 의미하지 않습니다. 원본 SVG/PNG는 `logos/`에 보존했습니다.
 
@@ -21,4 +21,6 @@ Python API는 질문과 저장 상태를 LangGraph에 전달합니다. LangGraph
 python render_flow.py
 ```
 
-`architecture-flow.svg`와 3200×600 PNG, graph/manifest를 생성합니다. SVG에는 title/desc와 로고가 포함되어 있습니다. 새 설명 캡션은 i-am-not-ai light 검수, 변경률 0.0%, 복원·게이트 PASS로 원문 유지했습니다.
+`architecture-flow.svg`와 3200×600 PNG, `architecture-flow-compact.svg`와 1600×980 PNG, graph/manifest를 생성합니다. SVG에는 title/desc와 로고가 포함되어 있습니다. 새 설명 캡션은 i-am-not-ai light 검수, 변경률 0.0%, 복원·게이트 PASS로 원문 유지했습니다.
+
+포트폴리오용 2줄 배치: [compact SVG](architecture-flow-compact.svg) · [compact PNG](architecture-flow-compact.png). Python API → LangGraph → Ollama → Qwen3 4B 순서로 위에서 아래로 이어지며 반대 화살표는 응답 반환입니다. 기존 가로형의 로고 크기와 동일한 약 79pt 카드로 배치했습니다.

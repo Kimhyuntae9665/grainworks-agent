@@ -1,12 +1,15 @@
 {
-  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v4.pdf",
+  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v5.pdf",
   "pages": [
     {
       "page": 1,
-      "selectable_chars": 765,
+      "selectable_chars": 808,
       "min_font_pt": 11.0,
       "urls": [
-        "https://www.woosungfeed.co.kr/m11.php"
+        "https://www.woosungfeed.co.kr/m11.php",
+        "https://github.com/Kimhyuntae9665/grainworks-agent",
+        "https://github.com/Kimhyuntae9665/grainworks-agent/blob/main/docs/portfolio/demo-60s.mp4",
+        "https://github.com/Kimhyuntae9665/grainworks-agent"
       ]
     },
     {
@@ -17,13 +20,9 @@
     },
     {
       "page": 3,
-      "selectable_chars": 826,
+      "selectable_chars": 667,
       "min_font_pt": 11.0,
-      "urls": [
-        "https://github.com/Kimhyuntae9665/grainworks-agent",
-        "https://github.com/Kimhyuntae9665/grainworks-agent/blob/main/docs/portfolio/demo-60s.mp4",
-        "https://github.com/Kimhyuntae9665/grainworks-agent"
-      ]
+      "urls": []
     }
   ],
   "canvas_pt": [
@@ -31,14 +30,35 @@
     720
   ],
   "margin_footer_checks": "PASS",
-  "logo_flow_pixel_review": "PASS: official symbols, external labels, request/response arrows, brand colors",
   "all_pages_visual_review": "PASS",
-  "pdf_sha256": "08180db830a0443db4d0f049d3d5809ea2d45f173b31685060bd4874c36d4bb8",
-  "previous_v3_preserved": true,
-  "caption_review": {
-    "route": "light",
-    "change_rate_percent": 0.0,
-    "gate": "PASS"
+  "pdf_sha256": "09f4f4068097acbaa152a8e9d9c84e062d78d85b9d039a8605fb1a27d7315789",
+  "previous_v4_preserved": true,
+  "page_2_unchanged": true,
+  "narrative_source_unchanged": true,
+  "overview": {
+    "before_pt": [
+      595.5540771484375,
+      183.0,
+      1067.446044921875,
+      423.0
+    ],
+    "after_pt": [
+      431.375,
+      183.0,
+      1231.625,
+      590.0
+    ],
+    "linear_scale_ratio": 1.696
+  },
+  "architecture_flow": {
+    "page": 3,
+    "file": "flow/architecture-flow-compact.png",
+    "card_size_pt": [
+      79,
+      79
+    ],
+    "labels_pt": 15.8,
+    "visual_review": "PASS"
   },
   "runtime_code_changed": false
 }

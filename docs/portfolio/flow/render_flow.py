@@ -43,3 +43,25 @@ cairosvg.svg2png(url=str(target),write_to=str(OUT/'architecture-flow.png'),outpu
 (OUT/'assets-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
 (OUT/'graph.json').write_text(json.dumps({'nodes':[{'id':i,'name':s[1],'logo':'logos/'+s[0]} for i,s in enumerate(sources)],'edges':[{'from':i,'to':i+1,'meaning':'request / execution','return_edge':True} for i in range(3)],'model':'qwen3:4b-instruct','hosting':'Qwen model executes inside Ollama; not a separate service','tool_loop':'LangGraph model -> read-only tools -> model -> synthesis','human_boundary':'Evidence and proposals returned to UI; manual actions only'},ensure_ascii=False,indent=2),encoding='utf-8')
 print(target)
+compact = svg[:5]
+compact[0] = compact[0].replace('1600', '800').replace('300', '490')
+compact[4] = '<rect width="800" height="490" rx="18" fill="#14212e"/>'
+for x in range(20,800,20):
+    for y in range(20,490,20):compact.append(f'<circle cx="{x}" cy="{y}" r="1" fill="#334454"/>')
+positions = [(190,120),(610,120),(610,350),(190,350)]
+# Each pair has request and return directions; the middle connection turns down.
+for a,b in [(0,1),(2,3)]:
+    x1,y1=positions[a];x2,y2=positions[b];sign=1 if x2>x1 else -1
+    start,end=x1+81*sign,x2-81*sign
+    compact.append(f'<path d="M{start} {y1-12} C{start+65*sign} {y1-45} {end-65*sign} {y1-45} {end} {y1-12} M{end} {y1+12} C{end-65*sign} {y1+45} {start+65*sign} {y1+45} {start} {y1+12}" fill="none" stroke="#aab6c2" stroke-width="2.2"/>')
+    compact.append(f'<path d="M{end-10*sign} {y1-26} L{end} {y1-12} L{end-16*sign} {y1-11} M{start+10*sign} {y1+26} L{start} {y1+12} L{start+16*sign} {y1+11}" fill="none" stroke="#aab6c2" stroke-width="2.2"/>')
+compact.append('<path d="M693 150 C765 150 765 315 693 315 M695 305 L693 315 L707 312 M527 315 C475 315 475 150 527 150 M513 146 L527 150 L519 162" fill="none" stroke="#aab6c2" stroke-width="2.2"/>')
+for i,((cx,cy),(filename,label,*_)) in enumerate(zip(positions,sources)):
+    original_cx=centers[i]
+    original_image=next(item for item in svg if '<image ' in item and f'x="{original_cx-53}"' in item)
+    image=original_image.replace(f'x="{original_cx-53}"',f'x="{cx-53}"').replace('y="81"',f'y="{cy-53}"')
+    compact.extend([f'<rect x="{cx-80}" y="{cy-80}" width="160" height="160" rx="24" fill="#fff"/>',image,f'<text x="{cx}" y="{cy+114}" text-anchor="middle" fill="#f1f5f9" font-family="Arial,sans-serif" font-size="32" font-weight="600">{label}</text>'])
+compact.append('</svg>')
+compact_path=OUT/'architecture-flow-compact.svg';compact_path.write_text('\n'.join(compact),encoding='utf-8')
+cairosvg.svg2png(url=str(compact_path),write_to=str(OUT/'architecture-flow-compact.png'),output_width=1600,output_height=980)
+
