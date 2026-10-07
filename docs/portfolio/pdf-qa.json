@@ -3,9 +3,10 @@
   "pages": [
     {
       "page": 1,
-      "selectable_chars": 870,
+      "selectable_chars": 868,
       "min_font_pt": 11.0,
       "urls": [
+        "https://www.woosungfeed.co.kr/m11.php",
         "https://www.woosungfeed.co.kr/board/board.php?bo_table=press&idx=427",
         "https://github.com/Kimhyuntae9665/grainworks-agent",
         "https://github.com/Kimhyuntae9665/grainworks-agent/blob/main/docs/portfolio/demo-60s.mp4",
@@ -41,7 +42,7 @@
   ],
   "architecture_flow_page": 3,
   "qr_final_pdf_decoded": "https://github.com/Kimhyuntae9665/grainworks-agent",
-  "sha256": "43e4581e091c21db764f7f9bd8324b7131ef48008b20b43eb5e627430fc3080a",
+  "sha256": "58f215c5fd46c0fb0a0912ba2b12272414d74881aab8ef2dd4b9268893613715",
   "alias_matches": true,
   "narrative_review": {
     "route": "light",
