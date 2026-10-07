@@ -64,4 +64,3 @@ for i,((cx,cy),(filename,label,*_)) in enumerate(zip(positions,sources)):
 compact.append('</svg>')
 compact_path=OUT/'architecture-flow-compact.svg';compact_path.write_text('\n'.join(compact),encoding='utf-8')
 cairosvg.svg2png(url=str(compact_path),write_to=str(OUT/'architecture-flow-compact.png'),output_width=1600,output_height=980)
-
