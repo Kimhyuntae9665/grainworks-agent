@@ -1,0 +1,245 @@
+{
+  "task": "factory",
+  "model": "qwen3:4b-instruct",
+  "fixture": "fixtures/factory-state.json",
+  "nativeTools": [
+    "get_factory_status"
+  ],
+  "originalUnchanged": true,
+  "result": {
+    "summary": "혼합 스테이션(MIX-01)은 용량 600kg/분으로 운영 중이며, 현재 대기량과 보유량이 각각 3600kg입니다. 합성 데이터이므로 실제 상태는 확인되지 않았습니다.",
+    "facts": [
+      {
+        "label": "MIX-01 가정 처리량 kg/min",
+        "value": 600,
+        "evidenceIds": [
+          "MIX-01-capacityKgPerMinute"
+        ]
+      },
+      {
+        "label": "MIX-01 대기 물량 kg",
+        "value": 3600,
+        "evidenceIds": [
+          "MIX-01-queuedKg"
+        ]
+      },
+      {
+        "label": "MIX-01 보류 물량 kg",
+        "value": 3600,
+        "evidenceIds": [
+          "MIX-01-heldKg"
+        ]
+      },
+      {
+        "label": "MIX-01 상태",
+        "value": "running",
+        "evidenceIds": [
+          "MIX-01-status"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "FACTORY-MIX-01",
+        "label": "MIX-01 합성 설비 기록",
+        "value": {
+          "id": "MIX-01",
+          "title": "사료 배합기",
+          "stage": "mixing",
+          "capacityKgPerMinute": 600,
+          "queuedKg": 3600,
+          "workloadKg": 8800,
+          "heldKg": 3600,
+          "activeLotId": "LOT-004",
+          "status": "running",
+          "affectedLotIds": [
+            "LOT-003",
+            "LOT-004"
+          ]
+        }
+      },
+      {
+        "id": "MIX-01-capacityKgPerMinute",
+        "label": "MIX-01 가정 처리량 kg/min",
+        "value": 600
+      },
+      {
+        "id": "MIX-01-queuedKg",
+        "label": "MIX-01 대기 물량 kg",
+        "value": 3600
+      },
+      {
+        "id": "MIX-01-heldKg",
+        "label": "MIX-01 보류 물량 kg",
+        "value": 3600
+      },
+      {
+        "id": "MIX-01-status",
+        "label": "MIX-01 상태",
+        "value": "running"
+      }
+    ],
+    "proposals": [],
+    "warnings": [
+      "합성 데모/사용자 입력 자료입니다. 실제 공장 적합 판정이 아닙니다.",
+      "근거 카드와 계산은 도구 결과입니다. 모델 자유 서술과 의미 매핑은 완전 검증되지 않았습니다."
+    ],
+    "stateHash": "90d54ed48ba3862fffe23ebf9983a0e7a0cba4934fa6ddad0a0ac010b0e2443c",
+    "summaryVerified": false,
+    "factory": {
+      "synthetic": true,
+      "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+      "stations": [
+        {
+          "id": "MIX-01",
+          "title": "사료 배합기",
+          "stage": "mixing",
+          "capacityKgPerMinute": 600,
+          "queuedKg": 3600,
+          "workloadKg": 8800,
+          "heldKg": 3600,
+          "activeLotId": "LOT-004",
+          "status": "running",
+          "affectedLotIds": [
+            "LOT-003",
+            "LOT-004"
+          ]
+        }
+      ]
+    }
+  },
+  "trace": [
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 1,
+        "model": "qwen3:4b-instruct",
+        "phase": "tool-selection",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 225
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.chat",
+      "args": {
+        "round": 1
+      },
+      "result": {
+        "toolNames": [
+          "get_factory_status"
+        ],
+        "doneReason": "stop",
+        "evalCount": 26,
+        "totalDurationNs": 15880945900
+      },
+      "elapsedMs": 16065
+    },
+    {
+      "tool": "get_factory_status",
+      "args": {
+        "station_id": "MIX-01"
+      },
+      "result": {
+        "synthetic": true,
+        "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+        "stations": [
+          {
+            "id": "MIX-01",
+            "title": "사료 배합기",
+            "stage": "mixing",
+            "capacityKgPerMinute": 600,
+            "queuedKg": 3600,
+            "workloadKg": 8800,
+            "heldKg": 3600,
+            "activeLotId": "LOT-004",
+            "status": "running",
+            "affectedLotIds": [
+              "LOT-003",
+              "LOT-004"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "FACTORY-MIX-01",
+            "label": "MIX-01 합성 설비 기록",
+            "value": {
+              "id": "MIX-01",
+              "title": "사료 배합기",
+              "stage": "mixing",
+              "capacityKgPerMinute": 600,
+              "queuedKg": 3600,
+              "workloadKg": 8800,
+              "heldKg": 3600,
+              "activeLotId": "LOT-004",
+              "status": "running",
+              "affectedLotIds": [
+                "LOT-003",
+                "LOT-004"
+              ]
+            }
+          },
+          {
+            "id": "MIX-01-capacityKgPerMinute",
+            "label": "MIX-01 가정 처리량 kg/min",
+            "value": 600
+          },
+          {
+            "id": "MIX-01-queuedKg",
+            "label": "MIX-01 대기 물량 kg",
+            "value": 3600
+          },
+          {
+            "id": "MIX-01-heldKg",
+            "label": "MIX-01 보류 물량 kg",
+            "value": 3600
+          },
+          {
+            "id": "MIX-01-status",
+            "label": "MIX-01 상태",
+            "value": "running"
+          }
+        ]
+      },
+      "elapsedMs": 729
+    },
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 2,
+        "model": "qwen3:4b-instruct",
+        "phase": "synthesis",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 256
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.synthesis",
+      "args": {
+        "round": 2
+      },
+      "result": {
+        "doneReason": "stop",
+        "evalCount": 63,
+        "totalDurationNs": 16857619200,
+        "outputTokenLimit": 256,
+        "sentenceLimit": 2
+      },
+      "elapsedMs": 16873
+    }
+  ]
+}

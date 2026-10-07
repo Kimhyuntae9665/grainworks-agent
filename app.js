@@ -3,7 +3,7 @@
   const E=window.FeedEngine,$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   if(!E){$('inspector-body').innerHTML='<div class="fault-panel">시뮬레이션 파일을 불러오지 못했습니다. engine.js가 같은 폴더에 있는지 확인하고 다시 열어주세요.</div>';return;}
   const A=window.FeedAssets;let selectedAsset=null,assetKind='all';
-  const KEY='grainworks-state-v1',SYNC=KEY+'-unsynced';let state=E.createState();state.running=false;
+  const KEY='grainworks-state-v1',SYNC=KEY+'-unsynced';let state=E.createState();window.GrainOrders.ensure(state);state.running=false;
   let selectedId='LOT-005',selectedStage='quality',desk='lot',bench='lots',filter='',stageFilter='all',statusFilter='all',action=null;
   let serverOnline=false,revision=0,savedRevision=-1,saving=false,toastTimer,renderTimer=0,persistTimer=0,lastFrame=0;
   const fmt=n=>Number(n||0).toLocaleString('ko-KR',{maximumFractionDigits:1});
@@ -12,9 +12,9 @@
   const lot=()=>state.lots.find(l=>l.id===selectedId)||state.lots[0];
   const statusName=l=>l.status==='hold'?'보류':l.status==='warning'?'영향 확인':l.stage==='shipped'?'출하 완료':'정상';
   const statusHtml=l=>`<span class="status ${esc(l.status==='ok'&&l.stage==='shipped'?'shipped':l.status)}">${statusName(l)}</span>`;
-  function valid(s){return s&&s.version===1&&Array.isArray(s.lots)&&s.lots.length<=1000&&Array.isArray(s.events)&&Array.isArray(s.alerts)&&Number.isFinite(s.tick)&&s.settings&&s.lots.every(l=>l&&typeof l.id==='string'&&E.STAGES.includes(l.stage)&&Number.isFinite(l.quantity)&&l.quantity>0&&l.qc)&&Number.isFinite(s.nextEventId)&&Number.isFinite(s.nextAlertId);}
+  function valid(s){if(!s)return false;try{window.GrainOrders.ensure(s);window.GrainOrders.validate(s);}catch{return false;}return s&&s.version===1&&Array.isArray(s.lots)&&s.lots.length<=1000&&Array.isArray(s.events)&&Array.isArray(s.alerts)&&Number.isFinite(s.tick)&&s.settings&&s.lots.every(l=>l&&typeof l.id==='string'&&E.STAGES.includes(l.stage)&&Number.isFinite(l.quantity)&&l.quantity>0&&l.qc)&&Number.isFinite(s.nextEventId)&&Number.isFinite(s.nextAlertId);}
   function toast(text,error=false){$('toast').textContent=text;$('toast').className='toast'+(error?' error':'');$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4200);}
-  function dirty(){revision++;persistTimer=0;renderAll(true);}
+  function dirty(){revision++;persistTimer=0;renderAll(true);window.dispatchEvent(new Event('grainworks:orders'));}
   function loadLocal(){try{const s=JSON.parse(localStorage.getItem(KEY));if(valid(s)){state=s;state.running=false;return true;}}catch{}return false;}
   loadLocal();
   function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(state));localStorage.setItem(SYNC,'1');$('save-state').textContent=serverOnline?'저장 중':'브라우저 저장';return true;}catch{$('save-state').textContent='브라우저 저장 실패';return false;}}
@@ -36,15 +36,15 @@
     if(!selectedAsset)return;const a=assets.find(a=>a.id===selectedAsset);$('asset-category').textContent=kindName[a.kind]+' · 모의 현장';$('asset-heading').textContent=a.name;$('asset-code').textContent=a.id;
     const metric=(title,value)=>`<div><dt>${title}</dt><dd>${value}</dd></div>`;
     let facts=metric('현재 위치',esc(a.location));
-    if(a.kind==='truck')facts+=metric('목적지(시연)',esc(a.destination))+metric('배정 물량',fmt(a.quantity)+' kg')+metric('배정 Lot',a.lots.length+'개');
+    if(a.kind==='truck')facts+=metric('목적지(시연)',esc(a.destination))+metric('출하 계획 물량',fmt(a.quantity)+' kg')+metric('계획 Lot',a.lots.length+'개')+metric('창고 준비',fmt(a.readyKg)+' kg')+metric('생산·검사 대기',fmt(a.workInProgressKg)+' kg');
     else if(a.kind==='forklift')facts+=metric('배터리(모의)',fmt(a.battery)+'%')+metric('이동 속도(모의)',fmt(a.speed)+' km/h')+metric('이송 대상',a.lots.length+'개 Lot');
     else facts+=metric(a.kind==='warehouse'?'재고 물량':'연결 물량',fmt(a.quantity)+' kg')+metric('관련 Lot',a.lots.length+'개')+metric('Lot 검사 온도',a.temperature===null?'측정 없음':fmt(a.temperature)+' °C');
     let html=`<div class="asset-status-line" data-tone="${a.tone}"><span class="asset-state">${a.status}</span><small>가상 ${time(a.clock)}</small></div><dl class="asset-facts">${facts}</dl>`;
     if(a.capacity){const percent=a.occupancy*100;html+=`<div class="asset-capacity"><div><strong>${a.kind==='warehouse'?'보관 기준':'배정 기준'} 대비 ${fmt(percent)}%</strong><span>${fmt(a.capacity)} kg · 시연 기준</span></div><meter min="0" max="100" value="${Math.min(100,percent)}" aria-label="${esc(a.name)} 기준 대비 물량">${fmt(percent)}%</meter></div>`;}
-    html+=`<div class="asset-work"><h4>${a.kind==='forklift'?'현재 작업':'다음 작업'}</h4><p>${a.blockedCount?`${a.blockedCount}개 Lot · ${fmt(a.heldKg)} kg의 검사 상태를 확인해야 합니다. `:''}${a.overCapacity?'시연 기준을 넘었습니다. 배정 물량을 확인하세요.':a.kind==='truck'?'이 도크에 배정된 Lot입니다. 각 Lot의 검사 상태를 먼저 확인하세요.':a.kind==='forklift'?a.job?`${esc(a.job.id)} · ${esc(a.job.product)}의 ${a.job.stage==='packing'?'포장 → 창고':'창고 → 출하'} 이송 경로를 시연합니다.`:'이송 가능한 Lot을 기다립니다.':a.kind==='container'?a.id==='CNT-01'?'원료 입고 Lot의 검수 상태를 확인합니다.':'완제품 창고 Lot의 출고 계획을 확인합니다.':'창고 재고와 품질 보류 상태를 함께 확인합니다.'}</p></div>`;
+    html+=`<div class="asset-work"><h4>${a.kind==='forklift'?'현재 작업':'다음 작업'}</h4><p>${a.blockedCount?`${a.blockedCount}개 Lot · ${fmt(a.heldKg)} kg의 검사 상태를 확인해야 합니다. `:''}${a.overCapacity?'시연 기준을 넘었습니다. 배정 물량을 확인하세요.':a.kind==='truck'?'주문에 연결된 미출하 Lot의 출하 계획입니다. 창고 준비와 생산·검사 대기를 구분해 확인하세요.':a.kind==='forklift'?a.job?`${esc(a.job.id)} · ${esc(a.job.product)}의 ${a.job.stage==='packing'?'포장 → 창고':'창고 → 출하'} 이송 경로를 시연합니다.`:'이송 가능한 Lot을 기다립니다.':a.kind==='container'?a.id==='CNT-01'?'원료 입고 Lot의 검수 상태를 확인합니다.':'완제품 창고 Lot의 출고 계획을 확인합니다.':'창고 재고와 품질 보류 상태를 함께 확인합니다.'}</p></div>`;
     html+=`<div class="asset-exceptions"><span>확인 필요 <strong>${a.blockedCount} Lot</strong></span><span>미해결 알림 <strong>${a.alertCount}건</strong></span></div>`;
     html+=`<div class="asset-panel-actions"><button id="asset-focus">가까이 보기</button>${a.kind==='forklift'?`<button id="asset-follow" aria-pressed="${scene.following===a.id}">${scene.following===a.id?'추적 중 · 해제':'따라가기'}</button><button id="asset-play">${state.running?'운영 일시정지':'운영 시작'}</button>`:''}</div>`;
-    html+=`<div class="asset-manifest"><h4>관련 Lot <span>${a.lots.length}</span></h4>${a.lots.length?a.lots.slice(0,8).map(l=>`<button data-asset-lot="${esc(l.id)}" aria-label="${esc(l.id)} Lot 상세 열기"><span><strong>${esc(l.id)}</strong><small>${esc(l.product)}</small></span><span>${fmt(l.quantity)} kg<br><small>${statusName(l)}</small></span></button>`).join(''):'<p>현재 연결된 Lot이 없습니다.</p>'}${a.lots.length>8?`<p>외 ${a.lots.length-8}개는 Lot 목록에서 확인하세요.</p>`:''}</div><p class="asset-note">물량·검사 값은 Lot 기록 집계입니다. 배터리·속도·배정 기준과 위치는 시연용입니다. 대상별 물량은 같은 Lot의 다른 보기이며 서로 합산하지 않습니다.</p>`;
+    html+=`<div class="asset-manifest"><h4>관련 Lot <span>${a.lots.length}</span></h4>${a.lots.length?a.lots.slice(0,8).map(l=>`<button data-asset-lot="${esc(l.id)}" aria-label="${esc(l.id)} Lot 상세 열기"><span><strong>${esc(l.id)}</strong><small>${esc(l.product)}</small></span><span>${fmt(l.quantity)} kg<br><small>${statusName(l)}</small></span></button>`).join(''):'<p>현재 연결된 Lot이 없습니다.</p>'}${a.lots.length>8?`<p>외 ${a.lots.length-8}개는 Lot 목록에서 확인하세요.</p>`:''}</div><p class="asset-note">물량·검사 값은 Lot 기록 집계입니다. 트럭의 주문 배정은 합성 출하 계획이며 실제 적재를 뜻하지 않습니다. 배터리·속도·배정 기준과 위치는 시연용입니다. 대상별 물량은 같은 Lot의 다른 보기이며 서로 합산하지 않습니다.</p>`;
     replaceContent($('asset-detail'),html);
   }
   function renderTop(){const report=E.report(state);$('clock').textContent=time(state.tick);$('day').textContent='DAY '+String(Math.floor((state.tick+480)/1440)+1).padStart(2,'0');$('stat-shipped').innerHTML=fmt(report.shippedKg)+' <small>kg</small>';$('stat-held').innerHTML=fmt(report.heldKg)+' <small>kg</small>';$('stat-alerts').innerHTML=report.unresolved+' <small>건</small>';$('alert-badge').textContent=report.unresolved;$('inspector-count').textContent=state.lots.length+'개 Lot';
@@ -80,7 +80,7 @@
     }else if(bench==='data'&&full){body.innerHTML=`<div class="data-panel"><div class="data-copy"><h3>내 데이터로 흐름을 연결하세요.</h3><p>CSV의 원료 ID와 Lot ID를 기준으로 연결합니다.<br>누락·중복·잘못된 값은 가져오기 전에 검사합니다.<br>샘플을 내려받아 일부 값을 바꾸며 실험해 보세요.</p><div class="data-actions"><a href="sample-lots.csv" download>샘플 CSV ↓</a><button id="export-csv">현재 Lot 내보내기 ↓</button><button id="choose-file">CSV 파일 선택</button><input type="file" id="csv-file" accept=".csv,text/csv" hidden></div><p style="font-size:10px;margin-top:17px">기존 Lot에 추가 · 최대 1,000개 / 1 MB<br>공정: intake, mixing, quality, packing, warehouse, shipped<br>실제 사료 배합비와 내부 회사 데이터는 포함하지 않습니다.</p></div><div class="data-form"><label for="csv-text">CSV 붙여넣기</label><textarea id="csv-text" spellcheck="false" placeholder="id,rawId,product,quantity,moisture,temperature,stage&#10;LOT-101,RAW-101,데모 사료,1000,12,24,intake"></textarea><div class="form-error" id="csv-error" role="alert"></div><footer><span>전체 입력을 검증한 뒤 한 번에 추가합니다.</span><button id="import-csv" class="primary">데이터 추가</button></footer></div></div>`;
     }else if(bench==='report'){const r=E.report(state);const html=`<div class="report-panel"><div><span class="eyebrow">OPERATION SNAPSHOT · ${time(state.tick)}</span><h3 style="margin-top:8px">현재 흐름의 운영 보고서</h3><div class="report-kpis"><div><span>전체 기록 물량</span><strong>${fmt(r.totalKg)}<small style="font-size:10px"> kg</small></strong></div><div><span>보류 물량</span><strong>${fmt(r.heldKg)}<small style="font-size:10px"> kg</small></strong></div><div><span>미해결 알림</span><strong>${r.unresolved}<small style="font-size:10px"> 건</small></strong></div></div><p>출하 ${fmt(r.shippedKg)} kg + 미출하 ${fmt(r.activeKg+r.heldKg)} kg = 전체 ${fmt(r.totalKg)} kg.<br>보류 물량은 미출하 물량에 포함됩니다. 물량을 중복 합산하지 않습니다.</p><div class="data-actions"><button id="export-report" class="primary">보고서 JSON ↓</button><button id="export-events">조치 이력 CSV ↓</button></div><p style="font-size:10px;margin-top:13px">합성·직접 입력 데이터의 현재 집계입니다. 실제 공장 개선율이나 처리시간 절감률을 주장하지 않습니다.</p></div><div><h3>영향받은 Lot</h3>${r.affectedLots.length?`<ul class="report-list">${r.affectedLots.map(l=>`<li><button data-lot="${esc(l.id)}" style="border:0;background:none;padding:0">${esc(l.id)} ↗</button><span>${fmt(l.kg)} kg · ${l.shipped?'출하 영향':stageName(l.stage)}</span></li>`).join('')}</ul>`:'<p class="empty">미해결 알림에 연결된 Lot이 없습니다.<br>상황을 발생시키면 영향 범위가 표시됩니다.</p>'}<p style="font-size:10px;margin-top:13px">${state.events.length}건의 최근 활동 기록 · 기록 저장 한도 500건</p></div></div>`;replaceContent(body,html);}
   }
-  function renderAll(force=false){scene.draw(state,0);renderTop();renderInspector(force);renderBench();renderAssets();}
+  function renderAll(force=false){scene.draw(state,0);renderTop();renderInspector(force);renderBench();renderAssets();window.dispatchEvent(new Event('grainworks:render'));}
   function download(name,data,mime){const a=document.createElement('a');const url=URL.createObjectURL(new Blob([data],{type:mime}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
   const csvCell=v=>{let text=String(v??'');if(/^[\s]*[=+@-]/.test(text)||/^[\t\r]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"';};
   function showAction(kind,id){action={kind,id};const dialog=$('action-dialog');$('action-error').textContent='';$('action-reason').value='';const old=$('recheck-fields');if(old)old.remove();
@@ -121,7 +121,7 @@
       case 'fullscreen':{const expanded=$('world').classList.toggle('is-expanded');b.setAttribute('aria-label',expanded?'공장 전체 화면 닫기':'공장 전체 화면');b.setAttribute('aria-pressed',expanded);scene.resize();}break;
       case 'help':$('help-dialog').showModal();break;
       case 'reset':$('reset-dialog').showModal();break;
-      case 'confirm-reset':closeAsset();$('reset-dialog').close();{state=E.createState();state.running=false;selectedId='LOT-005';selectedStage='quality';stageFilter='all';statusFilter='all';filter='';scene.resetView();scene.selected='quality';setDesk('lot');setBench('lots');dirty();save();toast('초기 샘플로 되돌렸습니다.');}break;
+      case 'confirm-reset':closeAsset();$('reset-dialog').close();{state=E.createState();window.GrainOrders.ensure(state);state.running=false;selectedId='LOT-005';selectedStage='quality';stageFilter='all';statusFilter='all';filter='';scene.resetView();scene.selected='quality';setDesk('lot');setBench('lots');dirty();save();toast('초기 샘플로 되돌렸습니다.');}break;
       case 'clear-filters':stageFilter='all';statusFilter='all';filter='';renderBench(true);break;
       case 'choose-file':$('csv-file').click();break;
       case 'export-csv':download('grainworks-lots.csv',E.exportCsv(state),'text/csv;charset=utf-8');toast('현재 Lot CSV를 내려받았습니다.');break;
@@ -144,7 +144,12 @@
   window.addEventListener('pagehide',()=>{saveLocal();if(serverOnline&&navigator.sendBeacon)navigator.sendBeacon('/api/state',new Blob([JSON.stringify(state)],{type:'application/json'}));});
   function frame(now){const dt=lastFrame?Math.min((now-lastFrame)/1000,.2):0;lastFrame=now;if(!document.hidden){if(state.running&&dt){const result=E.step(state,dt*state.speed*.25);if(!result.ok){state.running=false;toast(result.error,true);}else revision++;}scene.draw(state,dt);renderTimer+=dt;persistTimer+=dt;if(renderTimer>.5){renderAll();renderTimer=0;}if(persistTimer>3){save();persistTimer=0;}}requestAnimationFrame(frame);}
   window.Grainworks=Object.freeze({
+    selectStage(stage){if(E.STAGES.includes(stage)){selectStage(stage);scene.focusStage();}},
+    productionView(){scene.productionView();},
+    siteView(){scene.siteView();},
     snapshot:()=>JSON.parse(JSON.stringify(state)),
+    orderSnapshot(id){return window.GrainOrders.snapshot(state,id);},
+    setAllocation(input){const result=window.GrainOrders.setAllocation(state,input);if(result.ok){dirty();save();}return result;},
     async save(){
       if(location.protocol==='file:')throw Error('AI 작업대는 로컬 서버 주소에서 실행하세요.');
       state.running=false;dirty();

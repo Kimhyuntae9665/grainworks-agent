@@ -27,6 +27,7 @@ test('seed is serializable synthetic data with raw provenance and exact conserva
   const s = state(), r = E.report(s);
   assert.equal(s.version, 1); assert.equal(s.synthetic, true); assert.equal(s.lots.length, 10);
   assert.equal(r.totalKg, 44500); assert.equal(r.shippedKg, 9000);
+  assert.equal(s.orders.length, 5); assert.equal(s.orders[0].lines[0].id, 'SO-001-L1');
   invariants(s, 44500);
 });
 test('production moves fixed lots to shipping without inventing or losing material', () => {

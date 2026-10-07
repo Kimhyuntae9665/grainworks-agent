@@ -1,0 +1,563 @@
+{
+  "id": "RUN-76f504e305d14bc5ba77ab9ad12d83dc",
+  "status": "failed",
+  "model": "qwen3:4b-instruct",
+  "elapsedMs": 226978,
+  "trace": [
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 1,
+        "model": "qwen3:4b-instruct",
+        "phase": "tool-selection",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 225
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.chat",
+      "args": {
+        "round": 1
+      },
+      "result": {
+        "toolNames": [
+          "list_blocking_alerts"
+        ],
+        "doneReason": "stop",
+        "evalCount": 18,
+        "totalDurationNs": 33414367200
+      },
+      "elapsedMs": 33418
+    },
+    {
+      "tool": "list_blocking_alerts",
+      "args": {},
+      "result": {
+        "alerts": [
+          {
+            "id": "ALT-1",
+            "lotId": "LOT-001",
+            "type": "moisture",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "resolved": false,
+            "tick": 0,
+            "blocking": true,
+            "shippedImpact": false,
+            "resolution": null
+          },
+          {
+            "id": "ALT-2",
+            "lotId": "LOT-003",
+            "type": "moisture",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "resolved": false,
+            "tick": 0,
+            "blocking": true,
+            "shippedImpact": false,
+            "resolution": null
+          },
+          {
+            "id": "ALT-3",
+            "lotId": "LOT-009",
+            "type": "moisture",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "resolved": false,
+            "tick": 0,
+            "blocking": true,
+            "shippedImpact": true,
+            "resolution": null
+          }
+        ],
+        "totalAlerts": 3,
+        "report": {
+          "totalKg": 44500,
+          "shippedKg": 9000,
+          "heldKg": 8400,
+          "activeKg": 27100,
+          "unresolved": 3,
+          "byStage": {
+            "intake": {
+              "lots": 2,
+              "kg": 9000
+            },
+            "mixing": {
+              "lots": 2,
+              "kg": 8800
+            },
+            "quality": {
+              "lots": 1,
+              "kg": 4000
+            },
+            "packing": {
+              "lots": 1,
+              "kg": 6000
+            },
+            "warehouse": {
+              "lots": 2,
+              "kg": 7700
+            },
+            "shipped": {
+              "lots": 2,
+              "kg": 9000
+            }
+          },
+          "affectedLots": [
+            {
+              "id": "LOT-001",
+              "stage": "intake",
+              "kg": 4800,
+              "shipped": false
+            },
+            {
+              "id": "LOT-003",
+              "stage": "mixing",
+              "kg": 3600,
+              "shipped": false
+            },
+            {
+              "id": "LOT-009",
+              "stage": "shipped",
+              "kg": 4000,
+              "shipped": true
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "id": "TOTAL-totalKg",
+            "label": "현재 totalKg",
+            "value": 44500
+          },
+          {
+            "id": "TOTAL-shippedKg",
+            "label": "현재 shippedKg",
+            "value": 9000
+          },
+          {
+            "id": "TOTAL-heldKg",
+            "label": "현재 heldKg",
+            "value": 8400
+          },
+          {
+            "id": "TOTAL-unresolved",
+            "label": "현재 unresolved",
+            "value": 3
+          },
+          {
+            "id": "ALT-1",
+            "label": "원료 연계 수분 초과",
+            "value": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "ALT-2",
+            "label": "원료 연계 수분 초과",
+            "value": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "ALT-3",
+            "label": "원료 연계 수분 초과",
+            "value": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "lotId": "LOT-009"
+          }
+        ],
+        "synthetic": true
+      },
+      "elapsedMs": 273
+    },
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 2,
+        "model": "qwen3:4b-instruct",
+        "phase": "tool-selection",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 225
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.chat",
+      "args": {
+        "round": 2
+      },
+      "result": {
+        "toolNames": [
+          "trace_lot",
+          "trace_lot",
+          "trace_lot"
+        ],
+        "doneReason": "stop",
+        "evalCount": 75,
+        "totalDurationNs": 41759878700
+      },
+      "elapsedMs": 41768
+    },
+    {
+      "tool": "trace_lot",
+      "args": {
+        "lot_id": "LOT-001"
+      },
+      "result": {
+        "lot": {
+          "id": "LOT-001",
+          "rawId": "RAW-2401",
+          "product": "육계 성장 사료",
+          "quantity": 4800,
+          "stage": "intake",
+          "progress": 0.35,
+          "status": "hold",
+          "qc": {
+            "moisture": 15.8,
+            "temperature": 22,
+            "stale": false
+          },
+          "shipment": null,
+          "holdReason": "원료 연계 수분 초과",
+          "qualityChecked": true,
+          "storageChecked": false,
+          "imported": false
+        },
+        "relatedLots": [
+          {
+            "id": "LOT-001",
+            "quantity": 4800,
+            "stage": "intake"
+          },
+          {
+            "id": "LOT-003",
+            "quantity": 3600,
+            "stage": "mixing"
+          },
+          {
+            "id": "LOT-009",
+            "quantity": 4000,
+            "stage": "shipped"
+          }
+        ],
+        "assetIds": [
+          "CNT-01"
+        ],
+        "alerts": [
+          {
+            "id": "ALT-1",
+            "lotId": "LOT-001",
+            "type": "moisture",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "resolved": false,
+            "tick": 0,
+            "blocking": true,
+            "shippedImpact": false,
+            "resolution": null
+          }
+        ],
+        "evidence": [
+          {
+            "id": "LOT-001-quantity",
+            "label": "LOT-001 물량 kg",
+            "value": 4800,
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "LOT-001-temperature",
+            "label": "LOT-001 온도 °C",
+            "value": 22,
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "LOT-001-moisture",
+            "label": "LOT-001 수분 %",
+            "value": 15.8,
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "LOT-001-status",
+            "label": "LOT-001 상태",
+            "value": "hold",
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "LOT-001-rawId",
+            "label": "LOT-001 원료",
+            "value": "RAW-2401",
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "LOT-001-stage",
+            "label": "LOT-001 단계",
+            "value": "intake",
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "SETTING-storageLimit",
+            "label": "데모 보관 온도 기준 °C",
+            "value": 28
+          },
+          {
+            "id": "SETTING-moistureLimit",
+            "label": "데모 수분 기준 %",
+            "value": 14
+          }
+        ]
+      },
+      "elapsedMs": 898
+    },
+    {
+      "tool": "trace_lot",
+      "args": {
+        "lot_id": "LOT-003"
+      },
+      "result": {
+        "lot": {
+          "id": "LOT-003",
+          "rawId": "RAW-2401",
+          "product": "육계 성장 사료",
+          "quantity": 3600,
+          "stage": "mixing",
+          "progress": 0.5,
+          "status": "hold",
+          "qc": {
+            "moisture": 15.8,
+            "temperature": 24,
+            "stale": false
+          },
+          "shipment": null,
+          "holdReason": "원료 연계 수분 초과",
+          "qualityChecked": true,
+          "storageChecked": false,
+          "imported": false
+        },
+        "relatedLots": [
+          {
+            "id": "LOT-001",
+            "quantity": 4800,
+            "stage": "intake"
+          },
+          {
+            "id": "LOT-003",
+            "quantity": 3600,
+            "stage": "mixing"
+          },
+          {
+            "id": "LOT-009",
+            "quantity": 4000,
+            "stage": "shipped"
+          }
+        ],
+        "assetIds": [],
+        "alerts": [
+          {
+            "id": "ALT-2",
+            "lotId": "LOT-003",
+            "type": "moisture",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "resolved": false,
+            "tick": 0,
+            "blocking": true,
+            "shippedImpact": false,
+            "resolution": null
+          }
+        ],
+        "evidence": [
+          {
+            "id": "LOT-003-quantity",
+            "label": "LOT-003 물량 kg",
+            "value": 3600,
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-temperature",
+            "label": "LOT-003 온도 °C",
+            "value": 24,
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-moisture",
+            "label": "LOT-003 수분 %",
+            "value": 15.8,
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-status",
+            "label": "LOT-003 상태",
+            "value": "hold",
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-rawId",
+            "label": "LOT-003 원료",
+            "value": "RAW-2401",
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-stage",
+            "label": "LOT-003 단계",
+            "value": "mixing",
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "SETTING-storageLimit",
+            "label": "데모 보관 온도 기준 °C",
+            "value": 28
+          },
+          {
+            "id": "SETTING-moistureLimit",
+            "label": "데모 수분 기준 %",
+            "value": 14
+          }
+        ]
+      },
+      "elapsedMs": 576
+    },
+    {
+      "tool": "trace_lot",
+      "args": {
+        "lot_id": "LOT-009"
+      },
+      "result": {
+        "lot": {
+          "id": "LOT-009",
+          "rawId": "RAW-2401",
+          "product": "육계 성장 사료",
+          "quantity": 4000,
+          "stage": "shipped",
+          "progress": 1,
+          "status": "warning",
+          "qc": {
+            "moisture": 15.8,
+            "temperature": 24,
+            "stale": false
+          },
+          "shipment": {
+            "destination": "데모 거래처 A",
+            "time": "초기 출하 기록",
+            "tick": 0
+          },
+          "holdReason": null,
+          "qualityChecked": true,
+          "storageChecked": false,
+          "imported": false
+        },
+        "relatedLots": [
+          {
+            "id": "LOT-001",
+            "quantity": 4800,
+            "stage": "intake"
+          },
+          {
+            "id": "LOT-003",
+            "quantity": 3600,
+            "stage": "mixing"
+          },
+          {
+            "id": "LOT-009",
+            "quantity": 4000,
+            "stage": "shipped"
+          }
+        ],
+        "assetIds": [],
+        "alerts": [
+          {
+            "id": "ALT-3",
+            "lotId": "LOT-009",
+            "type": "moisture",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "resolved": false,
+            "tick": 0,
+            "blocking": true,
+            "shippedImpact": true,
+            "resolution": null
+          }
+        ],
+        "evidence": [
+          {
+            "id": "LOT-009-quantity",
+            "label": "LOT-009 물량 kg",
+            "value": 4000,
+            "lotId": "LOT-009"
+          },
+          {
+            "id": "LOT-009-temperature",
+            "label": "LOT-009 온도 °C",
+            "value": 24,
+            "lotId": "LOT-009"
+          },
+          {
+            "id": "LOT-009-moisture",
+            "label": "LOT-009 수분 %",
+            "value": 15.8,
+            "lotId": "LOT-009"
+          },
+          {
+            "id": "LOT-009-status",
+            "label": "LOT-009 상태",
+            "value": "warning",
+            "lotId": "LOT-009"
+          },
+          {
+            "id": "LOT-009-rawId",
+            "label": "LOT-009 원료",
+            "value": "RAW-2401",
+            "lotId": "LOT-009"
+          },
+          {
+            "id": "LOT-009-stage",
+            "label": "LOT-009 단계",
+            "value": "shipped",
+            "lotId": "LOT-009"
+          },
+          {
+            "id": "SETTING-storageLimit",
+            "label": "데모 보관 온도 기준 °C",
+            "value": 28
+          },
+          {
+            "id": "SETTING-moistureLimit",
+            "label": "데모 수분 기준 %",
+            "value": 14
+          }
+        ]
+      },
+      "elapsedMs": 552
+    },
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 3,
+        "model": "qwen3:4b-instruct",
+        "phase": "tool-selection",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 225
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    }
+  ],
+  "result": null,
+  "error": "HTTP Error 500: Internal Server Error"
+}

@@ -72,6 +72,48 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(self.request('/api/state',self.seed,'https://external.invalid')[0],403)
         self.assertEqual(self.store.read()['state'],self.seed)
 
+    def test_factory_configuration_roundtrip_and_rejection(self):
+        state=copy.deepcopy(self.seed)
+        state['factory']={'stations':{'PACK-01':{'capacityKgPerMinute':800,'status':'down'}}}
+        self.assertEqual(self.request('/api/state',state)[0],200)
+        self.assertEqual(self.store.read()['state'],state)
+        for config in [{'stations':[]},{'stations':{'FAKE-01':{}}},{'stations':{'PACK-01':{'capacityKgPerMinute':0}}},{'stations':{'PACK-01':{'status':'release'}}},{'stations':{'PACK-01':{'status':[]}}}]:
+            bad=copy.deepcopy(self.seed);bad['factory']=config
+            self.assertEqual(self.request('/api/state',bad)[0],400)
+            self.assertEqual(self.store.read()['state'],state)
+
+    def test_factory_scripts_are_served_but_backend_is_private(self):
+        for path in ['/factory_model.js','/factory-ui.js','/factory-ui.css']:
+            self.assertEqual(self.request(path)[0],200)
+        self.assertEqual(self.request('/factory_tools.py')[0],404)
+
+    def test_orders_roundtrip_and_invalid_allocation_never_replaces_saved_state(self):
+        script="const E=require('./engine.js'),O=require('./order_model.js'),s=E.createState();O.ensure(s);process.stdout.write(JSON.stringify(s));"
+        state=json.loads(subprocess.check_output(['node','-e',script],cwd=ROOT,encoding='utf-8'))
+        self.assertEqual(self.request('/api/state',state)[0],200)
+        self.assertEqual(self.store.read()['state'],state)
+        invalid=[]
+        for field,value in [('quantityKg',-1),('quantityKg',True),('quantityKg',1000000000),('lotId','LOT-999'),('assetId','TRK-999')]:
+            bad=copy.deepcopy(state);bad['orders'][0]['lines'][0]['allocations'][0][field]=value;invalid.append(bad)
+        bad=copy.deepcopy(state);bad['orders'][0]['lines'][0]['requestedKg']=1;invalid.append(bad)
+        bad=copy.deepcopy(state);bad['orders'].append(copy.deepcopy(bad['orders'][0]));invalid.append(bad)
+        bad=copy.deepcopy(state);bad['orders'][0]['lines'][0]['product']='Wrong product';invalid.append(bad)
+        # Each line is valid alone, but duplicating the Lot across a second order
+        # exceeds the shared physical quantity and must be rejected globally.
+        bad=copy.deepcopy(state);other=copy.deepcopy(bad['orders'][0]);other['id']='SO-999';other['lines'][0]['id']='SO-999-L1';bad['orders'].append(other);invalid.append(bad)
+        for bad in invalid:
+            with self.subTest(orders=bad['orders']):
+                self.assertEqual(self.request('/api/state',bad)[0],400)
+                self.assertEqual(self.store.read()['state'],state)
+        legacy=copy.deepcopy(state);legacy.pop('orders')
+        self.assertEqual(self.request('/api/state',legacy)[0],200)
+        self.assertEqual(self.store.read()['state'],legacy)
+
+    def test_order_model_is_served_and_order_backend_remains_private(self):
+        for path in ['/order_model.js','/order-ui.js','/order-ui.css']:
+            self.assertEqual(self.request(path)[0],200)
+        self.assertEqual(self.request('/order_tools.py')[0],404)
+
     def test_hold_and_reinspection_snapshot_restores(self):
         script="const E=require('./engine.js'),s=E.createState();E.inject(s,'moisture');E.resolve(s,s.alerts[0].id,'synthetic reinspection',{moisture:12,temperature:24});E.release(s,'LOT-001','verified demo records');process.stdout.write(JSON.stringify(s));"
         state=json.loads(subprocess.check_output(['node','-e',script],cwd=ROOT,encoding='utf-8'))

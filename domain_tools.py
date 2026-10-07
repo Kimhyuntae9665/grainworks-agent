@@ -11,6 +11,8 @@ import re
 import subprocess
 import uuid
 from pathlib import Path
+from factory_tools import FactoryTools, factory_schemas
+from order_tools import OrderTools, order_schemas
 
 ROOT = Path(__file__).resolve().parent
 DOCUMENT_LABEL_SCOPE='Nonempty English line labels only: Lot ID:, Moisture:, Temperature:, Inspection Date:. This is not general document-semantic verification.'
@@ -58,9 +60,11 @@ TOOL_SCHEMAS = [
     schema('simulate_branch', 'Compare copied engine branches. Use explicit assumed reinspection only; never actual state mutation.', {'assumptions': {'type':'array','maxItems':3,'items':{'type':'object','properties':{'lot_id':STRING,'action':{'type':'string','enum':['reinspect_release']},'moisture':{'type':'number'},'temperature':{'type':'number'}},'required':['lot_id','action','moisture','temperature'],'additionalProperties':False}},'virtual_minutes': {'type':'integer','minimum':1,'maximum':120}}, ['assumptions','virtual_minutes']),
     schema('prepare_action_proposal', 'Draft a human review proposal for a traced Lot using evidence IDs. No execution. release is refused if engine would reject it.', {'lot_id':STRING,'action':{'type':'string','enum':['hold','release','resolve']},'reason':STRING,'evidence_ids':{'type':'array','items':STRING}}, ['lot_id','action','reason','evidence_ids']),
 ]
+TOOL_SCHEMAS.extend(factory_schemas(schema))
+TOOL_SCHEMAS.extend(order_schemas(schema))
 
 
-class DomainTools:
+class DomainTools(FactoryTools, OrderTools):
     def __init__(self, state, inputs=None):
         self.state = copy.deepcopy(state)
         self.hash = state_hash(state)
@@ -69,6 +73,8 @@ class DomainTools:
         self.proposals = []
         self.traced = set()
         self.comparison = self.simulation = self.document = None
+        self.factory = self.factorySimulation = None
+        self.orders = None
 
     def ev(self, label, value, lot_id=None, asset_id=None, key=None):
         eid = key or f'E-{len(self.evidence)+1}'
@@ -285,6 +291,6 @@ class DomainTools:
         evidence=list(self.evidence.values())
         result={'summary':summary[:4000],'facts':[{'label':e['label'],'value':e['value'],'evidenceIds':[e['id']]} for e in evidence if not isinstance(e['value'],(dict,list))], 'evidence':evidence,'proposals':self.proposals,'warnings':['합성 데모/사용자 입력 자료입니다. 실제 공장 적합 판정이 아닙니다.','근거 카드와 계산은 도구 결과입니다. 모델 자유 서술과 의미 매핑은 완전 검증되지 않았습니다.'],'stateHash':self.hash,'summaryVerified':False}
         if self.proposals: result['warnings'].append('수동 조치 사유에는 도구의 안전한 검토 문구만 채웁니다. 모델 제안 사유는 검증되지 않은 초안이며 검사·조치 완료 기록이 아닙니다.')
-        for key in ['comparison','simulation','document']:
+        for key in ['comparison','simulation','document','factory','factorySimulation','orders']:
             if getattr(self,key) is not None: result[key]=getattr(self,key)
         return result

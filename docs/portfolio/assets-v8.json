@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-07T08:08:06Z",
+  "updated_utc": "2026-10-07T08:09:23Z",
+  "assets": [
+    {
+      "id": "factory-order-screen",
+      "path": "../orders/order-hero.png",
+      "sha256": "0a93577faf2630d6a40f6f75e30bcd0a94d3779def4e1296942114858ee2f5ce",
+      "source_type": "self-created",
+      "source_url": "http://127.0.0.1:8797/",
+      "direct_file_url": "",
+      "guideline_url": "",
+      "retrieved_utc": "2026-10-07T08:08:06Z",
+      "rights_basis": "User-directed project actual screenshot; synthetic data",
+      "usage": "Page1 integrated factory/order/quality proof",
+      "notes": ""
+    },
+    {
+      "id": "langgraph",
+      "path": "flow/logos/langgraph.png",
+      "sha256": "59e4da757f26d4aa00ea7ccedc5fba916b9615cfea7dc771d502712abfdc8105",
+      "source_type": "official-product",
+      "source_url": "https://www.langchain.com/brand-assets",
+      "direct_file_url": "https://raw.githubusercontent.com/langchain-ai/docs/85713b37be888ed867976d7b908a3fe80a92c19e/src/images/brand/langgraph-icon.png",
+      "guideline_url": "",
+      "retrieved_utc": "2026-10-07T08:09:22Z",
+      "rights_basis": "Official documentation standalone icon; preserve artwork. Documentation/presentation use; trademark remains with owner.",
+      "usage": "Page3 unchanged official standalone mark; original flow diagram",
+      "notes": ""
+    },
+    {
+      "id": "ollama",
+      "path": "flow/logos/ollama.svg",
+      "sha256": "397a6ee071cce1496edd8a86dd1c91ce005712ec161690e411b3dc7f151181f5",
+      "source_type": "official-product",
+      "source_url": "https://github.com/ollama/ollama",
+      "direct_file_url": "https://raw.githubusercontent.com/ollama/ollama/f864601538bd283dbcd011244db99e2760b125c1/docs/ollama-logo.svg",
+      "guideline_url": "",
+      "retrieved_utc": "2026-10-07T08:09:23Z",
+      "rights_basis": "Official repository symbol; upstream MIT notices apply, no trademark endorsement.",
+      "usage": "Page3 unchanged official standalone mark; original flow diagram",
+      "notes": ""
+    },
+    {
+      "id": "order-detail",
+      "path": "evidence/order-detail.png",
+      "sha256": "2fb944e662f097e69d0a2ddc12e5ee2065a74b2f488c9b0e529d12f440f99266",
+      "source_type": "self-created",
+      "source_url": "http://127.0.0.1:8797/",
+      "direct_file_url": "",
+      "guideline_url": "",
+      "retrieved_utc": "2026-10-07T08:08:07Z",
+      "rights_basis": "User-directed project actual screenshot; synthetic data",
+      "usage": "Page2 actual order panel zoom; screenshot clip preserves synthetic customer and virtual due label",
+      "notes": ""
+    },
+    {
+      "id": "python",
+      "path": "flow/logos/python.svg",
+      "sha256": "baec8662a1461c2cacc326b54d2727cb2f1ce07ba02d00f5b826d035104f649f",
+      "source_type": "official-product",
+      "source_url": "https://www.python.org/community/logos/",
+      "direct_file_url": "https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/files/python-logo-only.svg",
+      "guideline_url": "",
+      "retrieved_utc": "2026-10-07T08:09:22Z",
+      "rights_basis": "Official standalone Python symbol; PSF logo/trademark usage terms apply.",
+      "usage": "Page3 unchanged official standalone mark; original flow diagram",
+      "notes": ""
+    },
+    {
+      "id": "qwen",
+      "path": "flow/logos/qwen.png",
+      "sha256": "a6b261b9b688a81e984c20411dadd616215287e90a31e9c5c65fdefbc09f12b3",
+      "source_type": "official-product",
+      "source_url": "https://github.com/QwenLM/Qwen3",
+      "direct_file_url": "https://avatars.githubusercontent.com/u/141221163?s=512&v=4",
+      "guideline_url": "",
+      "retrieved_utc": "2026-10-07T08:09:23Z",
+      "rights_basis": "Official QwenLM organization family symbol reused for Qwen3 4B. Snapshot SHA identifies mutable avatar; model Apache-2.0 does not grant trademark rights.",
+      "usage": "Page3 unchanged official standalone mark; original flow diagram",
+      "notes": ""
+    },
+    {
+      "id": "runtime-flow",
+      "path": "flow/architecture-flow.png",
+      "sha256": "72797b381a7aae862f49bbd07f5d1e6082446a95cac99417bcfa6de4ab19b0f5",
+      "source_type": "self-created",
+      "source_url": "https://github.com/Kimhyuntae9665/grainworks-agent",
+      "direct_file_url": "",
+      "guideline_url": "",
+      "retrieved_utc": "2026-10-07T08:08:07Z",
+      "rights_basis": "Original diagram using unaltered technology marks, component notices in flow/assets-manifest.json",
+      "usage": "Page3 runtime request and return summary",
+      "notes": ""
+    }
+  ]
+}

@@ -1,58 +1,87 @@
 {
-  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v6.pdf",
+  "pageCount": 3,
   "pages": [
     {
       "page": 1,
-      "selectable_chars": 868,
-      "min_font_pt": 11.0,
-      "urls": [
-        "https://www.woosungfeed.co.kr/m11.php",
-        "https://www.woosungfeed.co.kr/board/board.php?bo_table=press&idx=427",
-        "https://github.com/Kimhyuntae9665/grainworks-agent",
-        "https://github.com/Kimhyuntae9665/grainworks-agent/blob/main/docs/portfolio/demo-60s.mp4",
-        "https://github.com/Kimhyuntae9665/grainworks-agent"
+      "characters": 557,
+      "minFontPt": 11.0,
+      "links": [
+        "https://www.woosungfeed.co.kr/m11.php"
       ]
     },
     {
       "page": 2,
-      "selectable_chars": 762,
-      "min_font_pt": 11.0,
-      "urls": []
+      "characters": 775,
+      "minFontPt": 11.0,
+      "links": []
     },
     {
       "page": 3,
-      "selectable_chars": 665,
-      "min_font_pt": 11.0,
-      "urls": []
+      "characters": 751,
+      "minFontPt": 11.0,
+      "links": [
+        "https://github.com/Kimhyuntae9665/grainworks-agent",
+        "https://github.com/Kimhyuntae9665/grainworks-agent",
+        "https://woosung.recruiter.co.kr/career/jobs/128746"
+      ]
     }
   ],
-  "canvas_pt": [
-    1280,
-    720
+  "screenshots": [
+    {
+      "page": 1,
+      "file": "docs\\orders\\order-hero.png",
+      "image": [
+        404.57584269662925,
+        198.0,
+        788.8483146067415,
+        444.0
+      ],
+      "outerBorder": [
+        401.57584269662925,
+        195.0,
+        794.8483146067415,
+        450.0
+      ],
+      "stroke": "#52728a"
+    },
+    {
+      "page": 2,
+      "file": "docs\\portfolio\\evidence\\order-detail.png",
+      "image": [
+        796.0,
+        179.24713584288054,
+        430.0,
+        281.5057283142389
+      ],
+      "outerBorder": [
+        793.0,
+        176.24713584288054,
+        436.0,
+        287.5057283142389
+      ],
+      "stroke": "#52728a"
+    }
   ],
-  "margin_footer_checks": "PASS",
-  "version": "v6",
-  "expected_canvas_verified": [
-    1280,
-    720
-  ],
-  "first_page_image_pt": [
-    801,
-    407
-  ],
-  "architecture_flow_page": 3,
-  "qr_final_pdf_decoded": "https://github.com/Kimhyuntae9665/grainworks-agent",
-  "sha256": "58f215c5fd46c0fb0a0912ba2b12272414d74881aab8ef2dd4b9268893613715",
-  "alias_matches": true,
-  "narrative_review": {
+  "allScreenshotBorders": "PASS: continuous contrasted outer four edges, content unobscured",
+  "synthetic": true,
+  "sha256": "c3e26070c89a93289a370dd7e45cc23b359f1e42ec7f29df50bed2c7ad97127e",
+  "narrativeAccuracy": "Single recorded case; not a general AI accuracy claim",
+  "actualModelElapsedMs": 53397,
+  "visualReview": "PASS: all three pages viewed at 100% and full-page resolution; screenshot borders and captions checked",
+  "independentEvidenceReview": "PASS: no P1/P2 claim or layout findings",
+  "QR": "PASS: decoded from final PDF render at 100% and 150%",
+  "paletteContrast": "PASS: all tested text/background pairs >=4.5",
+  "polish": {
     "route": "light",
-    "change_rate_percent": 0.03,
-    "gate": "PASS"
+    "changeRate": 0.0227,
+    "gateExit": 0,
+    "meaningDirectlyCompared": true
   },
-  "link_checks": {
-    "repo": "public GitHub main confirmed",
-    "demo": "GitHub content API confirmed",
-    "company": "official search index checked; direct access limited"
-  },
-  "all_pages_visually_inspected": true
+  "sources": {
+    "date": "2026-10-07",
+    "officialJD": "https://woosung.recruiter.co.kr/career/jobs/128746",
+    "JDMethod": "Actual official ATS DOM and posting image, entry-level IT/AX row: internal systems/infrastructure operations and data/AI work; AI systems development/operations preferred.",
+    "publicMES": "https://www.woosungfeed.co.kr/m11.php",
+    "MESMethod": "Official search index; direct page open 502. Public MES description is not proof of internal project needs."
+  }
 }

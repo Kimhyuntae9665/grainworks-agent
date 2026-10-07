@@ -2,7 +2,10 @@
   "use strict";
   const $ = (id) => document.getElementById(id);
   const tasks = {
-    shipment: {question: "LOT-007이 출하 가능한지 확인하고, 연결된 트럭과 창고의 근거 및 다음 확인 작업을 알려주세요."},
+    orders: {question: "주문을 선택한 뒤 요청·출하·보류·창고 준비·미배정 물량과 가상 납기 상태를 Lot·트럭·알림 근거로 확인해 주세요."},
+    factory: {question: "현재 공장의 설비 상태와 관련 Lot, 품질 보류 물량을 근거와 함께 확인해 주세요."},
+    downtime: {question: "선택한 설비의 정지 조건을 비교하고, 포장 완료 물량과 남는 대기 상태를 가정과 함께 설명해 주세요."},
+    shipment: {question: "RAW-2401에 연결된 LOT-003의 보류 이유와 LOT-001·LOT-009의 영향을 검사값·경보 근거로 확인하고, LOT-003의 재검사 검토안을 만들어 주세요. 미출하 보류와 기출하 영향을 구분하고 기록에 없는 원인은 추측하지 마세요."},
     reconcile: {question: "두 장부의 단위를 kg로 맞춰 Lot별 수량을 대조하고, 차이와 확인해야 할 항목을 알려주세요."},
     document: {question: "문서의 Lot·수분·온도·검사 날짜를 추출하고, 원문 근거와 현재 Lot 기록을 함께 보여주세요. 누락된 값은 채우지 마세요."},
     handover: {question: "현재 미해결 경보와 품질 보류를 정리하고, 다음 담당자가 먼저 확인할 작업과 근거를 알려주세요."},
@@ -24,21 +27,27 @@
     const id = String(record.id || ''), originalLabel = String(record.label || ''), value = record.value;
     const totals = {'TOTAL-totalKg':'총 기록 물량','TOTAL-shippedKg':'출하 완료 물량','TOTAL-heldKg':'품질 보류 물량','TOTAL-unresolved':'미해결 경보'};
     let label = totals[id] || originalLabel.replace(/\s*(?:kg|°C|%)\s*$/,'').trim();
+    const orderLabels={requestedKg:'요청 물량',allocatedKg:'배정 물량',unallocatedKg:'미배정 물량',shippedKg:'출하 이력',readyKg:'창고 준비',workInProgressKg:'생산·검사 대기',heldKg:'미출하 보류',shippedImpactKg:'기출하 품질 영향'};
+    const orderField=Object.keys(orderLabels).find(key=>id.startsWith('SO-')&&id.endsWith('-'+key));
+    if(orderField)label=id.slice(0,-orderField.length-1)+' · '+orderLabels[orderField];
+    if(id.startsWith('ALT-')&&value&&typeof value==='object'&&originalLabel.startsWith('주문 연계'))label=(value.shippedImpact?'주문 연계 기출하 영향 ':'주문 연계 현재 차단 ')+id;
     let displayed = printable(value);
     if (value === null) displayed = '미측정';
     else if (typeof value === 'number') {
       let unit = /(?:quantity|totalKg|shippedKg|heldKg)$/.test(id) || /kg\s*$/.test(originalLabel) ? ' kg' : /temperature|storageLimit/.test(id) || /°C\s*$/.test(originalLabel) ? '°C' : /moisture/.test(id) || /%\s*$/.test(originalLabel) ? '%' : /unresolved/.test(id) ? '건' : '';
       displayed = number(value) + unit;
-    } else if (/-status$/.test(id)) displayed = ({ok:'정상',hold:'품질 보류',warning:'영향 확인'})[value] || value;
+    } else if (id.startsWith('ALT-')&&value&&typeof value==='object') displayed=[value.title,value.details].filter(Boolean).join(' · ');
+    else if (/-status$/.test(id)) displayed = ({ok:'정상',hold:'품질 보류',warning:'영향 확인'})[value] || value;
     else if (/-stage$/.test(id)) displayed = ({intake:'원료 입고',mixing:'배합',quality:'품질 검사',packing:'포장',warehouse:'창고',shipped:'출하 완료'})[value] || value;
     return {label, value: displayed};
   }
-  function evidencePriority(record, targets) {
+  function evidencePriority(record, targets, moistureTargets = new Set()) {
     const id = String(record.id || ''), target = targets.has(record.lotId) || [...targets].some((lot) => id.startsWith(lot + '-'));
-    if (target && /-temperature$/.test(id)) return 120;
+    const moisture = moistureTargets.has(record.lotId) || [...moistureTargets].some((lot) => id.startsWith(lot + '-'));
+    if (target && /-temperature$/.test(id)) return moisture ? 105 : 120;
     if (target && /-status$/.test(id)) return 115;
     if (target && /-quantity$/.test(id)) return 110;
-    if (target && /-moisture$/.test(id)) return 105;
+    if (target && /-moisture$/.test(id)) return moisture ? 120 : 105;
     if (record.assetId === 'TRK-02' && /-status$/.test(id)) return 104;
     if (id === 'SETTING-storageLimit') return 103;
     if (target && id.startsWith('ALT-')) return 102;
@@ -72,13 +81,22 @@
     if (busy) return;
     task = button.dataset.agentTask;
     taskButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
-    $('agent-question').value = tasks[task].question;
+    $('agent-question').value = task === 'orders' && window.GrainOrderUI?.selectedId() ? window.GrainOrderUI.selectedId() + '의 요청·출하·보류·창고 준비·미배정 물량과 가상 납기 상태를 Lot·트럭·알림 근거로 확인해 주세요. 기출하 영향과 미출하 보류를 구분해 주세요.' : tasks[task].question;
     $('agent-reconcile-inputs').hidden = task !== "reconcile";
     $('agent-document-inputs').hidden = task !== "document";
     $('agent-simulation-inputs').hidden = task !== "simulate";
+    $('agent-downtime-inputs').hidden = task !== "downtime";
+    if(task==='simulate') {
+      const select=$('agent-sim-lot');select.replaceChildren();
+      for(const lot of window.Grainworks.snapshot().lots.filter(l=>l.status==='hold')) {const option=node('option','',lot.id);option.value=lot.id;select.append(option);}
+      if(select.value)$('agent-question').value=tasks.simulate.question.replaceAll('LOT-007',select.value);
+    }
     setError("");
   }));
   $('agent-refresh').addEventListener("click", status);
+  $('agent-sim-lot').addEventListener('change', () => {
+    if (task === 'simulate' && !busy) $('agent-question').value = tasks.simulate.question.replaceAll('LOT-007', $('agent-sim-lot').value);
+  });
   window.addEventListener("grainworks:ready", updateRunButton);
   function resetCsvSample() {
     $('agent-left-csv').value = "lotId,quantity,unit\nLOT-007,4500,kg\nLOT-008,3200,kg\nLOT-010,5000,kg";
@@ -136,6 +154,35 @@
       container.append(dl);
     };
     const content = node('div', 'agent-structured-content'); render(value, content, 0); details.append(content); parent.append(details);
+  }
+  function orderResultView(value, parent) {
+    if (!value) return;
+    const records=Array.isArray(value)?value:list(value.orders), section=node('section','agent-fact-section');
+    section.append(node('h4','','주문 기록 · 도구 조회 결과'));
+    records.forEach(order=>{
+      const card=node('article','agent-order-card');card.append(node('h5','',order.id+' · '+(order.customer||'')));
+      card.append(node('p','','요청 '+number(order.requestedKg)+' kg · 출하 '+number(order.shippedKg)+' kg · 보류 '+number(order.heldKg)+' kg · 창고 준비 '+number(order.readyKg)+' kg · 미배정 '+number(order.unallocatedKg)+' kg'));
+      card.append(node('p','','생산·검사 대기 '+number(order.workInProgressKg)+' kg · 가상 납기 '+number(order.dueTick)+'분 · '+(order.overdue?'기한 경과':Number(order.remainingKg)===0?'출하 완료':'가상 기한 미경과')));
+      if(Number(order.shippedImpactKg)>0)card.append(node('p','agent-warnings','기출하 영향 '+number(order.shippedImpactKg)+' kg. 미출하 보류와 별도로 확인하세요.'));
+      const allocations=node('ul','agent-order-allocations');
+      for(const line of list(order.lines))for(const allocation of list(line.allocations)){
+        const status=allocation.stage==='shipped'?(allocation.shippedImpact?'기출하 영향 확인':'출하 완료'):allocation.needsConfirmation?'품질 기록 확인 필요':allocation.status==='held'?'미출하 보류':allocation.status==='ready'?'창고 준비':'생산·검사 대기';
+        const row=node('li');row.append(node('strong','',allocation.lotId),node('span','',number(allocation.quantityKg)+' kg'),node('span','',status));allocations.append(row);
+      }
+      card.append(allocations);
+      const controls=node('div');for(const lotId of list(order.linkedLotIds)){const b=node('button','quiet',lotId+' ↗');b.type='button';b.addEventListener('click',()=>GSelectLot(lotId));controls.append(b);}
+      for(const assetId of list(order.linkedAssetIds)){const b=node('button','quiet',assetId+' 계획 ↗');b.type='button';b.addEventListener('click',()=>{window.Grainworks.selectAsset(assetId);$('factory-section').scrollIntoView({block:'start'});});controls.append(b);}
+      const select=node('button','quiet','공장에서 '+order.id+' 보기');select.type='button';select.addEventListener('click',()=>{window.GrainOrderUI?.select(order.id);$('factory-section').scrollIntoView({block:'start'});});controls.append(select);card.append(controls);section.append(card);
+    });
+    section.append(node('p','agent-result-method','준비는 정상 창고 물량입니다. 가상 납기 상태는 현재 기록의 비교이며 납기 달성을 예측하지 않습니다.'));parent.append(section);
+    rawResult('원본 주문 조회 데이터 보기',value,parent);
+  }
+  function GSelectLot(id){window.Grainworks.selectLot(id);$('factory-section').scrollIntoView({block:'start'});}
+  function orderComparisonView(baseline, branch, parent){
+    if(!baseline?.orders||!branch?.orders)return;
+    const section=node('section','agent-fact-section');section.append(node('h4','','같은 주문의 준비 물량 비교'));
+    const table=node('table','comparison-orders'),head=node('tr');for(const label of ['주문','정상 조건','정지 조건'])head.append(node('th','',label));const thead=node('thead');thead.append(head);table.append(thead);const tbody=node('tbody');
+    baseline.orders.forEach(order=>{const compared=branch.orders.find(o=>o.id===order.id);if(!compared)return;const row=node('tr');row.append(node('td','',order.id));for(const o of [order,compared]){const cell=node('td','',number(o.readyKg)+' kg 준비');cell.append(node('small','',number(o.heldKg)+' kg 보류 · '+number(o.unallocatedKg)+' kg 미배정'),node('small','',o.overdue?'기한 경과':Number(o.remainingKg)===0?'출하 완료':'가상 기한 미경과'));row.append(cell);}tbody.append(row);});table.append(tbody);section.append(table,node('p','agent-result-method','복사본에서 창고 준비와 가상 기한을 비교합니다. 새 출하를 생성하거나 납기 달성을 약속하지 않습니다.'));parent.append(section);
   }
   function rawResult(title, value, parent) {
     const details = node('details', 'agent-raw-result'); details.append(node('summary', '', title), node('pre', '', printable(value))); parent.append(details);
@@ -207,6 +254,7 @@
     const root = $('agent-results'); root.replaceChildren();
     const result = run.result || {};
     const records = list(result.evidence), recordMap = new Map(records.map((record) => [record.id, record]));
+    const moistureTargets = new Set(records.filter(record => String(record.id).startsWith('ALT-') && /수분/.test(record.label + ' ' + record.value)).map(record => record.lotId));
     const targets = new Set(($('agent-question').value.match(/\bLOT-[A-Za-z0-9]+\b/g) || []));
     const summary = node('div', 'agent-answer'), answerHeading = node('div', 'agent-answer-heading');
     answerHeading.append(node('span', 'eyebrow', 'MODEL ANSWER'));
@@ -214,7 +262,9 @@
     summary.append(answerHeading, node('h4', '', '조회 근거를 바탕으로 정리한 답변'), node('p', '', result.summary || '요약이 반환되지 않았습니다. 도구 호출과 근거를 확인하세요.'), node('small', 'agent-summary-note', 'AI의 서술과 도구가 반환한 기록은 구분해서 확인하세요. 답변 전체의 사실 일치가 검증된 것은 아닙니다.')); root.append(summary);
     if (list(result.facts).length) {
       const section = node('section', 'agent-fact-section'); section.append(node('h4', '', '도구로 확인한 기록'));
-      const sorted = [...result.facts].sort((a,b) => evidencePriority(recordMap.get(list(b.evidenceIds)[0]) || b, targets) - evidencePriority(recordMap.get(list(a.evidenceIds)[0]) || a, targets));
+      const orderFactIds=new Set(list(result.orders?.orders).flatMap(order=>['requestedKg','shippedKg','heldKg','readyKg','unallocatedKg','shippedImpactKg'].map(field=>order.id+'-'+field)));
+      const selectedFacts=result.orders?result.facts.filter(fact=>list(fact.evidenceIds).some(id=>orderFactIds.has(id))):result.facts;
+      const sorted = [...selectedFacts].sort((a,b) => evidencePriority(recordMap.get(list(b.evidenceIds)[0]) || b, targets, moistureTargets) - evidencePriority(recordMap.get(list(a.evidenceIds)[0]) || a, targets, moistureTargets));
       const facts = node('div', 'agent-facts');
       const addFact = (fact, parent) => {const record = recordMap.get(list(fact.evidenceIds)[0]) || {id:list(fact.evidenceIds)[0],...fact}; const displayed = displayRecord(record); const item = node('div', 'agent-fact'); item.append(node('span', '', displayed.label), node('strong', '', displayed.value)); evidenceRefs(fact.evidenceIds, item); parent.append(item);};
       sorted.slice(0,6).forEach((fact) => addFact(fact, facts)); section.append(facts);
@@ -223,6 +273,19 @@
     comparisonView(result.comparison, root);
     simulationView(result.simulation, root);
     structuredView('문서 확인 결과', result.document, root);
+    structuredView('설비 조회 근거', result.factory, root);
+    orderResultView(result.orders, root);
+    if (result.factorySimulation) {
+      const r=result.factorySimulation,section=node('section','agent-fact-section');
+      section.append(node('h4','','설비 정지 조건 비교 · 가정 모델'));
+      const values=node('div','comparison-columns');
+      for (const [label,key] of [['정상 조건','baseline'],['정지 조건','branch']]) {
+        const item=node('div');item.append(node('small','',label),node('strong','',number(r[key]?.throughputKg)+' kg'));values.append(item);
+      }
+      section.append(values,node('p','','포장 완료 기준입니다. 품질 보류를 유지하고 원본 운영 기록은 변경하지 않습니다. 새 출하·납기 달성·수율을 계산하거나 약속하지 않습니다.'));root.append(section);
+      orderComparisonView(r.baseline?.orders, r.branch?.orders, root);
+      structuredView('비교 가정과 계산 근거',r,root);
+    }
     if (list(result.warnings).length) {const warning = node('div', 'agent-warnings'); warning.append(node('h4', '', '확인이 필요한 항목')); const ul = node('ul'); result.warnings.forEach((text) => ul.append(node('li', '', printable(text)))); warning.append(ul); root.append(warning);}
     const proposals = list(result.proposals);
     if (proposals.length) {
@@ -246,7 +309,7 @@
     if (records.length) {
       const evidence = node('section', 'agent-evidence'); evidence.append(node('h4', '', '조회한 원본 근거'));
       const important = (record) => (targets.has(record.lotId) && (/^ALT-/.test(record.id) || /-(?:temperature|moisture)$/.test(record.id))) || (record.assetId === 'TRK-02' && /-status$/.test(record.id));
-      let visible = records.filter(important).slice(0,4); if (!visible.length) visible = records.slice(0,2);
+      let visible = records.filter(result.orders?record=>String(record.id).startsWith('ALT-'):important).slice(0,4); if (!visible.length) visible = records.filter(record=>!result.orders||typeof record.value!=='object').slice(0,2);
       const visibleIds = new Set(visible.map((record) => record.id)), remaining = records.filter((record) => !visibleIds.has(record.id));
       const appendEvidence = (record, parent) => {
         const displayed = displayRecord(record); const item = node('article', 'agent-evidence-item'); item.id = 'agent-evidence-' + encodeURIComponent(record.id); item.append(node('span', 'agent-evidence-id', record.id), node('h5', '', displayed.label), node('p', '', displayed.value));
@@ -269,8 +332,9 @@
       const inputs = {};
       if (task === 'reconcile') {inputs.leftCsv = $('agent-left-csv').value; inputs.rightCsv = $('agent-right-csv').value;}
       if (task === 'document') inputs.documentText = $('agent-document-text').value;
+      if (task === 'downtime') {inputs.stationId=$('agent-downtime-station').value;inputs.downtimeMinutes=Number($('agent-downtime-minutes').value);inputs.horizonMinutes=Number($('agent-downtime-horizon').value);}
       let question = $('agent-question').value;
-      if (task === 'simulate') question += '\n시연 가정: LOT-007, 재검사 수분 ' + Number($('agent-sim-moisture').value) + '%, 온도 ' + Number($('agent-sim-temperature').value) + '°C, 가상 시간 ' + Number($('agent-sim-minutes').value) + '분. 복사본에서 재검사와 별도 해제를 비교하세요.';
+      if (task === 'simulate') {if(!$('agent-sim-lot').value)throw Error('현재 보류 Lot이 없습니다. 먼저 품질 이상 상황을 발생시키세요.');question=question.replaceAll('LOT-007',$('agent-sim-lot').value);question += '\n시연 가정: '+$('agent-sim-lot').value+', 재검사 수분 ' + Number($('agent-sim-moisture').value) + '%, 온도 ' + Number($('agent-sim-temperature').value) + '°C, 가상 시간 ' + Number($('agent-sim-minutes').value) + '분. 복사본에서 재검사와 별도 해제를 비교하세요.';}
       const started = await api('/api/agent/runs', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({task, question, inputs})});
       if (!started.runId) throw Error('서버가 실행 ID를 반환하지 않았습니다.');
       currentRun = started.runId;

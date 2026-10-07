@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-07",
+  "source": "local implementation and actual browser/model runs",
+  "companySources": "Official ATS same-session DOM; official company search-index refresh on 2026-10-07. Internal requirements unverified.",
+  "checks": {
+    "javascript": {
+      "engine": 16,
+      "assets": 5,
+      "factory": 11
+    },
+    "python": {
+      "server": 8,
+      "documentIntake": 8,
+      "agentAPI": 4,
+      "backend": 32,
+      "factoryTools": 7
+    }
+  },
+  "independentReview": {
+    "model": "gpt-6-astra",
+    "result": "No actionable findings after horizon fix",
+    "scope": "Code integration and targeted model tests, not live-model accuracy"
+  },
+  "prose": {
+    "route": "i-am-not-ai light",
+    "changeRate": 0,
+    "gateExit": 0,
+    "directComparison": true,
+    "run": "2026-10-07-008-factory-final"
+  },
+  "actualModel": {
+    "tag": "qwen3:4b-instruct",
+    "runtime": "Ollama / LangGraph native tool calling",
+    "freeNarrativeVerified": false
+  },
+  "pending": [
+    "actual scoped multi-Lot quality rerun",
+    "PDF whole-page and 100 percent review"
+  ],
+  "latestBackendRun": {
+    "tests": 32,
+    "passed": true,
+    "scope": "Deterministic backend transport, safety and source payload tests, not model accuracy"
+  },
+  "companyFit": {
+    "MES": "https://www.woosungfeed.co.kr/m11.php",
+    "AX": "https://www.woosungfeed.co.kr/board/board.php?bo_table=press&idx=427",
+    "verifiedPublicDirection": [
+      "MES connects intake, orders and output",
+      "IT/AX hiring and AI transformation",
+      "initiative, persistence, convergence and improvement"
+    ],
+    "interpretation": "Production/quality evidence retrieval is a portfolio hypothesis derived from public direction, not a confirmed internal project."
+  },
+  "privacyScan": {
+    "newPublicFilesChecked": true,
+    "matchingSecretOrContactPatterns": 0,
+    "modelWeightsDatabasePrivateResumeExcluded": true,
+    "scope": "Pattern and publish-file review, not a guarantee for arbitrary content"
+  }
+}

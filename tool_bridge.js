@@ -1,11 +1,15 @@
 'use strict';
 // Invoked only by the Python read-only tool service. stdin is a copied snapshot.
-const E=require('./engine.js'), A=require('./assets.js');
+const E=require('./engine.js'), A=require('./assets.js'), F=require('./factory_model.js');
 let input='';process.stdin.setEncoding('utf8');process.stdin.on('data',s=>input+=s);
 process.stdin.on('end',()=>{try{
  const {operation,state,args={}}=JSON.parse(input);
  let result;
  if(operation==='manifest') result=A.snapshot(state,args.asset_id);
+ else if(operation==='orders') result=require('./order_model.js').snapshot(state,args.order_id);
+ else if(operation==='orders_validate') {require('./order_model.js').validate(state);result={valid:true};}
+ else if(operation==='factory_status') result=F.snapshot(state);
+ else if(operation==='factory_simulate') result=F.simulate(state,args);
  else if(operation==='report') result=E.report(state);
  else if(operation==='simulate') {
   const baseline=JSON.parse(JSON.stringify(state)), branch=JSON.parse(JSON.stringify(state));

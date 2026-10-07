@@ -1,0 +1,1261 @@
+{
+  "task": "downtime",
+  "model": "qwen3:4b-instruct",
+  "fixture": "fixtures/factory-state.json",
+  "nativeTools": [
+    "get_factory_status",
+    "compare_factory_downtime"
+  ],
+  "originalUnchanged": true,
+  "result": {
+    "summary": "공장 시뮬레이션 결과에서 MIX-01 스테이션은 10분간 정지했으며, 20분의 시간대를 기준으로 분석되었습니다. 기준값(15,200kg)과 지점값(10,000kg)의 패킹 완료량 차이가 존재하며, 이는 합성 가정(전체 스테이션 용량 유지, 질량 보존)에 기반한 시뮬레이션입니다.",
+    "facts": [
+      {
+        "label": "MIX-01 가정 처리량 kg/min",
+        "value": 600,
+        "evidenceIds": [
+          "MIX-01-capacityKgPerMinute"
+        ]
+      },
+      {
+        "label": "MIX-01 대기 물량 kg",
+        "value": 3600,
+        "evidenceIds": [
+          "MIX-01-queuedKg"
+        ]
+      },
+      {
+        "label": "MIX-01 보류 물량 kg",
+        "value": 3600,
+        "evidenceIds": [
+          "MIX-01-heldKg"
+        ]
+      },
+      {
+        "label": "MIX-01 상태",
+        "value": "running",
+        "evidenceIds": [
+          "MIX-01-status"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "FACTORY-MIX-01",
+        "label": "MIX-01 합성 설비 기록",
+        "value": {
+          "id": "MIX-01",
+          "title": "사료 배합기",
+          "stage": "mixing",
+          "capacityKgPerMinute": 600,
+          "queuedKg": 3600,
+          "workloadKg": 8800,
+          "heldKg": 3600,
+          "activeLotId": "LOT-004",
+          "status": "running",
+          "affectedLotIds": [
+            "LOT-003",
+            "LOT-004"
+          ]
+        }
+      },
+      {
+        "id": "MIX-01-capacityKgPerMinute",
+        "label": "MIX-01 가정 처리량 kg/min",
+        "value": 600
+      },
+      {
+        "id": "MIX-01-queuedKg",
+        "label": "MIX-01 대기 물량 kg",
+        "value": 3600
+      },
+      {
+        "id": "MIX-01-heldKg",
+        "label": "MIX-01 보류 물량 kg",
+        "value": 3600
+      },
+      {
+        "id": "MIX-01-status",
+        "label": "MIX-01 상태",
+        "value": "running"
+      },
+      {
+        "id": "FACTORY-SIMULATION",
+        "label": "합성 설비 중단 복제 분기 계산",
+        "value": {
+          "synthetic": true,
+          "stationId": "MIX-01",
+          "downtimeMinutes": 10,
+          "horizonMinutes": 20,
+          "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+          "limitations": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+          "assumptions": {
+            "queue": "FIFO arrival then original state order; held lots skipped without release",
+            "initialProgress": "saved progress",
+            "downtimeStartMinute": 0,
+            "effectiveDowntimeMinutes": 10,
+            "capacities": [
+              {
+                "stationId": "REC-01",
+                "capacityKgPerMinute": 1200,
+                "status": "available"
+              },
+              {
+                "stationId": "MIX-01",
+                "capacityKgPerMinute": 600,
+                "status": "available"
+              },
+              {
+                "stationId": "QC-01",
+                "capacityKgPerMinute": 1000,
+                "status": "available"
+              },
+              {
+                "stationId": "PACK-01",
+                "capacityKgPerMinute": 1000,
+                "status": "available"
+              }
+            ],
+            "throughputDefinition": "whole-lot packing completions to warehouse, not shipment",
+            "newArrivals": false
+          },
+          "baseline": {
+            "throughputKg": 15200,
+            "throughputByStage": {
+              "intake": 4200,
+              "mixing": 9400,
+              "quality": 13400,
+              "packing": 15200,
+              "warehouse": 0,
+              "shipped": 0
+            },
+            "backlogByStage": {
+              "intake": 4800,
+              "mixing": 3600,
+              "quality": 0,
+              "packing": 4200,
+              "warehouse": 22900,
+              "shipped": 9000
+            },
+            "totalKg": 44500,
+            "heldKg": 8400,
+            "shippedImpactKg": 4000,
+            "lots": [
+              {
+                "id": "LOT-001",
+                "quantity": 4800,
+                "stage": "intake",
+                "progress": 0.35,
+                "status": "hold"
+              },
+              {
+                "id": "LOT-002",
+                "quantity": 4200,
+                "stage": "packing",
+                "progress": 0.3412698412698413,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-003",
+                "quantity": 3600,
+                "stage": "mixing",
+                "progress": 0.5,
+                "status": "hold"
+              },
+              {
+                "id": "LOT-004",
+                "quantity": 5200,
+                "stage": "warehouse",
+                "progress": 0,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-005",
+                "quantity": 4000,
+                "stage": "warehouse",
+                "progress": 0,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-006",
+                "quantity": 6000,
+                "stage": "warehouse",
+                "progress": 0,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-007",
+                "quantity": 4500,
+                "stage": "warehouse",
+                "progress": 0.2,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-008",
+                "quantity": 3200,
+                "stage": "warehouse",
+                "progress": 0.65,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-009",
+                "quantity": 4000,
+                "stage": "shipped",
+                "progress": 1,
+                "status": "warning"
+              },
+              {
+                "id": "LOT-010",
+                "quantity": 5000,
+                "stage": "shipped",
+                "progress": 1,
+                "status": "ok"
+              }
+            ],
+            "massConserved": true
+          },
+          "branch": {
+            "throughputKg": 10000,
+            "throughputByStage": {
+              "intake": 4200,
+              "mixing": 5200,
+              "quality": 4000,
+              "packing": 10000,
+              "warehouse": 0,
+              "shipped": 0
+            },
+            "backlogByStage": {
+              "intake": 4800,
+              "mixing": 7800,
+              "quality": 5200,
+              "packing": 0,
+              "warehouse": 17700,
+              "shipped": 9000
+            },
+            "totalKg": 44500,
+            "heldKg": 8400,
+            "shippedImpactKg": 4000,
+            "lots": [
+              {
+                "id": "LOT-001",
+                "quantity": 4800,
+                "stage": "intake",
+                "progress": 0.35,
+                "status": "hold"
+              },
+              {
+                "id": "LOT-002",
+                "quantity": 4200,
+                "stage": "mixing",
+                "progress": 0.3761904761904761,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-003",
+                "quantity": 3600,
+                "stage": "mixing",
+                "progress": 0.5,
+                "status": "hold"
+              },
+              {
+                "id": "LOT-004",
+                "quantity": 5200,
+                "stage": "quality",
+                "progress": 0.5064102564102563,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-005",
+                "quantity": 4000,
+                "stage": "warehouse",
+                "progress": 0,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-006",
+                "quantity": 6000,
+                "stage": "warehouse",
+                "progress": 0,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-007",
+                "quantity": 4500,
+                "stage": "warehouse",
+                "progress": 0.2,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-008",
+                "quantity": 3200,
+                "stage": "warehouse",
+                "progress": 0.65,
+                "status": "ok"
+              },
+              {
+                "id": "LOT-009",
+                "quantity": 4000,
+                "stage": "shipped",
+                "progress": 1,
+                "status": "warning"
+              },
+              {
+                "id": "LOT-010",
+                "quantity": 5000,
+                "stage": "shipped",
+                "progress": 1,
+                "status": "ok"
+              }
+            ],
+            "massConserved": true
+          },
+          "delta": {
+            "throughputKg": -5200,
+            "backlogByStage": {
+              "intake": 0,
+              "mixing": 4200,
+              "quality": 5200,
+              "packing": -4200,
+              "warehouse": -5200,
+              "shipped": 0
+            }
+          },
+          "originalUnchanged": true,
+          "massConserved": true
+        }
+      }
+    ],
+    "proposals": [],
+    "warnings": [
+      "합성 데모/사용자 입력 자료입니다. 실제 공장 적합 판정이 아닙니다.",
+      "근거 카드와 계산은 도구 결과입니다. 모델 자유 서술과 의미 매핑은 완전 검증되지 않았습니다."
+    ],
+    "stateHash": "90d54ed48ba3862fffe23ebf9983a0e7a0cba4934fa6ddad0a0ac010b0e2443c",
+    "summaryVerified": false,
+    "factory": {
+      "synthetic": true,
+      "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+      "stations": [
+        {
+          "id": "MIX-01",
+          "title": "사료 배합기",
+          "stage": "mixing",
+          "capacityKgPerMinute": 600,
+          "queuedKg": 3600,
+          "workloadKg": 8800,
+          "heldKg": 3600,
+          "activeLotId": "LOT-004",
+          "status": "running",
+          "affectedLotIds": [
+            "LOT-003",
+            "LOT-004"
+          ]
+        }
+      ]
+    },
+    "factorySimulation": {
+      "synthetic": true,
+      "stationId": "MIX-01",
+      "downtimeMinutes": 10,
+      "horizonMinutes": 20,
+      "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+      "limitations": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+      "assumptions": {
+        "queue": "FIFO arrival then original state order; held lots skipped without release",
+        "initialProgress": "saved progress",
+        "downtimeStartMinute": 0,
+        "effectiveDowntimeMinutes": 10,
+        "capacities": [
+          {
+            "stationId": "REC-01",
+            "capacityKgPerMinute": 1200,
+            "status": "available"
+          },
+          {
+            "stationId": "MIX-01",
+            "capacityKgPerMinute": 600,
+            "status": "available"
+          },
+          {
+            "stationId": "QC-01",
+            "capacityKgPerMinute": 1000,
+            "status": "available"
+          },
+          {
+            "stationId": "PACK-01",
+            "capacityKgPerMinute": 1000,
+            "status": "available"
+          }
+        ],
+        "throughputDefinition": "whole-lot packing completions to warehouse, not shipment",
+        "newArrivals": false
+      },
+      "baseline": {
+        "throughputKg": 15200,
+        "throughputByStage": {
+          "intake": 4200,
+          "mixing": 9400,
+          "quality": 13400,
+          "packing": 15200,
+          "warehouse": 0,
+          "shipped": 0
+        },
+        "backlogByStage": {
+          "intake": 4800,
+          "mixing": 3600,
+          "quality": 0,
+          "packing": 4200,
+          "warehouse": 22900,
+          "shipped": 9000
+        },
+        "totalKg": 44500,
+        "heldKg": 8400,
+        "shippedImpactKg": 4000,
+        "lots": [
+          {
+            "id": "LOT-001",
+            "quantity": 4800,
+            "stage": "intake",
+            "progress": 0.35,
+            "status": "hold"
+          },
+          {
+            "id": "LOT-002",
+            "quantity": 4200,
+            "stage": "packing",
+            "progress": 0.3412698412698413,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-003",
+            "quantity": 3600,
+            "stage": "mixing",
+            "progress": 0.5,
+            "status": "hold"
+          },
+          {
+            "id": "LOT-004",
+            "quantity": 5200,
+            "stage": "warehouse",
+            "progress": 0,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-005",
+            "quantity": 4000,
+            "stage": "warehouse",
+            "progress": 0,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-006",
+            "quantity": 6000,
+            "stage": "warehouse",
+            "progress": 0,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-007",
+            "quantity": 4500,
+            "stage": "warehouse",
+            "progress": 0.2,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-008",
+            "quantity": 3200,
+            "stage": "warehouse",
+            "progress": 0.65,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-009",
+            "quantity": 4000,
+            "stage": "shipped",
+            "progress": 1,
+            "status": "warning"
+          },
+          {
+            "id": "LOT-010",
+            "quantity": 5000,
+            "stage": "shipped",
+            "progress": 1,
+            "status": "ok"
+          }
+        ],
+        "massConserved": true
+      },
+      "branch": {
+        "throughputKg": 10000,
+        "throughputByStage": {
+          "intake": 4200,
+          "mixing": 5200,
+          "quality": 4000,
+          "packing": 10000,
+          "warehouse": 0,
+          "shipped": 0
+        },
+        "backlogByStage": {
+          "intake": 4800,
+          "mixing": 7800,
+          "quality": 5200,
+          "packing": 0,
+          "warehouse": 17700,
+          "shipped": 9000
+        },
+        "totalKg": 44500,
+        "heldKg": 8400,
+        "shippedImpactKg": 4000,
+        "lots": [
+          {
+            "id": "LOT-001",
+            "quantity": 4800,
+            "stage": "intake",
+            "progress": 0.35,
+            "status": "hold"
+          },
+          {
+            "id": "LOT-002",
+            "quantity": 4200,
+            "stage": "mixing",
+            "progress": 0.3761904761904761,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-003",
+            "quantity": 3600,
+            "stage": "mixing",
+            "progress": 0.5,
+            "status": "hold"
+          },
+          {
+            "id": "LOT-004",
+            "quantity": 5200,
+            "stage": "quality",
+            "progress": 0.5064102564102563,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-005",
+            "quantity": 4000,
+            "stage": "warehouse",
+            "progress": 0,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-006",
+            "quantity": 6000,
+            "stage": "warehouse",
+            "progress": 0,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-007",
+            "quantity": 4500,
+            "stage": "warehouse",
+            "progress": 0.2,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-008",
+            "quantity": 3200,
+            "stage": "warehouse",
+            "progress": 0.65,
+            "status": "ok"
+          },
+          {
+            "id": "LOT-009",
+            "quantity": 4000,
+            "stage": "shipped",
+            "progress": 1,
+            "status": "warning"
+          },
+          {
+            "id": "LOT-010",
+            "quantity": 5000,
+            "stage": "shipped",
+            "progress": 1,
+            "status": "ok"
+          }
+        ],
+        "massConserved": true
+      },
+      "delta": {
+        "throughputKg": -5200,
+        "backlogByStage": {
+          "intake": 0,
+          "mixing": 4200,
+          "quality": 5200,
+          "packing": -4200,
+          "warehouse": -5200,
+          "shipped": 0
+        }
+      },
+      "originalUnchanged": true,
+      "massConserved": true
+    }
+  },
+  "trace": [
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 1,
+        "model": "qwen3:4b-instruct",
+        "phase": "tool-selection",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 225
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.chat",
+      "args": {
+        "round": 1
+      },
+      "result": {
+        "toolNames": [
+          "get_factory_status"
+        ],
+        "doneReason": "stop",
+        "evalCount": 26,
+        "totalDurationNs": 6904230800
+      },
+      "elapsedMs": 6954
+    },
+    {
+      "tool": "get_factory_status",
+      "args": {
+        "station_id": "MIX-01"
+      },
+      "result": {
+        "synthetic": true,
+        "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+        "stations": [
+          {
+            "id": "MIX-01",
+            "title": "사료 배합기",
+            "stage": "mixing",
+            "capacityKgPerMinute": 600,
+            "queuedKg": 3600,
+            "workloadKg": 8800,
+            "heldKg": 3600,
+            "activeLotId": "LOT-004",
+            "status": "running",
+            "affectedLotIds": [
+              "LOT-003",
+              "LOT-004"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "FACTORY-MIX-01",
+            "label": "MIX-01 합성 설비 기록",
+            "value": {
+              "id": "MIX-01",
+              "title": "사료 배합기",
+              "stage": "mixing",
+              "capacityKgPerMinute": 600,
+              "queuedKg": 3600,
+              "workloadKg": 8800,
+              "heldKg": 3600,
+              "activeLotId": "LOT-004",
+              "status": "running",
+              "affectedLotIds": [
+                "LOT-003",
+                "LOT-004"
+              ]
+            }
+          },
+          {
+            "id": "MIX-01-capacityKgPerMinute",
+            "label": "MIX-01 가정 처리량 kg/min",
+            "value": 600
+          },
+          {
+            "id": "MIX-01-queuedKg",
+            "label": "MIX-01 대기 물량 kg",
+            "value": 3600
+          },
+          {
+            "id": "MIX-01-heldKg",
+            "label": "MIX-01 보류 물량 kg",
+            "value": 3600
+          },
+          {
+            "id": "MIX-01-status",
+            "label": "MIX-01 상태",
+            "value": "running"
+          }
+        ]
+      },
+      "elapsedMs": 207
+    },
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 2,
+        "model": "qwen3:4b-instruct",
+        "phase": "tool-selection",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 225
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.chat",
+      "args": {
+        "round": 2
+      },
+      "result": {
+        "toolNames": [
+          "compare_factory_downtime"
+        ],
+        "doneReason": "stop",
+        "evalCount": 47,
+        "totalDurationNs": 24996635600
+      },
+      "elapsedMs": 25082
+    },
+    {
+      "tool": "compare_factory_downtime",
+      "args": {
+        "station_id": "MIX-01",
+        "downtime_minutes": 10,
+        "horizon_minutes": 20
+      },
+      "result": {
+        "synthetic": true,
+        "stationId": "MIX-01",
+        "downtimeMinutes": 10,
+        "horizonMinutes": 20,
+        "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+        "limitations": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+        "assumptions": {
+          "queue": "FIFO arrival then original state order; held lots skipped without release",
+          "initialProgress": "saved progress",
+          "downtimeStartMinute": 0,
+          "effectiveDowntimeMinutes": 10,
+          "capacities": [
+            {
+              "stationId": "REC-01",
+              "capacityKgPerMinute": 1200,
+              "status": "available"
+            },
+            {
+              "stationId": "MIX-01",
+              "capacityKgPerMinute": 600,
+              "status": "available"
+            },
+            {
+              "stationId": "QC-01",
+              "capacityKgPerMinute": 1000,
+              "status": "available"
+            },
+            {
+              "stationId": "PACK-01",
+              "capacityKgPerMinute": 1000,
+              "status": "available"
+            }
+          ],
+          "throughputDefinition": "whole-lot packing completions to warehouse, not shipment",
+          "newArrivals": false
+        },
+        "baseline": {
+          "throughputKg": 15200,
+          "throughputByStage": {
+            "intake": 4200,
+            "mixing": 9400,
+            "quality": 13400,
+            "packing": 15200,
+            "warehouse": 0,
+            "shipped": 0
+          },
+          "backlogByStage": {
+            "intake": 4800,
+            "mixing": 3600,
+            "quality": 0,
+            "packing": 4200,
+            "warehouse": 22900,
+            "shipped": 9000
+          },
+          "totalKg": 44500,
+          "heldKg": 8400,
+          "shippedImpactKg": 4000,
+          "lots": [
+            {
+              "id": "LOT-001",
+              "quantity": 4800,
+              "stage": "intake",
+              "progress": 0.35,
+              "status": "hold"
+            },
+            {
+              "id": "LOT-002",
+              "quantity": 4200,
+              "stage": "packing",
+              "progress": 0.3412698412698413,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-003",
+              "quantity": 3600,
+              "stage": "mixing",
+              "progress": 0.5,
+              "status": "hold"
+            },
+            {
+              "id": "LOT-004",
+              "quantity": 5200,
+              "stage": "warehouse",
+              "progress": 0,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-005",
+              "quantity": 4000,
+              "stage": "warehouse",
+              "progress": 0,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-006",
+              "quantity": 6000,
+              "stage": "warehouse",
+              "progress": 0,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-007",
+              "quantity": 4500,
+              "stage": "warehouse",
+              "progress": 0.2,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-008",
+              "quantity": 3200,
+              "stage": "warehouse",
+              "progress": 0.65,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-009",
+              "quantity": 4000,
+              "stage": "shipped",
+              "progress": 1,
+              "status": "warning"
+            },
+            {
+              "id": "LOT-010",
+              "quantity": 5000,
+              "stage": "shipped",
+              "progress": 1,
+              "status": "ok"
+            }
+          ],
+          "massConserved": true
+        },
+        "branch": {
+          "throughputKg": 10000,
+          "throughputByStage": {
+            "intake": 4200,
+            "mixing": 5200,
+            "quality": 4000,
+            "packing": 10000,
+            "warehouse": 0,
+            "shipped": 0
+          },
+          "backlogByStage": {
+            "intake": 4800,
+            "mixing": 7800,
+            "quality": 5200,
+            "packing": 0,
+            "warehouse": 17700,
+            "shipped": 9000
+          },
+          "totalKg": 44500,
+          "heldKg": 8400,
+          "shippedImpactKg": 4000,
+          "lots": [
+            {
+              "id": "LOT-001",
+              "quantity": 4800,
+              "stage": "intake",
+              "progress": 0.35,
+              "status": "hold"
+            },
+            {
+              "id": "LOT-002",
+              "quantity": 4200,
+              "stage": "mixing",
+              "progress": 0.3761904761904761,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-003",
+              "quantity": 3600,
+              "stage": "mixing",
+              "progress": 0.5,
+              "status": "hold"
+            },
+            {
+              "id": "LOT-004",
+              "quantity": 5200,
+              "stage": "quality",
+              "progress": 0.5064102564102563,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-005",
+              "quantity": 4000,
+              "stage": "warehouse",
+              "progress": 0,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-006",
+              "quantity": 6000,
+              "stage": "warehouse",
+              "progress": 0,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-007",
+              "quantity": 4500,
+              "stage": "warehouse",
+              "progress": 0.2,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-008",
+              "quantity": 3200,
+              "stage": "warehouse",
+              "progress": 0.65,
+              "status": "ok"
+            },
+            {
+              "id": "LOT-009",
+              "quantity": 4000,
+              "stage": "shipped",
+              "progress": 1,
+              "status": "warning"
+            },
+            {
+              "id": "LOT-010",
+              "quantity": 5000,
+              "stage": "shipped",
+              "progress": 1,
+              "status": "ok"
+            }
+          ],
+          "massConserved": true
+        },
+        "delta": {
+          "throughputKg": -5200,
+          "backlogByStage": {
+            "intake": 0,
+            "mixing": 4200,
+            "quality": 5200,
+            "packing": -4200,
+            "warehouse": -5200,
+            "shipped": 0
+          }
+        },
+        "originalUnchanged": true,
+        "massConserved": true,
+        "evidence": [
+          {
+            "id": "FACTORY-SIMULATION",
+            "label": "합성 설비 중단 복제 분기 계산",
+            "value": {
+              "synthetic": true,
+              "stationId": "MIX-01",
+              "downtimeMinutes": 10,
+              "horizonMinutes": 20,
+              "scope": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+              "limitations": "독립 합성 용량 모델: 설비별 단일 처리 FIFO, 저장된 로트 진행률 반영. 저장된 보류/차단 로트는 이동 없이 제외하며 다른 로트는 처리 가능. 포장 완료 시 창고에 적재; 창고와 기존 출하 로트는 이동하지 않음. 신규 입고·손실·새 품질 판정·재검사·해제·납기·실제 설비/센서 연결 없음. 기존 로트 엔진 시간 진행과 별개.",
+              "assumptions": {
+                "queue": "FIFO arrival then original state order; held lots skipped without release",
+                "initialProgress": "saved progress",
+                "downtimeStartMinute": 0,
+                "effectiveDowntimeMinutes": 10,
+                "capacities": [
+                  {
+                    "stationId": "REC-01",
+                    "capacityKgPerMinute": 1200,
+                    "status": "available"
+                  },
+                  {
+                    "stationId": "MIX-01",
+                    "capacityKgPerMinute": 600,
+                    "status": "available"
+                  },
+                  {
+                    "stationId": "QC-01",
+                    "capacityKgPerMinute": 1000,
+                    "status": "available"
+                  },
+                  {
+                    "stationId": "PACK-01",
+                    "capacityKgPerMinute": 1000,
+                    "status": "available"
+                  }
+                ],
+                "throughputDefinition": "whole-lot packing completions to warehouse, not shipment",
+                "newArrivals": false
+              },
+              "baseline": {
+                "throughputKg": 15200,
+                "throughputByStage": {
+                  "intake": 4200,
+                  "mixing": 9400,
+                  "quality": 13400,
+                  "packing": 15200,
+                  "warehouse": 0,
+                  "shipped": 0
+                },
+                "backlogByStage": {
+                  "intake": 4800,
+                  "mixing": 3600,
+                  "quality": 0,
+                  "packing": 4200,
+                  "warehouse": 22900,
+                  "shipped": 9000
+                },
+                "totalKg": 44500,
+                "heldKg": 8400,
+                "shippedImpactKg": 4000,
+                "lots": [
+                  {
+                    "id": "LOT-001",
+                    "quantity": 4800,
+                    "stage": "intake",
+                    "progress": 0.35,
+                    "status": "hold"
+                  },
+                  {
+                    "id": "LOT-002",
+                    "quantity": 4200,
+                    "stage": "packing",
+                    "progress": 0.3412698412698413,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-003",
+                    "quantity": 3600,
+                    "stage": "mixing",
+                    "progress": 0.5,
+                    "status": "hold"
+                  },
+                  {
+                    "id": "LOT-004",
+                    "quantity": 5200,
+                    "stage": "warehouse",
+                    "progress": 0,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-005",
+                    "quantity": 4000,
+                    "stage": "warehouse",
+                    "progress": 0,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-006",
+                    "quantity": 6000,
+                    "stage": "warehouse",
+                    "progress": 0,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-007",
+                    "quantity": 4500,
+                    "stage": "warehouse",
+                    "progress": 0.2,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-008",
+                    "quantity": 3200,
+                    "stage": "warehouse",
+                    "progress": 0.65,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-009",
+                    "quantity": 4000,
+                    "stage": "shipped",
+                    "progress": 1,
+                    "status": "warning"
+                  },
+                  {
+                    "id": "LOT-010",
+                    "quantity": 5000,
+                    "stage": "shipped",
+                    "progress": 1,
+                    "status": "ok"
+                  }
+                ],
+                "massConserved": true
+              },
+              "branch": {
+                "throughputKg": 10000,
+                "throughputByStage": {
+                  "intake": 4200,
+                  "mixing": 5200,
+                  "quality": 4000,
+                  "packing": 10000,
+                  "warehouse": 0,
+                  "shipped": 0
+                },
+                "backlogByStage": {
+                  "intake": 4800,
+                  "mixing": 7800,
+                  "quality": 5200,
+                  "packing": 0,
+                  "warehouse": 17700,
+                  "shipped": 9000
+                },
+                "totalKg": 44500,
+                "heldKg": 8400,
+                "shippedImpactKg": 4000,
+                "lots": [
+                  {
+                    "id": "LOT-001",
+                    "quantity": 4800,
+                    "stage": "intake",
+                    "progress": 0.35,
+                    "status": "hold"
+                  },
+                  {
+                    "id": "LOT-002",
+                    "quantity": 4200,
+                    "stage": "mixing",
+                    "progress": 0.3761904761904761,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-003",
+                    "quantity": 3600,
+                    "stage": "mixing",
+                    "progress": 0.5,
+                    "status": "hold"
+                  },
+                  {
+                    "id": "LOT-004",
+                    "quantity": 5200,
+                    "stage": "quality",
+                    "progress": 0.5064102564102563,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-005",
+                    "quantity": 4000,
+                    "stage": "warehouse",
+                    "progress": 0,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-006",
+                    "quantity": 6000,
+                    "stage": "warehouse",
+                    "progress": 0,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-007",
+                    "quantity": 4500,
+                    "stage": "warehouse",
+                    "progress": 0.2,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-008",
+                    "quantity": 3200,
+                    "stage": "warehouse",
+                    "progress": 0.65,
+                    "status": "ok"
+                  },
+                  {
+                    "id": "LOT-009",
+                    "quantity": 4000,
+                    "stage": "shipped",
+                    "progress": 1,
+                    "status": "warning"
+                  },
+                  {
+                    "id": "LOT-010",
+                    "quantity": 5000,
+                    "stage": "shipped",
+                    "progress": 1,
+                    "status": "ok"
+                  }
+                ],
+                "massConserved": true
+              },
+              "delta": {
+                "throughputKg": -5200,
+                "backlogByStage": {
+                  "intake": 0,
+                  "mixing": 4200,
+                  "quality": 5200,
+                  "packing": -4200,
+                  "warehouse": -5200,
+                  "shipped": 0
+                }
+              },
+              "originalUnchanged": true,
+              "massConserved": true
+            }
+          }
+        ]
+      },
+      "elapsedMs": 332
+    },
+    {
+      "tool": "ollama.request",
+      "args": {
+        "round": 3,
+        "model": "qwen3:4b-instruct",
+        "phase": "synthesis",
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 256
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.synthesis",
+      "args": {
+        "round": 3
+      },
+      "result": {
+        "doneReason": "stop",
+        "evalCount": 139,
+        "totalDurationNs": 47389178700,
+        "outputTokenLimit": 256,
+        "sentenceLimit": 2
+      },
+      "elapsedMs": 47401
+    }
+  ]
+}

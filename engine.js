@@ -1,5 +1,6 @@
 (function (root) {
   'use strict';
+  const Orders = typeof module !== 'undefined' && module.exports ? require('./order_model.js') : root.GrainOrders;
   // Synthetic factory records. No live sensor, ERP, regulatory or LLM connection.
   const STAGES = ['intake', 'mixing', 'quality', 'packing', 'warehouse', 'shipped'];
   const LABELS = { intake: '원료 입고', mixing: '배합', quality: '품질 검사', packing: '포장', warehouse: '창고', shipped: '출하' };
@@ -36,6 +37,7 @@
     ];
     s.lots = seed.map((row, i) => lotRecord('LOT-' + String(i + 1).padStart(3, '0'), ...row));
     s.lots.filter(l => l.stage === 'shipped').forEach(l => { l.shipment = { destination: '데모 거래처 ' + (l.id === 'LOT-009' ? 'A' : 'B'), time: '초기 출하 기록', tick: 0 }; });
+    s.orders = Orders.seed(s);
     event(s, 'init', null, '합성 데이터 10개 로트를 불러왔습니다. 실공장 데이터가 아닙니다.');
     return s;
   }

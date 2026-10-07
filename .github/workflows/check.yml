@@ -12,10 +12,12 @@ jobs:
         with:
           node-version: '22'
       - run: pip install -r requirements.txt
-      - run: node --test engine.test.js assets.test.js
+      - run: node --test engine.test.js assets.test.js factory_model.test.js order_model.test.js
       - run: python server.test.py
       - run: python agent_backend.test.py
       - run: python agent_api.test.py
       - run: python document_intake.test.py
+      - run: python factory_tools.test.py
+      - run: python order_tools.test.py
 
 # Real-model evaluation is separate: it requires a running local Ollama model.

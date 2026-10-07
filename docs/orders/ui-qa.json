@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-07",
+  "scope": "Actual local browser interaction with synthetic orders; desktop and 390px viewport.",
+  "passed": true,
+  "checks": {
+    "sameFactoryCorner": true,
+    "lotNavigation": true,
+    "truckNavigationAndRestore": true,
+    "collapseAndRestore": true,
+    "overAllocation5000Rejected": true,
+    "partial3000UpdatesHeld6600Missing2400": true,
+    "inventoryRemains44500": true,
+    "persistenceAfterReload": true,
+    "resetRestoresSeed": true,
+    "moistureHold8400SeparateShippedImpact4000": true,
+    "shippedLotLabelSeparateFromCurrentHold": true,
+    "mobileNoHorizontalOverflow": true,
+    "copiedDowntimeChangesOrderReady9700To4500": true,
+    "actualQwenNativeOrderCall": true
+  },
+  "persistenceEvidence": {
+    "checks": {
+      "allocation3000": true,
+      "truck02": true,
+      "lotQuantityUnchanged4800": true,
+      "inventoryUnchanged44500": true
+    },
+    "allocation": {
+      "lotId": "LOT-001",
+      "quantityKg": 3000,
+      "assetId": "TRK-02"
+    }
+  },
+  "mobile": {
+    "viewportWidth": 390,
+    "documentScrollWidth": 375,
+    "orderPanelWidth": 341.6
+  },
+  "comparison": {
+    "station": "MIX-01",
+    "downtimeMinutes": 10,
+    "horizonMinutes": 20,
+    "baselinePackingKg": 15200,
+    "branchPackingKg": 10000,
+    "SO-004": {
+      "baselineReadyKg": 9700,
+      "branchReadyKg": 4500
+    },
+    "originalUnchanged": true
+  },
+  "consoleReview": "Only historical order-ui.js fetch error from before the static whitelist fix; no new console errors after the final reload.",
+  "screens": [
+    "order-hero.png",
+    "order-partial.png",
+    "order-mobile.png",
+    "order-ai.png"
+  ],
+  "limitations": [
+    "Synthetic fixed orders and virtual due times.",
+    "Truck amounts represent plans, not physical cargo.",
+    "AI narrative needs human review.",
+    "No actual ERP/MES integration."
+  ]
+}

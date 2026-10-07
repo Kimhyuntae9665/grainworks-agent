@@ -3,7 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sqlite3
+import subprocess
 import threading
 from functools import partial
 from contextlib import closing
@@ -11,6 +13,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 from agent_backend import AgentService, backend_status
+from factory_tools import STATION_IDS
 
 ROOT = Path(__file__).resolve().parent
 STAGES = {"intake", "mixing", "quality", "packing", "warehouse", "shipped"}
@@ -35,6 +38,17 @@ def validate_state(state):
     for key, low, high in (("productionRate", 20, 200), ("moistureLimit", 8, 20), ("storageLimit", 18, 40)):
         if not finite(settings.get(key)) or not low <= settings[key] <= high:
             raise ValueError("Invalid settings")
+    if 'factory' in state:
+        factory = state['factory']
+        if not isinstance(factory, dict) or set(factory) != {'stations'} or not isinstance(factory['stations'], dict):
+            raise ValueError('Invalid factory configuration')
+        for station_id, config in factory['stations'].items():
+            if station_id not in STATION_IDS or not isinstance(config, dict) or set(config)-{'capacityKgPerMinute','status'}:
+                raise ValueError('Invalid factory station')
+            capacity = config.get('capacityKgPerMinute', 1)
+            status = config.get('status', 'idle')
+            if not finite(capacity) or not 0 < capacity <= 1000000 or not isinstance(status, str) or status not in {'idle','running','hold','down'}:
+                raise ValueError('Invalid factory capacity or status')
     ids = set()
     for lot in lots:
         if not isinstance(lot, dict) or not isinstance(lot.get("id"), str) or not lot["id"] or len(lot["id"]) > 80 or lot["id"] in ids:
@@ -59,6 +73,16 @@ def validate_state(state):
     for key in ("nextId", "nextEventId", "nextAlertId"):
         if not finite(state.get(key)) or state[key] < 1:
             raise ValueError("Invalid counters")
+    if 'orders' in state:
+        # A single shared allocation validator prevents browser/server drift. The
+        # bounded child process reads only this copied snapshot, with no shell.
+        try:
+            result=subprocess.run([os.environ.get('GRAINWORKS_NODE','node'),str(ROOT/'tool_bridge.js')],
+                input=json.dumps({'operation':'orders_validate','state':state},ensure_ascii=False,allow_nan=False),
+                capture_output=True,text=True,encoding='utf-8',timeout=5,cwd=ROOT)
+        except (OSError,subprocess.SubprocessError) as exc:
+            raise ValueError('Order validation unavailable; snapshot not saved') from exc
+        if result.returncode: raise ValueError('Invalid orders: '+result.stderr[:500])
     return state
 
 
@@ -180,7 +204,7 @@ class Handler(SimpleHTTPRequestHandler):
         resolved=Path(self.translate_path(path)).resolve()
         if not resolved.is_relative_to(ROOT): return False
         relative=resolved.relative_to(ROOT).as_posix()
-        if relative in ['.','index.html','app.js','engine.js','assets.js','bootstrap.js','scene.js','styles.css','agent.css','agent.js','agent-ui.js','sample-lots.csv','README.md']: return True
+        if relative in ['.','index.html','app.js','engine.js','assets.js','bootstrap.js','scene.js','styles.css','agent.css','agent.js','agent-ui.js','factory_model.js','factory-ui.js','factory-ui.css','order_model.js','order-ui.js','order-ui.css','sample-lots.csv','README.md']: return True
         if relative.startswith('docs/') and resolved.is_file() and resolved.suffix.lower() in ['.pdf','.png','.jpg','.svg','.md','.json','.mp4']: return True
         return relative.startswith('vendor/') and resolved.is_file() and resolved.suffix in ['.js','.css','.woff','.woff2','.png','.jpg','.svg']
 
@@ -198,7 +222,7 @@ def main():
     args = parser.parse_args()
     store = Store(args.db)
     if store.read()['state'] is None:
-        store.write(json.loads((ROOT/'fixtures/demo-state.json').read_text(encoding='utf-8')))
+        store.write(json.loads((ROOT/'fixtures/factory-state.json').read_text(encoding='utf-8')))
     agent=AgentService(store)
     server = ThreadingHTTPServer(("127.0.0.1", args.port), partial(Handler, store=store, agent=agent))
     print(f"Grainworks: http://127.0.0.1:{args.port} | database: {store.path}", flush=True)

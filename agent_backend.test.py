@@ -1,11 +1,13 @@
 """Safety/grounding checks; mocked transport tests workflow, not model accuracy."""
 import copy
+import io
 import json
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
-from agent_backend import AgentService, execute_run, validate_summary, validate_simulation_request
+from urllib.error import HTTPError
+from agent_backend import AgentService, execute_run, ollama_json, validate_summary, validate_simulation_request, shipment_tool_context, explicit_proposal_requests
 from domain_tools import DomainTools, state_hash, TOOL_SCHEMAS
 from server import Store
 
@@ -335,6 +337,170 @@ class DomainTests(unittest.TestCase):
         self.assertEqual(sum(r['tool']=='prepare_action_proposal' for r in trace),1)
         self.assertEqual(sum(r['tool']=='ollama.synthesis' for r in trace),1)
         self.assertNotIn('완료되었음',result['proposals'][0]['reason'])
+
+    def test_multilot_context_projects_records_without_reducing_trace_or_evidence(self):
+        state=json.loads((ROOT/'fixtures/factory-state.json').read_text(encoding='utf-8'))
+        tools=DomainTools(state);full=tools.trace_lot('LOT-003');before=copy.deepcopy(full)
+        context=shipment_tool_context('trace_lot',full)
+        self.assertEqual(set(context),{'lot','assetIds','relatedLots','alerts','evidence'})
+        self.assertEqual(set(context['lot']),{'id','rawId','stage','status','quantity','qc'})
+        self.assertEqual(context['lot']['qc'],full['lot']['qc'])
+        self.assertEqual(context['relatedLots'],full['relatedLots']);self.assertEqual(context['assetIds'],full['assetIds'])
+        self.assertEqual(context['evidence'],[{k:e[k] for k in ['id','label','value']} for e in full['evidence']])
+        self.assertEqual(context['alerts'],[{k:a[k] for k in ['id','lotId','title','details','resolved','blocking','shippedImpact']} for a in full['alerts']])
+        self.assertEqual(full,before);self.assertIn('progress',full['lot']);self.assertIn('product',full['lot'])
+        full=tools.list_blocking_alerts();before=copy.deepcopy(full);context=shipment_tool_context('list_blocking_alerts',full)
+        self.assertEqual(set(context['report']),{'totalKg','shippedKg','heldKg','activeKg','unresolved','shippedImpactKg'})
+        self.assertEqual(context['report']['heldKg'],8400);self.assertEqual(context['report']['shippedImpactKg'],4000)
+        self.assertEqual(full,before);self.assertIn('byStage',full['report']);self.assertIn('affectedLots',full['report'])
+        self.assertEqual(context['evidence'],[{k:e[k] for k in ['id','label','value']} for e in full['evidence']])
+        error={'error':'unknown','requiresCorrectionOrAbstention':True}
+        self.assertEqual(shipment_tool_context('trace_lot',error),error)
+
+    def test_multilot_graph_requires_all_traces_and_proposals_with_full_api_records(self):
+        state=json.loads((ROOT/'fixtures/factory-state.json').read_text(encoding='utf-8'));before=copy.deepcopy(state)
+        requests=[];trace=[]
+        def response(calls):return {'message':{'role':'assistant','content':'','tool_calls':[{'function':{'name':name,'arguments':args}} for name,args in calls]}}
+        def chat(path,payload):
+            requests.append(copy.deepcopy(payload))
+            self.assertEqual(payload['options']['num_predict'],768 if 'tools' in payload else 320)
+            if len(requests)==1:return response([('list_blocking_alerts',{}),('trace_lot',{'lot_id':'LOT-003'})])
+            if len(requests)==2:
+                outgoing=[m for m in payload['messages'] if m['role']=='tool']
+                for message in outgoing:
+                    recorded=next(r['result'] for r in trace if r['tool']==message['tool_name'])
+                    self.assertEqual(json.loads(message['content']),shipment_tool_context(message['tool_name'],recorded))
+                self.assertIn('LOT-001',payload['messages'][-1]['content']);self.assertIn('LOT-009',payload['messages'][-1]['content'])
+                self.assertEqual(payload['options']['num_ctx'],4096)
+                return response([('trace_lot',{'lot_id':'LOT-001'}),('trace_lot',{'lot_id':'LOT-009'})])
+            if len(requests)==3:
+                self.assertIn('prepare_action_proposal',payload['messages'][-1]['content'])
+                self.assertNotIn('release',{tool['function']['name'] for tool in payload['tools']})
+                return response([('prepare_action_proposal',{'lot_id':lot,'action':'resolve','reason':'담당자 검토','evidence_ids':[lot+'-moisture']}) for lot in ['LOT-001','LOT-003','LOT-009']])
+            self.assertNotIn('tools',payload)
+            return {'message':{'role':'assistant','content':'RAW-2401에 연결된 LOT-001, LOT-003, LOT-009의 저장 경보를 담당자가 검토해야 합니다.'}}
+        result=execute_run('shipment','LOT-003의 보류 이유와 RAW-2401 관련 LOT-001 LOT-009를 조회하고 검토안을 만들어주세요',state,{},trace.append,chat=chat)
+        self.assertEqual(len(requests),4);self.assertEqual(state,before)
+        self.assertEqual({r['args']['lot_id'] for r in trace if r['tool']=='trace_lot'},{'LOT-001','LOT-003','LOT-009'})
+        self.assertEqual({p['lotId'] for p in result['proposals']},{'LOT-001','LOT-003','LOT-009'})
+        self.assertEqual({e['id'] for e in result['evidence'] if e['id'].endswith('-moisture')},{'LOT-001-moisture','LOT-003-moisture','LOT-009-moisture'})
+        for record in [r for r in trace if r['tool']=='trace_lot']:
+            self.assertIn('product',record['result']['lot']);self.assertIn('progress',record['result']['lot'])
+        self.assertIn('byStage',next(r['result']['report'] for r in trace if r['tool']=='list_blocking_alerts'))
+
+    def test_singlelot_outgoing_tool_context_is_unchanged(self):
+        requests=[];trace=[]
+        def chat(path,payload):
+            requests.append(payload)
+            self.assertEqual(payload['options']['num_predict'],225 if 'tools' in payload else 160)
+            if len(requests)==1:return {'message':{'role':'assistant','content':'','tool_calls':[{'function':{'name':'list_blocking_alerts','arguments':{}}}]}}
+            if len(requests)==2:
+                message=next(m for m in payload['messages'] if m['role']=='tool')
+                recorded=next(r['result'] for r in trace if r['tool']=='list_blocking_alerts')
+                self.assertEqual(message['content'],json.dumps(recorded,ensure_ascii=False))
+                self.assertIn('byStage',json.loads(message['content'])['report'])
+                return {'message':{'role':'assistant','content':'','tool_calls':[{'function':{'name':'trace_lot','arguments':{'lot_id':'LOT-007'}}},{'function':{'name':'get_asset_manifest','arguments':{'asset_id':'TRK-02'}}}]}}
+            return {'message':{'role':'assistant','content':'LOT-007의 저장 경보를 검토해야 합니다.'}}
+        execute_run('shipment','LOT-007 상태',self.state,{},trace.append,chat=chat)
+
+    def test_ollama_http_error_retains_only_bounded_json_error_detail(self):
+        body=json.dumps({'error':'failed to parse native tool JSON\n'+('x'*1000),'prompt':'must not be exposed','other':'unrelated'}).encode()
+        error=HTTPError('http://127.0.0.1:11434/api/chat',500,'Internal Server Error',{},io.BytesIO(body))
+        with patch('agent_backend.urlopen',side_effect=error):
+            with self.assertRaises(HTTPError) as raised:ollama_json('/api/chat',{'messages':[]})
+        detail=str(raised.exception)
+        self.assertEqual(raised.exception.code,500);self.assertIn('failed to parse native tool JSON',detail)
+        self.assertNotIn('must not be exposed',detail);self.assertNotIn('unrelated',detail);self.assertNotIn('\n',detail)
+        self.assertLess(len(detail),450)
+        error=HTTPError('http://127.0.0.1:11434/api/chat',500,'Internal Server Error',{},io.BytesIO(b'<html>private arbitrary server response</html>'))
+        with patch('agent_backend.urlopen',side_effect=error):
+            with self.assertRaises(HTTPError) as raised:ollama_json('/api/chat')
+        self.assertNotIn('private arbitrary',str(raised.exception));self.assertEqual(raised.exception.code,500)
+
+    def test_adjacent_explicit_proposal_request_preserves_generic_multi_lot_scope(self):
+        question='LOT-003이 왜 보류되었나요? RAW-2401 관련 LOT-001 LOT-009도 조회하고 LOT-003의 재검사 검토안도 만들어 주세요.'
+        self.assertEqual(explicit_proposal_requests(question),{'LOT-003':'resolve'})
+        self.assertEqual(explicit_proposal_requests('LOT-007의 검토안도 만들어주세요'),{'LOT-007':None})
+        self.assertEqual(explicit_proposal_requests('LOT-003의 보류 이유와 LOT-001 LOT-009를 조회하고 검토안을 만들어주세요'),{})
+
+    def test_explicit_reinspection_review_requires_only_target_resolve_and_all_lot_traces(self):
+        state=json.loads((ROOT/'fixtures/factory-state.json').read_text(encoding='utf-8'));before=copy.deepcopy(state)
+        requests=[];trace=[]
+        def response(calls):return {'message':{'role':'assistant','content':'','tool_calls':[{'function':{'name':name,'arguments':args}} for name,args in calls]}}
+        def proposal(lot,action,evidence):return ('prepare_action_proposal',{'lot_id':lot,'action':action,'reason':'재검사 기록 담당자 검토','evidence_ids':[evidence]})
+        def chat(path,payload):
+            requests.append(copy.deepcopy(payload))
+            self.assertEqual(payload['options']['num_predict'],768 if 'tools' in payload else 320)
+            if len(requests)==1:
+                source=json.loads(payload['messages'][-1]['content'])
+                self.assertEqual(source['explicitProposalRequests'],[{'lotId':'LOT-003','action':'resolve'}])
+                self.assertIn('ONLY draft those targets',payload['messages'][0]['content'])
+                return response([('list_blocking_alerts',{}),('trace_lot',{'lot_id':'LOT-003'})])
+            if len(requests)==2:
+                self.assertIn('trace_lot for LOT-001,LOT-009',payload['messages'][-1]['content'])
+                return response([('trace_lot',{'lot_id':'LOT-001'}),('trace_lot',{'lot_id':'LOT-009'}),proposal('LOT-003','hold','LOT-003-moisture'),proposal('LOT-009','resolve','LOT-009-moisture'),proposal('LOT-003','resolve','TOTAL-shippedImpactKg')])
+            if len(requests)==3:
+                self.assertIn('lot_id=LOT-003 action=resolve',payload['messages'][-1]['content'])
+                messages=[json.loads(m['content']) for m in payload['messages'] if m['role']=='tool' and m['tool_name']=='prepare_action_proposal']
+                self.assertIn('requires action=resolve',messages[0]['error'])
+                self.assertIn('outside explicit user target',messages[1]['error'])
+                self.assertIn('Only observed evidence IDs allowed',messages[2]['error'])
+                return response([proposal('LOT-003','resolve','LOT-003-moisture')])
+            self.assertNotIn('tools',payload)
+            return {'message':{'role':'assistant','content':'LOT-003의 재검사 검토안은 담당자 확인이 필요합니다. LOT-001과 LOT-009는 관련 기록으로 조회했습니다.'}}
+        question='LOT-003이 왜 보류되었나요? RAW-2401 관련 LOT-001 LOT-009도 조회하고 LOT-003의 재검사 검토안도 만들어 주세요.'
+        result=execute_run('shipment',question,state,{},trace.append,chat=chat)
+        self.assertEqual(len(requests),4);self.assertEqual(state,before)
+        self.assertEqual({r['args']['lot_id'] for r in trace if r['tool']=='trace_lot'},{'LOT-001','LOT-003','LOT-009'})
+        self.assertEqual([(p['lotId'],p['action']) for p in result['proposals']],[('LOT-003','resolve')])
+        self.assertEqual(result['proposals'][0]['evidenceIds'],['LOT-003-moisture'])
+        self.assertTrue(all(r['options']['num_ctx']==4096 for r in requests))
+
+    def test_multilot_summary_retains_shipped_stage_separate_mass_and_exact_sources(self):
+        state=json.loads((ROOT/'fixtures/factory-state.json').read_text(encoding='utf-8'))
+        state['lots'][0]['quantity']=5143;state['lots'][8]['quantity']=4017
+        before=copy.deepcopy(state);requests=[];trace=[]
+        def chat(path,payload):
+            requests.append(copy.deepcopy(payload))
+            if len(requests)==1:
+                calls=[('list_blocking_alerts',{})]+[('trace_lot',{'lot_id':lot}) for lot in ['LOT-001','LOT-003','LOT-009']]+[('prepare_action_proposal',{'lot_id':'LOT-003','action':'resolve','reason':'담당자 재검사 검토','evidence_ids':['ALT-2','LOT-003-moisture']})]
+                return {'message':{'role':'assistant','content':'','tool_calls':[{'function':{'name':name,'arguments':args}} for name,args in calls]}}
+            self.assertNotIn('tools',payload);self.assertEqual(payload['options']['num_predict'],320)
+            context=json.loads(payload['messages'][-1]['content']);mass=context['shipmentMass']
+            listed=next(r['result'] for r in trace if r['tool']=='list_blocking_alerts');source=listed['report']
+            self.assertEqual(mass['unit'],'kg');self.assertEqual(mass['heldKg'],source['heldKg'])
+            self.assertEqual(mass['alreadyShippedImpactKg'],sum(l['kg'] for l in source['affectedLots'] if l['shipped']))
+            self.assertEqual(mass['affectedLots'],source['affectedLots'])
+            self.assertEqual(mass['heldSource'],{'tool':'list_blocking_alerts','field':'report.heldKg','evidenceIds':['TOTAL-heldKg']})
+            self.assertEqual(mass['alreadyShippedImpactSource']['evidenceIds'],['LOT-009-quantity','LOT-009-stage'])
+            self.assertEqual(mass['alreadyShippedImpactSource']['field'],'sum report.affectedLots kg where shipped=true')
+            expected=[]
+            for r in [r for r in trace if r['tool']=='trace_lot']:
+                lot=r['result']['lot'];expected.append({**{k:lot[k] for k in ['id','rawId','stage','status','quantity','qc']},'quantityUnit':'kg','sourceTool':'trace_lot','evidenceIds':[e['id'] for e in r['result']['evidence'] if e.get('lotId')==lot['id']]})
+            self.assertEqual(context['requestedLots'],expected)
+            shipped=next(l for l in context['requestedLots'] if l['id']=='LOT-009')
+            self.assertEqual(shipped['stage'],'shipped');self.assertEqual(shipped['status'],'warning');self.assertEqual(shipped['quantity'],4017)
+            self.assertEqual(context['blockingAlerts'],[{**{k:a[k] for k in ['id','lotId','type','title','details','blocking','shippedImpact']},'evidenceIds':[a['id']]} for a in listed['alerts']])
+            self.assertEqual(context['criteria'],[{'id':'SETTING-moistureLimit','label':'데모 수분 기준 %','value':state['settings']['moistureLimit']}])
+            self.assertNotIn('facts',context)
+            self.assertEqual([(p['lotId'],p['action']) for p in context['proposals']],[('LOT-003','resolve')])
+            self.assertNotIn('modelSuggestedReason',context['proposals'][0])
+            self.assertIn('must NEVER be counted as held',payload['messages'][0]['content']);self.assertIn('Do not add the two totals',payload['messages'][0]['content'])
+            self.assertIn('Sentence 1 explains the relevant requested-Lot cause using the supplied measurement, limit and alert ID',payload['messages'][0]['content'])
+            self.assertIn('Sentence 2 MUST report both shipmentMass.heldKg kg as unshipped hold and shipmentMass.alreadyShippedImpactKg kg as separate already-shipped impact',payload['messages'][0]['content'])
+            self.assertIn('identify the shipped Lot ID from the source when present',payload['messages'][0]['content'])
+            self.assertIn('state pending human proposal review if proposals are supplied',payload['messages'][0]['content'])
+            self.assertIn('Do not waste either sentence on metadata, no-speculation self-description',payload['messages'][0]['content'])
+            self.assertIn('AGGREGATE held total across all unshipped held Lots',payload['messages'][0]['content'])
+            self.assertIn('Do not attach a single held Lot ID or any per-Lot attribution to that aggregate',payload['messages'][0]['content'])
+            self.assertIn('do not list held Lot IDs in sentence 2',payload['messages'][0]['content'])
+            self.assertIn('END sentence 2 with a short clause explicitly stating that the proposal still requires human review',payload['messages'][0]['content'])
+            self.assertIn('do not spend that final clause restating the shipped quantity source',payload['messages'][0]['content'])
+            return {'message':{'role':'assistant','content':f"미출하 보류 {mass['heldKg']}kg과 이미 출하된 LOT-009의 영향 {mass['alreadyShippedImpactKg']}kg을 별도로 확인해야 합니다. LOT-003 재검사 검토안은 담당자 확인이 필요합니다."}}
+        question='LOT-001 LOT-009도 조회하고 LOT-003의 재검사 검토안도 만들어 주세요.'
+        result=execute_run('shipment',question,state,{},trace.append,chat=chat)
+        self.assertEqual(len(requests),2);self.assertEqual(state,before);self.assertFalse(result['summaryVerified'])
+        self.assertTrue(any(e['id']=='LOT-009-stage' and e['value']=='shipped' for e in result['evidence']))
 
     def test_no_block_and_unknown_id_do_not_require_unrelated_hidden_tools(self):
         clear=copy.deepcopy(self.state);clear['alerts']=[];clear['lots'][6]['status']='ok';clear['lots'][6]['qc']['temperature']=25

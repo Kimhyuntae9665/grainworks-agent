@@ -16,3 +16,5 @@ Visual references: [Port Wright](https://html.moldandyeast.com/?open=portwright)
 Business reference: [Woosung's public company overview](https://www.woosungfeed.co.kr/m11.php). This independent prototype is not an internal Woosung system, authorized partner product, HACCP certification tool, or reproduction of its internal operating procedures.
 
 Portfolio technology symbols: Python, LangGraph, Ollama and the QwenLM family mark are retained from official sources for identification. Logo/trademark terms remain separate from this repository MIT license and model/code licenses. Pinned sources, original asset SHA-256 and individual conditions are recorded in [the logo manifest](docs/portfolio/flow/assets-manifest.json).
+
+Factory visual reference: [MicroFactory concept](https://x.com/ihorbeaver/status/2107210345051988131). Process-cell and conveyor expression only; no video pixels or external 3D models are redistributed. This is not a Woosung factory reference.

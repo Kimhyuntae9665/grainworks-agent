@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-07",
+  "checks": {
+    "horizon60CatchesUp": true,
+    "horizon20ChangesResult": true,
+    "browserRejectsZero": true,
+    "applicationRejectsZero": true,
+    "errorRecovery": true,
+    "selection": true,
+    "comparisonPreservesLots": true,
+    "resetPaused": true,
+    "resetClearsHolds": true,
+    "resetPersisted": true,
+    "fixtureRestoredPaused": true
+  },
+  "errors": [],
+  "errorText": "Horizon minutes must be finite 1..240",
+  "source": "Actual localhost browser actions; native invalid input plus submit-handler error path"
+}

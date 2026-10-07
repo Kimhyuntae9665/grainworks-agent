@@ -2,11 +2,22 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const E=require('./engine.js'),A=require('./assets.js');
-test('truck manifests partition warehouse lots without changing inventory',()=>{
- const s=E.createState(),before=JSON.stringify(s),one=A.snapshot(s,'TRK-01'),two=A.snapshot(s,'TRK-02'),warehouse=A.snapshot(s,'WH-01');
+test('legacy truck manifests partition warehouse lots without changing inventory',()=>{
+ const s=E.createState();delete s.orders;const before=JSON.stringify(s),one=A.snapshot(s,'TRK-01'),two=A.snapshot(s,'TRK-02'),warehouse=A.snapshot(s,'WH-01');
  assert.equal(one.quantity+two.quantity,warehouse.quantity);assert.equal(warehouse.quantity,7700);
  const ids=[...one.lots,...two.lots].map(l=>l.id);assert.equal(new Set(ids).size,ids.length);
  A.list(s);assert.equal(JSON.stringify(s),before);
+});
+test('explicit partial order plans drive trucks while inventory and shipped history stay separate',()=>{
+ const s=E.createState(),warehouse=s.lots.find(l=>l.id==='LOT-007'),progress=s.lots.find(l=>l.id==='LOT-003');
+ s.orders=[{id:'SO-TEST',lines:[{id:'SO-TEST-L1',allocations:[{lotId:warehouse.id,quantityKg:1000,assetId:'TRK-01'},{lotId:progress.id,quantityKg:2000,assetId:'TRK-02'},{lotId:'LOT-009',quantityKg:1000,assetId:'TRK-01'}]}]}];
+ const before=JSON.stringify(s),one=A.snapshot(s,'TRK-01'),two=A.snapshot(s,'TRK-02');
+ assert.equal(one.quantity,1000);assert.equal(one.readyKg,1000);assert.equal(one.orderLinked,true);
+ assert.equal(two.quantity,2000);assert.equal(two.readyKg,0);assert.equal(two.workInProgressKg,2000);
+ assert.equal(two.status,'생산 완료 대기');assert.equal(one.lots[0].inventoryQuantity,4500);
+ A.list(s);assert.equal(JSON.stringify(s),before);
+ E.hold(s,progress.id,'검사 대기');assert.equal(A.snapshot(s,'TRK-02').heldKg,2000);
+ assert.equal(A.snapshot(s,'WH-01').quantity,7700);assert.equal(warehouse.quantity,4500);
 });
 test('raw moisture exception updates container and keeps shipped effects separate',()=>{
  const s=E.createState();E.inject(s,'moisture');const raw=A.snapshot(s,'CNT-01');
