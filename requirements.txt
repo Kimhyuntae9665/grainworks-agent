@@ -1,0 +1,5 @@
+langgraph==1.2.14
+PyMuPDF==1.28.2
+rapidocr==3.9.2
+onnxruntime==1.30.0
+Pillow==12.3.0

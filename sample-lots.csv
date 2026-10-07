@@ -1,0 +1,4 @@
+id,rawId,product,quantity,moisture,temperature,stage
+LOT-101,RAW-IMPORT-A,육계 성장 사료,2500,12.4,24,intake
+LOT-102,RAW-IMPORT-A,육계 성장 사료,3000,12.4,24,mixing
+LOT-103,RAW-IMPORT-B,"양돈 사료, 시험 배치",1800,15.6,25,quality

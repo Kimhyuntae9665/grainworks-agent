@@ -1,0 +1,77 @@
+[cover.title]
+출하를 막는 기록을 AI가 찾고 사람이 조치를 결정합니다.
+
+[cover.subtitle]
+가상 Lot 기록을 읽는 로컬 AI Agent와 3D 현장 화면을 연결한 개인 프로젝트입니다.
+
+[cover.problem_title]
+가정한 문제: 흩어진 기록과 연결 대상
+
+[cover.problem]
+검사값과 배정 기록이 흩어져 있으면 어느 Lot이 어떤 트럭의 출하를 막는지 따라가기 어렵다고 가정했습니다. 현장 인터뷰로 확인한 불편은 아닙니다.
+
+[cover.inspiration]
+우성의 공개 MES 소개에서 원료 입고부터 제품 출고까지 이어지는 흐름에 착안했습니다. Lot과 원료의 연결을 가상 데이터로 구현했습니다.
+
+[cover.human]
+본인 요구와 피드백: 제조 프로젝트 방향, Port Wright·Airsup 화면 참고, 현장 대상의 상태 조회와 그래픽 개선, 실제 AI 기능 확장 요구.
+
+[cover.codex]
+Codex 수행: 데이터 규칙·화면·AI Agent 구현, 실행 검증·자동 평가, 공개 저장소 구성과 게시.
+
+[cover.model]
+Qwen3:4b-instruct / Ollama CPU / LangGraph
+
+[cover.boundary]
+가상 검사값과 모의 배정을 사용했습니다. 실제 우성 시스템을 수정하거나 운영한 경험은 아닙니다.
+
+[flow.title]
+LOT-007의 보류 근거를 찾고 조치는 사람이 승인합니다.
+
+[flow.subtitle]
+LOT-007 4,500kg은 검사 온도 31°C가 시연 기준 28°C를 넘어 보류됩니다. LOT-008 3,200kg은 정상 상태입니다.
+
+[flow.relation_note]
+창고 7,700kg은 두 Lot을 포함합니다. 배정 트럭의 상태는 연결된 Lot에서 반영하며, 같은 재고를 다시 합산하지 않습니다.
+
+[flow.ai_title]
+AI가 고른 읽기 전용 도구와 근거
+
+[flow.ai_caption]
+모델이 조회 도구를 선택하고, 반환된 Lot·경보·트럭 기록을 참조합니다. 식별자·사실·단위는 도구 결과에서 정리합니다.
+
+[flow.proposal_title]
+사람에게 남긴 조치 결정
+
+[flow.proposal_caption]
+AI의 제안을 확인한 사람이 사유를 입력하고 조치를 결정합니다. AI는 품질 보류를 직접 해제하지 않습니다.
+
+[flow.boundary]
+근거가 확인된 도구 결과와 AI가 작성한 미검증 서술을 구분해 표시합니다. 시연 기준은 실제 SOP·HACCP 기준이 아닙니다.
+
+[validation.title]
+파일과 기록을 대조하고 원본을 남긴 채 시뮬레이션합니다.
+
+[validation.reconcile]
+단위를 맞춰 Lot 수량을 대조합니다. t와 kg의 동등한 수량을 구분하고 4,700kg처럼 원본과 다른 값은 불일치로 표시합니다.
+
+[validation.document]
+PDF 텍스트 추출과 RapidOCR 결과를 원문과 나란히 확인합니다. 추출된 문장을 곧바로 품질 판정으로 취급하지 않습니다.
+
+[validation.simulation]
+60분 분기 시뮬레이션에서 기본 40,000kg과 조치 분기 44,500kg을 비교합니다. 비교 중 원본 상태는 유지합니다.
+
+[validation.architecture]
+3D 화면·운영 데스크 → Python API → LangGraph 읽기 전용 도구 → 상태 기록·SQLite
+
+[validation.limit]
+현재 한계: 가상 데이터와 로컬 모델로 확인했습니다. 실제 ERP 연동, 회사 배포, 업무 효율 개선은 검증하지 않았습니다.
+
+[validation.next]
+다음 검토: 실제 API와 권한 승인, 문서 추출 오류의 검토 절차, 근거 누락과 잘못된 도구 선택 평가.
+
+[validation.repo_label]
+공개 소스와 실행법
+
+[validation.demo_label]
+60초 실제 화면 시연

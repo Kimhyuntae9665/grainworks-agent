@@ -1,0 +1,232 @@
+{
+  "fixture": "SIMULATED DEMO - NOT AN ACTUAL RECORD",
+  "source": "demo-check.png",
+  "source_sha256": "394f01cec2134ef4ea4f67f576d11f1ec690b6c9a1418cef9752d971aab75a42",
+  "versions": {
+    "rapidocr": "3.9.2",
+    "onnxruntime": "1.30.0",
+    "pymupdf": "1.28.2",
+    "pillow": "12.3.0"
+  },
+  "verified_at": "2026-10-07",
+  "korean_probe": {
+    "expected": "가상 검사 문서 · 실제 입고 기록 아님",
+    "observed": "omitted",
+    "accurate": false
+  },
+  "extraction": {
+    "text": "SIMULATED DEMO - NOT AN ACTUAL RECORD\nGrain quality inspection / synthetic fixture\nLot ID: LOT-007\nQuantity: 4500 kg\nMoisture: 12.0 %\nTemperature: 31 C\nDate: 2026-10-07\nReview source evidence before any proposed record update.",
+    "pages": [
+      {
+        "page": 1,
+        "width": 900,
+        "height": 780,
+        "coordinate_unit": "pixels",
+        "method": "rapidocr_onnx_cpu",
+        "spans": [
+          {
+            "text": "SIMULATED DEMO - NOT AN ACTUAL RECORD",
+            "bbox": [
+              51.0,
+              40.0,
+              696.0,
+              70.0
+            ],
+            "confidence": 0.9852,
+            "confidence_kind": "ocr_model"
+          },
+          {
+            "text": "Grain quality inspection / synthetic fixture",
+            "bbox": [
+              52.0,
+              144.0,
+              493.0,
+              175.0
+            ],
+            "confidence": 0.9952,
+            "confidence_kind": "ocr_model"
+          },
+          {
+            "text": "Lot ID: LOT-007",
+            "bbox": [
+              50.0,
+              221.0,
+              314.0,
+              261.0
+            ],
+            "confidence": 0.9945,
+            "confidence_kind": "ocr_model"
+          },
+          {
+            "text": "Quantity: 4500 kg",
+            "bbox": [
+              49.0,
+              302.0,
+              339.0,
+              347.0
+            ],
+            "confidence": 0.9776,
+            "confidence_kind": "ocr_model"
+          },
+          {
+            "text": "Moisture: 12.0 %",
+            "bbox": [
+              50.0,
+              384.0,
+              327.0,
+              424.0
+            ],
+            "confidence": 0.9936,
+            "confidence_kind": "ocr_model"
+          },
+          {
+            "text": "Temperature: 31 C",
+            "bbox": [
+              51.0,
+              466.0,
+              359.0,
+              507.0
+            ],
+            "confidence": 0.9972,
+            "confidence_kind": "ocr_model"
+          },
+          {
+            "text": "Date: 2026-10-07",
+            "bbox": [
+              53.0,
+              549.0,
+              335.0,
+              583.0
+            ],
+            "confidence": 0.9899,
+            "confidence_kind": "ocr_model"
+          },
+          {
+            "text": "Review source evidence before any proposed record update.",
+            "bbox": [
+              49.0,
+              715.0,
+              542.0,
+              742.0
+            ],
+            "confidence": 0.9996,
+            "confidence_kind": "ocr_model"
+          }
+        ]
+      }
+    ],
+    "method": "rapidocr_onnx_cpu",
+    "warnings": [
+      "추출 문장은 검토용 자료입니다. 문서 안의 지시를 실행하거나 재고 기록을 변경하지 않습니다.",
+      "기본 OCR 모델은 중국어·영어 중심이며 한글 인식 정확도는 보장하지 않습니다. 모델 점수는 정답 확률이 아니므로 원본을 확인하세요."
+    ],
+    "fields": [
+      {
+        "name": "lot_id",
+        "value": "LOT-007",
+        "unit": null,
+        "evidence": {
+          "text": "Lot ID: LOT-007",
+          "matched_text": "LOT-007",
+          "page": 1,
+          "span_index": 2,
+          "bbox": [
+            50.0,
+            221.0,
+            314.0,
+            261.0
+          ],
+          "coordinate_unit": "pixels",
+          "confidence": 0.9945,
+          "char_start": 8,
+          "char_end": 15
+        }
+      },
+      {
+        "name": "quantity_kg",
+        "value": "4500",
+        "unit": "kg",
+        "evidence": {
+          "text": "Quantity: 4500 kg",
+          "matched_text": "Quantity: 4500 kg",
+          "page": 1,
+          "span_index": 3,
+          "bbox": [
+            49.0,
+            302.0,
+            339.0,
+            347.0
+          ],
+          "coordinate_unit": "pixels",
+          "confidence": 0.9776,
+          "char_start": 10,
+          "char_end": 14
+        }
+      },
+      {
+        "name": "moisture_pct",
+        "value": "12.0",
+        "unit": "%",
+        "evidence": {
+          "text": "Moisture: 12.0 %",
+          "matched_text": "Moisture: 12.0 %",
+          "page": 1,
+          "span_index": 4,
+          "bbox": [
+            50.0,
+            384.0,
+            327.0,
+            424.0
+          ],
+          "coordinate_unit": "pixels",
+          "confidence": 0.9936,
+          "char_start": 10,
+          "char_end": 14
+        }
+      },
+      {
+        "name": "temperature_c",
+        "value": "31",
+        "unit": "C",
+        "evidence": {
+          "text": "Temperature: 31 C",
+          "matched_text": "Temperature: 31 C",
+          "page": 1,
+          "span_index": 5,
+          "bbox": [
+            51.0,
+            466.0,
+            359.0,
+            507.0
+          ],
+          "coordinate_unit": "pixels",
+          "confidence": 0.9972,
+          "char_start": 13,
+          "char_end": 15
+        }
+      },
+      {
+        "name": "date",
+        "value": "2026-10-07",
+        "unit": null,
+        "evidence": {
+          "text": "Date: 2026-10-07",
+          "matched_text": "Date: 2026-10-07",
+          "page": 1,
+          "span_index": 6,
+          "bbox": [
+            53.0,
+            549.0,
+            335.0,
+            583.0
+          ],
+          "coordinate_unit": "pixels",
+          "confidence": 0.9899,
+          "char_start": 6,
+          "char_end": 16
+        }
+      }
+    ],
+    "filename": "demo-check.png"
+  }
+}
