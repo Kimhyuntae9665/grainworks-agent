@@ -1,0 +1,34 @@
+{
+  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v3.pdf",
+  "pages": [
+    {
+      "page": 1,
+      "selectable_chars": 788,
+      "min_font_pt": 11.0,
+      "urls": [
+        "https://www.woosungfeed.co.kr/m11.php"
+      ]
+    },
+    {
+      "page": 2,
+      "selectable_chars": 756,
+      "min_font_pt": 11.0,
+      "urls": []
+    },
+    {
+      "page": 3,
+      "selectable_chars": 764,
+      "min_font_pt": 11.0,
+      "urls": [
+        "https://github.com/Kimhyuntae9665/grainworks-agent",
+        "https://github.com/Kimhyuntae9665/grainworks-agent/blob/main/docs/portfolio/demo-60s.mp4",
+        "https://github.com/Kimhyuntae9665/grainworks-agent"
+      ]
+    }
+  ],
+  "canvas_pt": [
+    1280,
+    720
+  ],
+  "margin_footer_checks": "PASS"
+}

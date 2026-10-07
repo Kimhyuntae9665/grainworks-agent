@@ -4,7 +4,7 @@
   const tasks = {
     shipment: {question: "LOT-007이 출하 가능한지 확인하고, 연결된 트럭과 창고의 근거 및 다음 확인 작업을 알려주세요."},
     reconcile: {question: "두 장부의 단위를 kg로 맞춰 Lot별 수량을 대조하고, 차이와 확인해야 할 항목을 알려주세요."},
-    document: {question: "문서의 Lot·물량·상태를 현재 기록과 대조하고, 일치하는 근거와 확인이 필요한 부분을 알려주세요."},
+    document: {question: "문서의 Lot·수분·온도·검사 날짜를 추출하고, 원문 근거와 현재 Lot 기록을 함께 보여주세요. 누락된 값은 채우지 마세요."},
     handover: {question: "현재 미해결 경보와 품질 보류를 정리하고, 다음 담당자가 먼저 확인할 작업과 근거를 알려주세요."},
     simulate: {question: "LOT-007의 모의 재검사 가정과 별도 해제에 따른 결과를 비교하고, 보류 상태와 남는 제약을 설명해 주세요. 원본 운영 상태는 변경하지 마세요."}
   };
@@ -16,7 +16,7 @@
   const number = (value) => Number.isFinite(Number(value)) ? Number(value).toLocaleString('ko-KR', {maximumFractionDigits: 2}) : String(value ?? '미확인');
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   function traceCounts(trace) {
-    const model = trace.filter((entry) => entry.tool === 'ollama.chat').length;
+    const model = trace.filter((entry) => entry.tool === 'ollama.chat' || entry.tool === 'ollama.synthesis').length;
     const requests = trace.filter((entry) => entry.tool === 'ollama.request').length;
     return {model, tools: trace.filter((entry) => !String(entry.tool).startsWith('ollama.')).length, pending: requests > model};
   }
@@ -97,7 +97,7 @@
     trace.filter((entry) => entry.tool !== 'ollama.request').forEach((entry, index) => {
       const item = node('div', 'agent-trace-item');
       const heading = node('div', 'agent-trace-heading');
-      heading.append(node('strong', '', String(index + 1).padStart(2, '0') + ' · ' + (entry.tool === 'ollama.chat' ? '모델 응답 · ' : '도구 · ') + entry.tool));
+      heading.append(node('strong', '', String(index + 1).padStart(2, '0') + ' · ' + (String(entry.tool).startsWith('ollama.') ? '모델 응답 · ' : '도구 · ') + entry.tool));
       heading.append(node('span', '', Number.isFinite(entry.elapsedMs) ? entry.elapsedMs + " ms" : "서버 기록"));
       item.append(heading);
       const payload = node('details', 'agent-trace-payload'); payload.append(node('summary', '', '입력과 반환값 보기'));
@@ -191,12 +191,12 @@
     [['baseline', '현재 조건 유지', '현재 상태를 그대로 진행한 복사본'], ['branch', '재검사·별도 해제 가정', '입력한 가정을 적용한 복사본']].forEach(([key, title, description]) => {
       const data = value[key]; if (!data) return;
       const card = node('article', 'agent-simulation-card'); card.dataset.branch = key; card.append(node('span', 'agent-simulation-kicker', description), node('h5', '', title));
-      const total = node('p', 'agent-simulation-total'); total.append(node('strong', '', number(data.totalKg)), node('span', '', ' kg · 전체 기록 물량')); card.append(total);
+      const total = node('p', 'agent-simulation-total'); total.append(node('strong', '', number(data.shippedKg)), node('span', '', ' kg · 출하 완료')); card.append(total);
       if (Number.isFinite(data.totalKg) && data.totalKg > 0 && segments.every((segment) => Number.isFinite(data[segment.key]) && data[segment.key] >= 0)) {
         const bar = node('div', 'agent-simulation-bar'); bar.setAttribute('role', 'img'); bar.setAttribute('aria-label', segments.map((segment) => segment.label + ' ' + number(data[segment.key]) + 'kg').join(', '));
         segments.forEach((segment) => {const part = node('span', 'agent-simulation-segment ' + segment.className); part.style.width = Math.max(0, Math.min(100, data[segment.key] / data.totalKg * 100)) + '%'; part.title = segment.label + ' ' + number(data[segment.key]) + ' kg'; bar.append(part);}); card.append(bar);
       }
-      const dl = node('dl', 'agent-simulation-metrics'); segments.forEach((segment) => {const row = node('div', segment.className); row.append(node('dt', '', segment.label), node('dd', '', number(data[segment.key]) + ' kg')); dl.append(row);});
+      const dl = node('dl', 'agent-simulation-metrics'); [{key:'totalKg',label:'전체 기록 물량',className:''},...segments.filter(segment=>segment.key!=='shippedKg')].forEach((segment) => {const row = node('div', segment.className); row.append(node('dt', '', segment.label), node('dd', '', number(data[segment.key]) + ' kg')); dl.append(row);});
       if (data.unresolved !== undefined) {const row = node('div'); row.append(node('dt', '', '미해결 알림'), node('dd', '', number(data.unresolved) + '건')); dl.append(row);} card.append(dl); cards.append(card);
     }); section.append(cards);
     section.append(node('p', 'agent-simulation-preservation', value.originalUnchanged === true ? '원본 운영 상태가 변경되지 않았습니다.' : value.originalUnchanged === false ? '원본 변경 여부를 확인해야 합니다.' : '복사본에서만 계산합니다. 실제 검사나 보류 해제가 아닙니다.'));

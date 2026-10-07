@@ -55,10 +55,18 @@ SYSTEM = '''Korean synthetic manufacturing assistant. NO execution permission. S
 TASK_INSTRUCTIONS={
     'shipment':'Call list_blocking_alerts, trace requested/affected Lot, get_asset_manifest for its truck. If user asks 검토안/조치초안/proposal, call prepare_action_proposal with observed evidence IDs; use resolve for human alert/reinspection review. search_demo_procedure is optional evidence. Do not end before requested proposal exists.',
     'handover':'Read get_action_history for requested Lot (or a blocking affected Lot). trace_lot and list_blocking_alerts provide current context. Never claim missing action records exist.',
-    'reconcile':'Call inspect_inputs then compare_import_records with exact semantic header mappings/confidence. unit column preferred. fixedUnit only if quantity header declares kg/t. Keep duplicate rows visible; mapping meaning is not fully verified.',
-    'document':'Call inspect_inputs then extract_document_fields using exact original substrings INCLUDING labels. Omit absent fields. Do not invent OCR/source positions. trace_lot can compare existing record.',
-    'simulate':'Trace target Lot; call simulate_branch ONLY with exact typed user labels moisture/temperature/virtual minutes. 데모 가정 permits only12%/25C/60min. Otherwise ask for missing labels; never invent assumptions or change original state.',
+    'reconcile':'Call inspect_inputs once, then compare_import_records. EVERY mapping requires lotId,quantity,confidence,unitMode,unitSource. unitMode="column" means unitSource is the EXACT header whose CELLS contain kg/t, never the quantity column. unitMode="fixed" means unitSource is literal kg/t, only if quantity HEADER declares it. Examples: {"lotId":"lot_id","quantity":"weight_kg","confidence":0.95,"unitMode":"fixed","unitSource":"kg"}; {"lotId":"로트","quantity":"중량","confidence":0.95,"unitMode":"column","unitSource":"단위"}. Adapt to ACTUAL inspected headers; no inference/defaults. Correct failed mappings via compare_import_records, do not repeat inspection. Keep duplicates visible; meaning is not fully verified.',
+    'document':'Call inspect_inputs once, then extract_document_fields BEFORE trace_lot. Include EVERY field actually present, including Lot ID; do not drop present fields while fixing an absent field. Valid JSON: {"field":"lotId","value":"LOT-007","source":"Lot ID: LOT-007"}, {"field":"moisture","value":12.0,"source":"Moisture: 12.0 %"}. Measurements JSON numbers, not strings/units; Lot/date strings. source exact ORIGINAL inspected documentText INCLUDING label. If temperature/date truly absent, OMIT its entire object; NEVER value0/empty source placeholders. Do not replace original with ledger QC. Correct errors from original text, no repeated inspection or invented OCR.',
+    'simulate':'FIRST select native trace_lot for the requested Lot to verify saved records, EVEN WHEN reinspection assumptions are unknown. Do not answer directly before this actual tool call. THEN call simulate_branch ONLY with exact typed user labels moisture/temperature/virtual minutes. 데모 가정 permits only12%/25C/60min. If inputs are missing, AFTER trace_lot ask for missing values and abstain from simulation; no inferred/default assumptions or original changes.',
 }
+SYNTHESIS_INSTRUCTIONS={
+    'shipment':'Explain cause ONLY from blockingAlerts titles/details. Do not mention normal moisture/QC values as causes or group them with an exceedance. State human review pending.',
+    'handover':'Summarize only actual current/history evidence and what remains for human review. Never invent completed reinspection or actions.',
+    'reconcile':'Summarize only supplied comparison match/mismatch/duplicate/missing statuses. Do not invent changes or new totals; mappings need human review.',
+    'document':'Summarize only extracted fields and missingFields. No quality/QC judgement, no threshold comparison, no original-state changes.',
+    'simulate':'Report ONLY supplied simulation.baseline.shippedKg versus simulation.branch.shippedKg, the SYNTHETIC explicit assumption and ORIGINAL UNCHANGED. Do NOT compare QC thresholds or judge actual release eligibility.',
+}
+TRUNCATED_SUMMARY='모델 요약이 길이 한도로 잘려 설명을 보류했습니다. 도구 근거와 계산 결과를 확인해 주세요.'
 
 
 def validate_summary(summary, tools):
@@ -127,6 +135,7 @@ def execute_run(task, question, state, inputs, trace_callback, chat=ollama_json)
     from langgraph.graph import StateGraph, START, END
     tools=DomainTools(state,inputs)
     trace=[]
+    narrative_truncated=False
     scoped_names={
         'shipment':{'list_blocking_alerts','trace_lot','get_asset_manifest','search_demo_procedure','prepare_action_proposal'},
         'handover':{'list_blocking_alerts','trace_lot','get_asset_manifest','get_action_history','search_demo_procedure','prepare_action_proposal'},
@@ -142,8 +151,9 @@ def execute_run(task, question, state, inputs, trace_callback, chat=ollama_json)
     def missing_outputs(final=False):
         successful=[record for record in trace if 'error' not in record['result']]
         if missing_lots: return [] if trace else ['trace_lot for requested ID / abstain if absent']
-        if task=='reconcile': return [] if tools.comparison is not None else ['inspect_inputs then compare_import_records']
-        if task=='document': return [] if tools.document is not None else ['inspect_inputs then extract_document_fields (omit missing fields)']
+        inspected=any(r['tool']=='inspect_inputs' for r in successful)
+        if task=='reconcile': return [] if tools.comparison is not None else ['compare_import_records with corrected explicit unitMode/unitSource and actual headers; inspection already done' if inspected else 'inspect_inputs then compare_import_records']
+        if task=='document': return [] if tools.document is not None else ['extract_document_fields using ORIGINAL inspected documentText and JSON numeric measurements; no ledger labels; inspection already done' if inspected else 'inspect_inputs then extract_document_fields (omit missing fields)']
         if task=='simulate':
             if tools.simulation is not None: return []
             try: source_complete=len(simulation_values(question))==3
@@ -171,11 +181,14 @@ def execute_run(task, question, state, inputs, trace_callback, chat=ollama_json)
         return missing
 
     def model_node(gs):
+        nonlocal narrative_truncated
         if gs['rounds']>=MAX_ROUNDS: raise ValueError('Model exceeded bounded tool rounds; no fallback result')
         started=time.monotonic()
-        trace_callback({'tool':'ollama.request','args':{'round':gs['rounds']+1,'model':MODEL},'result':{'status':'requesting'},'elapsedMs':0})
-        # CPU measurement showed long free answers; selection stays native and bounded.
-        response=chat('/api/chat',{'model':MODEL,'messages':gs['messages'],'tools':schemas,'stream':False,'think':False,'options':{'temperature':0,'num_ctx':4096,'num_predict':450 if task in ['reconcile','document'] else 225}})
+        # Observed CSV native calls used ~91 tokens, document ~150-200; leave headroom
+        # while limiting expensive premature prose on this CPU. Selection stays native.
+        options={'temperature':0,'num_ctx':4096,'num_predict':320 if task in ['reconcile','document'] else 225}
+        trace_callback({'tool':'ollama.request','args':{'round':gs['rounds']+1,'model':MODEL,'phase':'tool-selection','options':options},'result':{'status':'requesting'},'elapsedMs':0})
+        response=chat('/api/chat',{'model':MODEL,'messages':gs['messages'],'tools':schemas,'stream':False,'think':False,'options':options})
         message=response.get('message')
         if not isinstance(message,dict) or message.get('role')!='assistant': raise ValueError('Invalid Ollama chat response')
         calls=message.get('tool_calls') or []
@@ -189,7 +202,8 @@ def execute_run(task, question, state, inputs, trace_callback, chat=ollama_json)
             if missing:
                 messages.append({'role':'user','content':'Required task outputs are missing. Select native tools now: '+'; '.join(missing)+'. Do not claim completion.'})
                 return {**gs,'messages':messages,'rounds':gs['rounds']+1,'pending':[],'done':False,'retry':True,'summary':''}
-        return {**gs,'messages':messages,'rounds':gs['rounds']+1,'pending':calls,'done':not calls,'retry':False,'summary':message.get('content','') if not calls else ''}
+            if response.get('done_reason')=='length': narrative_truncated=True
+        return {**gs,'messages':messages,'rounds':gs['rounds']+1,'pending':calls,'done':not calls,'retry':False,'summary':TRUNCATED_SUMMARY if not calls and narrative_truncated else message.get('content','') if not calls else ''}
 
     def tool_node(gs):
         messages=list(gs['messages']);count=gs['calls']
@@ -214,20 +228,32 @@ def execute_run(task, question, state, inputs, trace_callback, chat=ollama_json)
         return {**gs,'messages':messages,'calls':count,'pending':[],'retry':False}
 
     def synthesis_node(gs):
+        nonlocal narrative_truncated
         if gs['rounds']>=MAX_ROUNDS: raise ValueError('Model exceeded bounded total model rounds')
         prepared=tools.result('')
         compact={'question':question,'facts':prepared['facts'][:24],'proposals':[{k:p[k] for k in ['lotId','action','reason','evidenceIds']} for p in tools.proposals]}
+        compact['blockingAlerts']=[e for e in prepared['evidence'] if e['id'].startswith('ALT-')]
         if tools.comparison is not None: compact['comparison']={'rows':tools.comparison['rows'][:6],'note':tools.comparison['note']}
-        if tools.document is not None: compact['document']={k:tools.document[k] for k in ['fields','missingFields','note']}
-        if tools.simulation is not None: compact['simulation']={k:tools.simulation[k] for k in ['virtualMinutes','assumptions','baseline','branch','limitations']}
+        if task=='shipment': compact['facts']=[fact for fact in compact['facts'] if not any(eid.endswith('-moisture') or eid.startswith('SETTING-') for eid in fact['evidenceIds'])]
+        if tools.document is not None:
+            compact={'question':question,'document':{k:tools.document[k] for k in ['fields','missingFields','note']}}
+        if tools.simulation is not None:
+            # Only simulation evidence goes into its narrative; source-state QC is
+            # retained in API facts but is irrelevant to the assumed branch totals.
+            compact={'question':question,'simulation':{k:tools.simulation[k] for k in ['virtualMinutes','assumptions','limitations']}}
+            compact['simulation'].update(baseline={'shippedKg':tools.simulation['baseline']['shippedKg']},branch={'shippedKg':tools.simulation['branch']['shippedKg']})
         started=time.monotonic()
-        trace_callback({'tool':'ollama.request','args':{'round':gs['rounds']+1,'model':MODEL,'phase':'synthesis'},'result':{'status':'requesting'},'elapsedMs':0})
-        response=chat('/api/chat',{'model':MODEL,'messages':[{'role':'system','content':SYSTEM+'\nRequired outputs are ready. Summarize ONLY supplied actual tool results in Korean, maximum THREE short sentences. No tools, no chain of thought. Cite IDs, distinguish synthetic assumptions and pending human review. Never claim reinspection completed or quality proven.'},{'role':'user','content':json.dumps(compact,ensure_ascii=False)}],'stream':False,'think':False,'options':{'temperature':0,'num_ctx':4096,'num_predict':160}})
+        options={'temperature':0,'num_ctx':4096,'num_predict':160}
+        trace_callback({'tool':'ollama.request','args':{'round':gs['rounds']+1,'model':MODEL,'phase':'synthesis','options':options},'result':{'status':'requesting'},'elapsedMs':0})
+        response=chat('/api/chat',{'model':MODEL,'messages':[{'role':'system','content':SYSTEM+'\nRequired outputs are ready. Summarize ONLY supplied actual tool results in Korean, maximum TWO short sentences. No tools, no chain of thought. Cite IDs, distinguish synthetic assumptions and pending human review. Never claim reinspection completed or quality proven. A measurement BELOW its limit is NOT an exceedance.\n'+SYNTHESIS_INSTRUCTIONS[task]},{'role':'user','content':json.dumps(compact,ensure_ascii=False)}],'stream':False,'think':False,'options':options})
         message=response.get('message',{})
         if message.get('role')!='assistant' or message.get('tool_calls') or not message.get('content','').strip(): raise ValueError('Invalid model synthesis response; no fallback')
-        trace_callback({'tool':'ollama.synthesis','args':{'round':gs['rounds']+1},'result':{'doneReason':response.get('done_reason'),'evalCount':response.get('eval_count'),'totalDurationNs':response.get('total_duration'),'outputTokenLimit':160,'sentenceLimit':3},'elapsedMs':round((time.monotonic()-started)*1000)})
+        trace_callback({'tool':'ollama.synthesis','args':{'round':gs['rounds']+1},'result':{'doneReason':response.get('done_reason'),'evalCount':response.get('eval_count'),'totalDurationNs':response.get('total_duration'),'outputTokenLimit':160,'sentenceLimit':2},'elapsedMs':round((time.monotonic()-started)*1000)})
+        if response.get('done_reason')=='length':
+            narrative_truncated=True
+            return {**gs,'rounds':gs['rounds']+1,'done':True,'retry':False,'summary':TRUNCATED_SUMMARY}
         sentences=[part.strip() for part in re.split(r'(?<=[.!?。])\s+|\n+',message['content']) if part.strip()]
-        return {**gs,'rounds':gs['rounds']+1,'done':True,'retry':False,'summary':' '.join(sentences[:3])}
+        return {**gs,'rounds':gs['rounds']+1,'done':True,'retry':False,'summary':' '.join(sentences[:2])}
 
     graph=StateGraph(GraphState)
     graph.add_node('model',model_node);graph.add_node('tools',tool_node);graph.add_node('synthesis',synthesis_node)
@@ -248,6 +274,9 @@ def execute_run(task, question, state, inputs, trace_callback, chat=ollama_json)
         result['warnings'].append('작업 도구가 유효한 결과를 만들지 못했습니다. 입력/매핑 확인이 필요합니다.')
         result['incomplete']=True
     if warning: result['warnings'].append(warning)
+    if narrative_truncated:
+        result['narrativeTruncated']=True
+        result['warnings'].append('모델 응답 종료 사유가 length입니다. 잘린 문장을 요약으로 표시하지 않고 설명을 보류했으며 실제 도구 결과는 유지했습니다.')
     return result
 
 

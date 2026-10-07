@@ -13,6 +13,13 @@ import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+DOCUMENT_LABEL_SCOPE='Nonempty English line labels only: Lot ID:, Moisture:, Temperature:, Inspection Date:. This is not general document-semantic verification.'
+DOCUMENT_LABEL_PATTERNS={
+    'lotId':r'^[ \t]*Lot[ \t]+ID[ \t]*:[ \t]*[^\r\n \t]',
+    'moisture':r'^[ \t]*Moisture[ \t]*:[ \t]*[^\r\n \t]',
+    'temperature':r'^[ \t]*Temperature[ \t]*:[ \t]*[^\r\n \t]',
+    'inspectionDate':r'^[ \t]*Inspection[ \t]+Date[ \t]*:[ \t]*[^\r\n \t]',
+}
 
 
 def state_hash(state):
@@ -25,9 +32,20 @@ def schema(name, description, properties=None, required=None):
 
 
 STRING = {'type': 'string'}
-MAPPING = {'type': 'object', 'description': 'Exact header names. Required: lotId,quantity,unit or fixedUnit,confidence (0..1). Optional rawId,moisture,temperature.',
-    'properties': {**{k: STRING for k in ['lotId','quantity','unit','fixedUnit','rawId','moisture','temperature']}, 'confidence': {'type': 'number'}},
-    'required': ['lotId','quantity','confidence'], 'additionalProperties': False}
+MAPPING = {'type': 'object', 'description': 'Explicit semantic mapping from inspected CSV. unitMode and unitSource are BOTH REQUIRED; no guessing or automatic defaults.',
+    'properties': {
+        'lotId':{'type':'string','description':'Exact inspected header containing Lot IDs.'},
+        'quantity':{'type':'string','description':'Exact inspected header containing numeric quantity.'},
+        'unitMode':{'type':'string','enum':['column','fixed'],'description':'column: each row has units in a separate unit column. fixed: quantity HEADER explicitly declares kg/t.'},
+        'unitSource':{'type':'string','description':'If unitMode=column: EXACT header whose cells contain kg/t, e.g unit or 단위 (NEVER quantity header). If unitMode=fixed: literal kg or t only. Both keys REQUIRED.'},
+        **{k:{'type':'string','description':'Exact inspected header for '+k+'. Omit if absent.'} for k in ['rawId','moisture','temperature']},
+        'confidence':{'type':'number','description':'Your semantic mapping confidence 0..1; below0.85 requires human clarification.'}},
+    'required': ['lotId','quantity','confidence','unitMode','unitSource'],
+    'additionalProperties': False}
+DOC_FIELD={'oneOf':[
+    {'type':'object','properties':{'field':{'type':'string','enum':['moisture','temperature']},'value':{'type':'number','description':'JSON NUMBER only, e.g12.0 or31. NEVER quoted string or units like "12.0 %"/"31 C".'},'source':{'type':'string','description':'Exact original documentText substring INCLUDING label and units, e.g "Moisture: 12.0 %". Never a trace_lot evidence label.'}},'required':['field','value','source'],'additionalProperties':False},
+    {'type':'object','properties':{'field':{'type':'string','enum':['lotId','inspectionDate']},'value':{'type':'string','description':'Exact Lot ID or date string present in source.'},'source':{'type':'string','description':'Exact original documentText substring INCLUDING label. Omit absent fields instead of empty strings.'}},'required':['field','value','source'],'additionalProperties':False},
+]}
 TOOL_SCHEMAS = [
     schema('list_blocking_alerts', 'Read current blocking alerts and totals, then trace affected Lots.'),
     schema('trace_lot', 'Read exact Lot record, related raw-material Lots and assigned assets.', {'lot_id': STRING}, ['lot_id']),
@@ -36,7 +54,7 @@ TOOL_SCHEMAS = [
     schema('search_demo_procedure', 'Retrieve authored synthetic procedure clauses; never real factory SOP.', {'query': STRING}, ['query']),
     schema('inspect_inputs', 'Inspect two CSV headers/samples or original document text before semantic mapping.'),
     schema('compare_import_records', 'Apply your explicit semantic header mapping, deterministic kg/t normalization, duplicate and mismatch checks.', {'left_mapping': MAPPING,'right_mapping': MAPPING}, ['left_mapping','right_mapping']),
-    schema('extract_document_fields', 'Propose document fields with EXACT source substrings. Missing fields must be omitted. No OCR is performed.', {'fields': {'type':'array','items': {'type':'object','properties': {'field': {'type':'string','enum':['lotId','moisture','temperature','inspectionDate']},'value': {},'source':STRING},'required':['field','value','source'],'additionalProperties':False}}}, ['fields']),
+    schema('extract_document_fields', 'Extract ALL present original documentText fields, not ledger QC. Nonempty English labels Lot ID/Moisture/Temperature/Inspection Date must not be omitted. Measurement values JSON NUMBERS without units; Lot/date strings. Omit actually absent fields, never add zero/empty-source placeholders. No OCR here.', {'fields': {'type':'array','maxItems':4,'items': DOC_FIELD}}, ['fields']),
     schema('simulate_branch', 'Compare copied engine branches. Use explicit assumed reinspection only; never actual state mutation.', {'assumptions': {'type':'array','maxItems':3,'items':{'type':'object','properties':{'lot_id':STRING,'action':{'type':'string','enum':['reinspect_release']},'moisture':{'type':'number'},'temperature':{'type':'number'}},'required':['lot_id','action','moisture','temperature'],'additionalProperties':False}},'virtual_minutes': {'type':'integer','minimum':1,'maximum':120}}, ['assumptions','virtual_minutes']),
     schema('prepare_action_proposal', 'Draft a human review proposal for a traced Lot using evidence IDs. No execution. release is refused if engine would reject it.', {'lot_id':STRING,'action':{'type':'string','enum':['hold','release','resolve']},'reason':STRING,'evidence_ids':{'type':'array','items':STRING}}, ['lot_id','action','reason','evidence_ids']),
 ]
@@ -74,6 +92,12 @@ class DomainTools:
     def call(self, name, args):
         if name not in {t['function']['name'] for t in TOOL_SCHEMAS}: raise ValueError('Unknown tool')
         if not isinstance(args,dict): raise ValueError('Arguments must be an object')
+        if name=='compare_import_records':
+            for side in ['left','right']:
+                mapping=args.get(side+'_mapping')
+                if not isinstance(mapping,dict) or not {'unitMode','unitSource'}.issubset(mapping):
+                    headers=', '.join(self.read_csv(side)[0])
+                    raise ValueError(side+'_mapping requires BOTH unitMode and unitSource. For per-row units: unitMode="column", unitSource=EXACT unit HEADER. For header-declared fixed kg/t: unitMode="fixed", unitSource="kg" or "t". Actual headers: '+headers+'. Never infer or omit units.')
         return getattr(self,name)(**args)
 
     def list_blocking_alerts(self):
@@ -138,25 +162,38 @@ class DomainTools:
         return result
 
     def normalized(self, rows, mapping):
-        allowed={'lotId','quantity','unit','fixedUnit','rawId','moisture','temperature','confidence'}
+        allowed={'lotId','quantity','unit','fixedUnit','unitMode','unitSource','rawId','moisture','temperature','confidence'}
         if not isinstance(mapping,dict) or set(mapping)-allowed: raise ValueError('Invalid mapping')
+        native_contract='unitMode' in mapping or 'unitSource' in mapping
+        if native_contract:
+            if 'unit' in mapping or 'fixedUnit' in mapping: raise ValueError('Mixed unit contracts forbidden: provide unitMode/unitSource only, not unit/fixedUnit')
+            mode,source=mapping.get('unitMode'),mapping.get('unitSource')
+            if mode not in ['column','fixed'] or not isinstance(source,str) or not source:
+                raise ValueError('Both explicit unitMode (column/fixed) and nonempty unitSource are required')
+            if mode=='fixed' and source not in ['kg','t']: raise ValueError('Fixed unitSource must be the literal kg or t')
+            # Strict adapter of MODEL-PROVIDED mode/source, without semantic inference.
+            mapping={k:v for k,v in mapping.items() if k not in ['unitMode','unitSource']}
+            mapping['unit' if mode=='column' else 'fixedUnit']=source
         confidence=mapping.get('confidence')
         if isinstance(confidence,bool) or not isinstance(confidence,(int,float)) or not math.isfinite(confidence) or not .85<=confidence<=1: raise ValueError('Semantic mapping confidence below 0.85; manual mapping required')
         if not all(mapping.get(k) in rows[0] for k in ['lotId','quantity']): raise ValueError('Missing exact mapped header')
-        if not mapping.get('unit') and not mapping.get('fixedUnit'): raise ValueError('Explicit unit required')
+        if mapping.get('unit') and mapping.get('fixedUnit'): raise ValueError('Choose exactly one: unit is an exact CSV HEADER; fixedUnit is a kg/t LITERAL. For mixed kg/t rows use the real unit column header and omit fixedUnit.')
+        if not mapping.get('unit') and not mapping.get('fixedUnit'): raise ValueError('Explicit unit required. Provide unitMode="column" and unitSource=EXACT per-row unit HEADER, or unitMode="fixed" and unitSource="kg"/"t" only when quantity header declares that unit. Actual headers: '+', '.join(rows[0])+'. No automatic unit inference.')
         if not mapping.get('unit'):
             header=mapping['quantity'].lower()
             fixed=mapping['fixedUnit'].lower()
             declared=bool(re.search(r'kg|킬로그램',header)) if fixed=='kg' else bool(re.search(r'(?:^|[_\s(])t(?:$|[_\s)])|ton|톤',header)) if fixed in ['t','ton','톤'] else False
-            if not declared: raise ValueError('Fixed unit is not declared in quantity header; manual unit evidence required')
-        if mapping.get('unit') and mapping['unit'] not in rows[0]: raise ValueError('Unknown unit header')
+            if not declared: raise ValueError('Fixed unit is not declared in quantity header; manual unit evidence required. For a separate per-row unit column, choose unitMode="column" with unitSource=EXACT unit HEADER. Actual headers: '+', '.join(rows[0]))
+        if mapping.get('unit') and mapping['unit'] not in rows[0]:
+            correction='If quantity HEADER declares kg/t, choose unitMode="fixed", unitSource="kg"/"t"; otherwise unitMode="column", unitSource=real unit HEADER.' if native_contract else 'If quantity header declares kg/t, omit unit and use fixedUnit; otherwise map the real unit column HEADER.'
+            raise ValueError('Unknown unit header '+repr(mapping['unit'])+'. unit must be an EXACT header, not a kg/t literal. Headers: '+', '.join(rows[0])+'. '+correction+' Do not guess or silently normalize.')
         for field in ['rawId','moisture','temperature']:
             if mapping.get(field) and mapping[field] not in rows[0]: raise ValueError('Unknown mapped header')
         result={};issues=[]
         for i,row in enumerate(rows,2):
             lid=row[mapping['lotId']].strip()
             unit=(row[mapping['unit']] if mapping.get('unit') else mapping['fixedUnit']).strip().lower()
-            if unit not in ['kg','t','ton','톤']: raise ValueError('Ambiguous or unsupported unit: '+unit)
+            if unit not in ['kg','t','ton','톤']: raise ValueError('Ambiguous or unsupported unit: '+unit+'. A column-mode unitSource must name a column whose CELLS contain kg/t, not the numeric quantity column. If quantity header declares kg/t, choose unitMode="fixed" and unitSource="kg"/"t". Correct mapping explicitly; no inference.')
             try: qty=float(row[mapping['quantity']].replace(',',''))
             except ValueError: raise ValueError('Invalid numeric quantity')
             if not math.isfinite(qty) or qty<=0: raise ValueError('Quantity must be positive and finite')
@@ -195,9 +232,9 @@ class DomainTools:
         for f in fields:
             field,value,source=f.get('field'),f.get('value'),f.get('source')
             if field not in ['lotId','moisture','temperature','inspectionDate'] or field in seen: raise ValueError('Invalid/duplicate document field')
-            if not isinstance(source,str) or not source or source not in text: raise ValueError('Source must match exact document substring')
+            if not isinstance(source,str) or not source or source not in text: raise ValueError('Source for '+str(field)+' must match an EXACT original inspect_inputs.documentText substring INCLUDING its label. Do not use trace_lot evidence labels/measurements. Omit missing fields; no empty sources.')
             if field in ['moisture','temperature']:
-                if not isinstance(value,(int,float)) or isinstance(value,bool) or not math.isfinite(value): raise ValueError('Invalid measurement')
+                if not isinstance(value,(int,float)) or isinstance(value,bool) or not math.isfinite(value): raise ValueError('Invalid '+field+' measurement type: use a JSON NUMBER without quotes or units, e.g12.0 not "12.0 %";31 not "31 C". Keep exact original label/units in source, never substitute ledger QC.')
                 nums=[float(n) for n in re.findall(r'-?\d+(?:\.\d+)?',source)]
                 if value not in nums: raise ValueError('Measurement absent from source')
                 if not (0<=value<=100 if field=='moisture' else -30<=value<=100): raise ValueError('Measurement outside range')
@@ -205,8 +242,11 @@ class DomainTools:
             elif not isinstance(value,str) or value not in source: raise ValueError('Field absent from source')
             seen.add(field)
             accepted.append({**f,'start':text.index(source),'end':text.index(source)+len(source),'evidenceId':'DOC-'+field})
-            self.ev('문서 '+field,value,key='DOC-'+field)
-        self.document={'fields':accepted,'missingFields':[k for k in ['lotId','moisture','temperature','inspectionDate'] if k not in seen],'sourceText':text,'ocrPerformed':False,'semanticLabelVerified':False,'note':'원문 부분문자열·수치 검증. 문서 진위/의미는 사람 확인 필요. 입력 실행 없음.'}
+        present={field for field,pattern in DOCUMENT_LABEL_PATTERNS.items() if re.search(pattern,text,re.I|re.M)}
+        omitted=present-seen
+        if omitted: raise ValueError('Document extraction omitted explicitly labelled fields: '+', '.join(sorted(omitted))+'. Retry extract_document_fields with ALL present original English line labels (Lot ID, Moisture, Temperature, Inspection Date). Omit only truly absent fields; no zero/empty-source placeholders. Values are not automatically filled.')
+        for field in accepted: self.ev('문서 '+field['field'],field['value'],key=field['evidenceId'])
+        self.document={'fields':accepted,'missingFields':[k for k in ['lotId','moisture','temperature','inspectionDate'] if k not in seen],'sourceText':text,'ocrPerformed':False,'semanticLabelVerified':False,'completenessScope':DOCUMENT_LABEL_SCOPE,'note':'원문 부분문자열·수치 및 명시된 영어 라벨 누락 검사. 문서 진위/의미는 사람 확인 필요. 입력 실행 없음.'}
         return {k:v for k,v in self.document.items() if k!='sourceText'}
 
     def simulate_branch(self, assumptions, virtual_minutes):

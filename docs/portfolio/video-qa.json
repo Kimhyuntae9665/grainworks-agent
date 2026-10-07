@@ -1,0 +1,19 @@
+{
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+    {
+      "codec_name": "h264",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "30/1",
+      "nb_frames": "1800"
+    }
+  ],
+  "format": {
+    "duration": "60.000000"
+  },
+  "sha256": "a2f05ffcfef4020fa6d31dd65a498cf5811a261f95cc6adb3d4af4048a9e7f99",
+  "disclosure": "Actual screen montage; inference waiting omitted; synthetic data; no continuous-interaction recording claim"
+}

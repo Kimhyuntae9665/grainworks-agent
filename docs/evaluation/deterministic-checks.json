@@ -1,9 +1,24 @@
 {
   "date": "2026-10-07",
   "environment": "Windows / Python 3.13 / Node.js",
-  "passed": 56,
+  "passed": 64,
   "failed": 0,
-  "groups": {"engine_scenarios": 16, "asset_tests": 5, "state_server": 6, "agent_backend": 17, "agent_http": 4, "document_intake": 8},
+  "groups": {
+    "engine_scenarios": 16,
+    "asset_tests": 5,
+    "state_server": 6,
+    "agent_backend": 25,
+    "agent_http": 4,
+    "document_intake": 8
+  },
   "scope": "Synthetic invariants, tool/API guards and actual OCR/PDF intake; mock model transports are not LLM accuracy evidence.",
-  "regressions": ["Duplicate CSV headers rejected before mapping", "Labelled moisture and temperature cannot be swapped", "Korean grammatical particles excluded from record IDs", "Unverified model proposal reason never prefills the manual action reason", "Latest state hash and one-use proposal review", "PDF page preview is bounded and source coordinates retained"]
+  "regressions": [
+    "Duplicate CSV headers rejected before mapping",
+    "Labelled moisture and temperature cannot be swapped",
+    "Korean grammatical particles excluded from record IDs",
+    "Unverified model proposal reason never prefills the manual action reason",
+    "Latest state hash and one-use proposal review",
+    "PDF page preview is bounded and source coordinates retained",
+    "Present nonempty English document labels cannot be classified missing by model omission; no automatic field fill"
+  ]
 }

@@ -1,0 +1,288 @@
+{
+  "evaluation": "actual_local_ollama_native_tool_calls",
+  "date": "2026-10-07",
+  "model": "qwen3:4b-instruct",
+  "modelInfo": {
+    "name": "qwen3:4b-instruct",
+    "model": "qwen3:4b-instruct",
+    "modified_at": "2026-10-07T09:23:46.6391786+09:00",
+    "size": 2497293803,
+    "digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen3",
+      "families": [
+        "qwen3"
+      ],
+      "parameter_size": "4.0B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 2560,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "tools",
+      "thinking",
+      "completion"
+    ]
+  },
+  "runtime": "Ollama 0.40.0 / LangGraph / Windows CPU",
+  "context": 4096,
+  "sourceSha256": {
+    "agent_backend.py": "a138c7b529122e4185a8113664391591826d4ce443bd6a66d9807bf88684b68f",
+    "domain_tools.py": "3ad3bdbc7ae5ac93d9b5d620a70c3fb1566fc170a62cb6da51e07c923d33fb3b",
+    "tool_bridge.js": "474b7829ecc59a5cb6e7fe14846a5347b19e2c3ec9e4de64785bc9635d54117c",
+    "evaluate_agent.py": "f6b845a2a8f1e518f542644e5d6b4cc39f4bf9ba71f62339692e21215d6d96de",
+    "fixtures/demo-state.json": "3f95f2abc86596f66711b98c018d7eaadfca017c9629a107ca044284376fa2f7"
+  },
+  "limitations": [
+    "Small synthetic smoke set; no production accuracy or speed claim.",
+    "Evidence-card invariants and task outputs evaluated; complete free-text semantics not proven.",
+    "Interactive GUI verification may compete for the same CPU model while this smoke set runs; timings are observed local response times, not an isolated benchmark.",
+    "OCR is evaluated separately; mock-transport tests are not live model evaluations."
+  ],
+  "cases": [
+    {
+      "case": "missing-field",
+      "question": "기록에 있는 필드만 추출하고 온도가 없으면 비워 두세요.",
+      "task": "document",
+      "passed": true,
+      "checks": {
+        "actual_native_tool_call": true,
+        "fact_ids_exist": true,
+        "narrative_not_claimed_verified": true,
+        "source_fields": true,
+        "expected_fields": true,
+        "missing_temperature": true,
+        "no_document_proposals": true,
+        "original_unchanged": true
+      },
+      "elapsedMs": 44404,
+      "trace": [
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 1,
+            "model": "qwen3:4b-instruct",
+            "phase": "tool-selection",
+            "options": {
+              "temperature": 0,
+              "num_ctx": 4096,
+              "num_predict": 320
+            }
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 1
+          },
+          "result": {
+            "toolNames": [
+              "inspect_inputs"
+            ],
+            "doneReason": "stop",
+            "evalCount": 16,
+            "totalDurationNs": 21955249400
+          },
+          "elapsedMs": 21958
+        },
+        {
+          "tool": "inspect_inputs",
+          "args": {},
+          "result": {
+            "documentText": "SIMULATED DEMO\nLot ID: LOT-007\nMoisture: 12.0 %"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 2,
+            "model": "qwen3:4b-instruct",
+            "phase": "tool-selection",
+            "options": {
+              "temperature": 0,
+              "num_ctx": 4096,
+              "num_predict": 320
+            }
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 2
+          },
+          "result": {
+            "toolNames": [
+              "extract_document_fields"
+            ],
+            "doneReason": "stop",
+            "evalCount": 81,
+            "totalDurationNs": 15343325500
+          },
+          "elapsedMs": 15348
+        },
+        {
+          "tool": "extract_document_fields",
+          "args": {
+            "fields": [
+              {
+                "field": "lotId",
+                "source": "Lot ID: LOT-007",
+                "value": "LOT-007"
+              },
+              {
+                "field": "moisture",
+                "source": "Moisture: 12.0 %",
+                "value": 12
+              }
+            ]
+          },
+          "result": {
+            "fields": [
+              {
+                "field": "lotId",
+                "source": "Lot ID: LOT-007",
+                "value": "LOT-007",
+                "start": 15,
+                "end": 30,
+                "evidenceId": "DOC-lotId"
+              },
+              {
+                "field": "moisture",
+                "source": "Moisture: 12.0 %",
+                "value": 12,
+                "start": 31,
+                "end": 47,
+                "evidenceId": "DOC-moisture"
+              }
+            ],
+            "missingFields": [
+              "temperature",
+              "inspectionDate"
+            ],
+            "ocrPerformed": false,
+            "semanticLabelVerified": false,
+            "completenessScope": "Nonempty English line labels only: Lot ID:, Moisture:, Temperature:, Inspection Date:. This is not general document-semantic verification.",
+            "note": "원문 부분문자열·수치 및 명시된 영어 라벨 누락 검사. 문서 진위/의미는 사람 확인 필요. 입력 실행 없음."
+          },
+          "elapsedMs": 1
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 3,
+            "model": "qwen3:4b-instruct",
+            "phase": "synthesis",
+            "options": {
+              "temperature": 0,
+              "num_ctx": 4096,
+              "num_predict": 160
+            }
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.synthesis",
+          "args": {
+            "round": 3
+          },
+          "result": {
+            "doneReason": "stop",
+            "evalCount": 34,
+            "totalDurationNs": 7071796200,
+            "outputTokenLimit": 160,
+            "sentenceLimit": 2
+          },
+          "elapsedMs": 7074
+        }
+      ],
+      "result": {
+        "summary": "기록된 필드는 lotId: LOT-007, moisture: 12입니다. temperature와 inspectionDate는 기록되지 않았습니다.",
+        "facts": [
+          {
+            "label": "문서 lotId",
+            "value": "LOT-007",
+            "evidenceIds": [
+              "DOC-lotId"
+            ]
+          },
+          {
+            "label": "문서 moisture",
+            "value": 12,
+            "evidenceIds": [
+              "DOC-moisture"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "DOC-lotId",
+            "label": "문서 lotId",
+            "value": "LOT-007"
+          },
+          {
+            "id": "DOC-moisture",
+            "label": "문서 moisture",
+            "value": 12
+          }
+        ],
+        "proposals": [],
+        "warnings": [
+          "합성 데모/사용자 입력 자료입니다. 실제 공장 적합 판정이 아닙니다.",
+          "근거 카드와 계산은 도구 결과입니다. 모델 자유 서술과 의미 매핑은 완전 검증되지 않았습니다."
+        ],
+        "stateHash": "6a21c32b1631671529dae327c04e387d9a497972e6e9e9c8f32895ce644f2636",
+        "summaryVerified": false,
+        "document": {
+          "fields": [
+            {
+              "field": "lotId",
+              "source": "Lot ID: LOT-007",
+              "value": "LOT-007",
+              "start": 15,
+              "end": 30,
+              "evidenceId": "DOC-lotId"
+            },
+            {
+              "field": "moisture",
+              "source": "Moisture: 12.0 %",
+              "value": 12,
+              "start": 31,
+              "end": 47,
+              "evidenceId": "DOC-moisture"
+            }
+          ],
+          "missingFields": [
+            "temperature",
+            "inspectionDate"
+          ],
+          "sourceText": "SIMULATED DEMO\nLot ID: LOT-007\nMoisture: 12.0 %",
+          "ocrPerformed": false,
+          "semanticLabelVerified": false,
+          "completenessScope": "Nonempty English line labels only: Lot ID:, Moisture:, Temperature:, Inspection Date:. This is not general document-semantic verification.",
+          "note": "원문 부분문자열·수치 및 명시된 영어 라벨 누락 검사. 문서 진위/의미는 사람 확인 필요. 입력 실행 없음."
+        }
+      }
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "p50Ms": 44404,
+    "p95Ms": 44404
+  }
+}

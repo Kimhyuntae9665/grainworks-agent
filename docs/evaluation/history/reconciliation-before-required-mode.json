@@ -1,0 +1,491 @@
+{
+  "evaluation": "actual_local_ollama_native_tool_calls",
+  "date": "2026-10-07",
+  "model": "qwen3:4b-instruct",
+  "modelInfo": {
+    "name": "qwen3:4b-instruct",
+    "model": "qwen3:4b-instruct",
+    "modified_at": "2026-10-07T09:23:46.6391786+09:00",
+    "size": 2497293803,
+    "digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen3",
+      "families": [
+        "qwen3"
+      ],
+      "parameter_size": "4.0B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 2560,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "tools",
+      "thinking",
+      "completion"
+    ]
+  },
+  "runtime": "Ollama 0.40.0 / LangGraph / Windows CPU",
+  "context": 4096,
+  "sourceSha256": {
+    "agent_backend.py": "fe616bbbf7896ab4ecc2d22f09a8f1fb4d6314c73166b30099b24a71db101d2e",
+    "domain_tools.py": "7a5ca9c4130868a7f234f84ba7dce47733850af8ab8f8667fd75cd1195fe5b4b",
+    "tool_bridge.js": "474b7829ecc59a5cb6e7fe14846a5347b19e2c3ec9e4de64785bc9635d54117c",
+    "evaluate_agent.py": "395300ba09456b0eba23bdb298956b362ce8fc519ee8a77b10dcd6fa3b72ddd2",
+    "fixtures/demo-state.json": "3f95f2abc86596f66711b98c018d7eaadfca017c9629a107ca044284376fa2f7"
+  },
+  "limitations": [
+    "Small synthetic smoke set; no production accuracy or speed claim.",
+    "Evidence-card invariants and task outputs evaluated; complete free-text semantics not proven.",
+    "Interactive GUI verification may compete for the same CPU model while this smoke set runs; timings are observed local response times, not an isolated benchmark.",
+    "OCR is evaluated separately; mock-transport tests are not live model evaluations."
+  ],
+  "cases": [
+    {
+      "case": "reconciliation",
+      "question": "두 CSV의 의미를 읽고 단위를 정규화해 물량 불일치와 중복 Lot을 찾아주세요.",
+      "task": "reconcile",
+      "passed": false,
+      "elapsedMs": 298120,
+      "error": "Model exceeded bounded tool rounds; no fallback result",
+      "trace": [
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 1,
+            "model": "qwen3:4b-instruct"
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 1
+          },
+          "result": {
+            "toolNames": [
+              "inspect_inputs"
+            ],
+            "doneReason": "stop",
+            "evalCount": 16,
+            "totalDurationNs": 29649169100
+          },
+          "elapsedMs": 29652
+        },
+        {
+          "tool": "inspect_inputs",
+          "args": {},
+          "result": {
+            "left": {
+              "headers": [
+                "lot_id",
+                "raw_id",
+                "weight_kg",
+                "moisture_pct"
+              ],
+              "sample": [
+                {
+                  "lot_id": "LOT-007",
+                  "raw_id": "RAW-2403",
+                  "weight_kg": "4500",
+                  "moisture_pct": "11.9"
+                },
+                {
+                  "lot_id": "LOT-008",
+                  "raw_id": "RAW-2405",
+                  "weight_kg": "3200",
+                  "moisture_pct": "12.8"
+                },
+                {
+                  "lot_id": "LOT-010",
+                  "raw_id": "RAW-2404",
+                  "weight_kg": "5000",
+                  "moisture_pct": "12.1"
+                }
+              ],
+              "rowCount": 3
+            },
+            "right": {
+              "headers": [
+                "로트",
+                "원료",
+                "중량",
+                "단위",
+                "수분"
+              ],
+              "sample": [
+                {
+                  "로트": "LOT-007",
+                  "원료": "RAW-2403",
+                  "중량": "4.5",
+                  "단위": "t",
+                  "수분": "11.9"
+                },
+                {
+                  "로트": "LOT-008",
+                  "원료": "RAW-2405",
+                  "중량": "4700",
+                  "단위": "kg",
+                  "수분": "12.8"
+                },
+                {
+                  "로트": "LOT-010",
+                  "원료": "RAW-2404",
+                  "중량": "5",
+                  "단위": "t",
+                  "수분": "12.1"
+                },
+                {
+                  "로트": "LOT-010",
+                  "원료": "RAW-2404",
+                  "중량": "5",
+                  "단위": "t",
+                  "수분": "12.1"
+                }
+              ],
+              "rowCount": 4
+            }
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 2,
+            "model": "qwen3:4b-instruct"
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 2
+          },
+          "result": {
+            "toolNames": [
+              "compare_import_records"
+            ],
+            "doneReason": "stop",
+            "evalCount": 73,
+            "totalDurationNs": 44778785900
+          },
+          "elapsedMs": 44783
+        },
+        {
+          "tool": "compare_import_records",
+          "args": {
+            "left_mapping": {
+              "confidence": 0.95,
+              "lotId": "lot_id",
+              "quantity": "weight_kg"
+            },
+            "right_mapping": {
+              "confidence": 0.95,
+              "lotId": "로트",
+              "quantity": "중량"
+            }
+          },
+          "result": {
+            "error": "Explicit unit required",
+            "requiresCorrectionOrAbstention": true
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 3,
+            "model": "qwen3:4b-instruct"
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 3
+          },
+          "result": {
+            "toolNames": [
+              "inspect_inputs"
+            ],
+            "doneReason": "stop",
+            "evalCount": 16,
+            "totalDurationNs": 26694318400
+          },
+          "elapsedMs": 26698
+        },
+        {
+          "tool": "inspect_inputs",
+          "args": {},
+          "result": {
+            "left": {
+              "headers": [
+                "lot_id",
+                "raw_id",
+                "weight_kg",
+                "moisture_pct"
+              ],
+              "sample": [
+                {
+                  "lot_id": "LOT-007",
+                  "raw_id": "RAW-2403",
+                  "weight_kg": "4500",
+                  "moisture_pct": "11.9"
+                },
+                {
+                  "lot_id": "LOT-008",
+                  "raw_id": "RAW-2405",
+                  "weight_kg": "3200",
+                  "moisture_pct": "12.8"
+                },
+                {
+                  "lot_id": "LOT-010",
+                  "raw_id": "RAW-2404",
+                  "weight_kg": "5000",
+                  "moisture_pct": "12.1"
+                }
+              ],
+              "rowCount": 3
+            },
+            "right": {
+              "headers": [
+                "로트",
+                "원료",
+                "중량",
+                "단위",
+                "수분"
+              ],
+              "sample": [
+                {
+                  "로트": "LOT-007",
+                  "원료": "RAW-2403",
+                  "중량": "4.5",
+                  "단위": "t",
+                  "수분": "11.9"
+                },
+                {
+                  "로트": "LOT-008",
+                  "원료": "RAW-2405",
+                  "중량": "4700",
+                  "단위": "kg",
+                  "수분": "12.8"
+                },
+                {
+                  "로트": "LOT-010",
+                  "원료": "RAW-2404",
+                  "중량": "5",
+                  "단위": "t",
+                  "수분": "12.1"
+                },
+                {
+                  "로트": "LOT-010",
+                  "원료": "RAW-2404",
+                  "중량": "5",
+                  "단위": "t",
+                  "수분": "12.1"
+                }
+              ],
+              "rowCount": 4
+            }
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 4,
+            "model": "qwen3:4b-instruct"
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 4
+          },
+          "result": {
+            "toolNames": [
+              "compare_import_records"
+            ],
+            "doneReason": "stop",
+            "evalCount": 124,
+            "totalDurationNs": 69788251600
+          },
+          "elapsedMs": 69792
+        },
+        {
+          "tool": "compare_import_records",
+          "args": {
+            "left_mapping": {
+              "confidence": 0.95,
+              "lotId": "lot_id",
+              "moisture": "moisture_pct",
+              "quantity": "weight_kg",
+              "rawId": "raw_id",
+              "unit": "weight_kg"
+            },
+            "right_mapping": {
+              "confidence": 0.95,
+              "lotId": "로트",
+              "moisture": "수분",
+              "quantity": "중량",
+              "rawId": "원료",
+              "unit": "단위"
+            }
+          },
+          "result": {
+            "error": "Ambiguous or unsupported unit: 4500",
+            "requiresCorrectionOrAbstention": true
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 5,
+            "model": "qwen3:4b-instruct"
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 5
+          },
+          "result": {
+            "toolNames": [],
+            "doneReason": "stop",
+            "evalCount": 65,
+            "totalDurationNs": 56519654500
+          },
+          "elapsedMs": 56523
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 6,
+            "model": "qwen3:4b-instruct"
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 6
+          },
+          "result": {
+            "toolNames": [
+              "inspect_inputs"
+            ],
+            "doneReason": "stop",
+            "evalCount": 16,
+            "totalDurationNs": 70617227200
+          },
+          "elapsedMs": 70621
+        },
+        {
+          "tool": "inspect_inputs",
+          "args": {},
+          "result": {
+            "left": {
+              "headers": [
+                "lot_id",
+                "raw_id",
+                "weight_kg",
+                "moisture_pct"
+              ],
+              "sample": [
+                {
+                  "lot_id": "LOT-007",
+                  "raw_id": "RAW-2403",
+                  "weight_kg": "4500",
+                  "moisture_pct": "11.9"
+                },
+                {
+                  "lot_id": "LOT-008",
+                  "raw_id": "RAW-2405",
+                  "weight_kg": "3200",
+                  "moisture_pct": "12.8"
+                },
+                {
+                  "lot_id": "LOT-010",
+                  "raw_id": "RAW-2404",
+                  "weight_kg": "5000",
+                  "moisture_pct": "12.1"
+                }
+              ],
+              "rowCount": 3
+            },
+            "right": {
+              "headers": [
+                "로트",
+                "원료",
+                "중량",
+                "단위",
+                "수분"
+              ],
+              "sample": [
+                {
+                  "로트": "LOT-007",
+                  "원료": "RAW-2403",
+                  "중량": "4.5",
+                  "단위": "t",
+                  "수분": "11.9"
+                },
+                {
+                  "로트": "LOT-008",
+                  "원료": "RAW-2405",
+                  "중량": "4700",
+                  "단위": "kg",
+                  "수분": "12.8"
+                },
+                {
+                  "로트": "LOT-010",
+                  "원료": "RAW-2404",
+                  "중량": "5",
+                  "단위": "t",
+                  "수분": "12.1"
+                },
+                {
+                  "로트": "LOT-010",
+                  "원료": "RAW-2404",
+                  "중량": "5",
+                  "단위": "t",
+                  "수분": "12.1"
+                }
+              ],
+              "rowCount": 4
+            }
+          },
+          "elapsedMs": 0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "p50Ms": 298120,
+    "p95Ms": 298120
+  }
+}

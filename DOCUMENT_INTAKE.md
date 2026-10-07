@@ -20,6 +20,8 @@ Actual selectable-PDF extraction recovered all five expected fields and the Kore
 
 Run `.venv/Scripts/python.exe -X utf8 document_intake.test.py` for actual PDF text/image OCR/scanned-PDF fallback, exact evidence, invalid input, page/pixel limits, and inert prompt-injection tests. No mocks substitute for the actual extraction/OCR success tests.
 
+The separate Agent tool accepts four model-proposed fields (lot ID, moisture, temperature, inspection date), with numeric measurements and exact original source excerpts. It rejects omission of present, nonempty English line labels `Lot ID:`, `Moisture:`, `Temperature:`, `Inspection Date:` and asks the model to retry; it never fills their values itself. This narrow completeness check is reported as such and does not establish general Korean field understanding or full semantic accuracy. The deterministic intake's fifth quantity field remains separate from these four Agent fields.
+
 ## Primary references
 
 - [RapidOCR official repository](https://github.com/RapidAI/RapidOCR): open-source OCR, default Chinese/English support, installation with `rapidocr onnxruntime`.

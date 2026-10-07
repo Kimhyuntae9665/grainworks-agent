@@ -1,0 +1,356 @@
+{
+  "evaluation": "actual_local_ollama_native_tool_calls",
+  "date": "2026-10-07",
+  "model": "qwen3:4b-instruct",
+  "modelInfo": {
+    "name": "qwen3:4b-instruct",
+    "model": "qwen3:4b-instruct",
+    "modified_at": "2026-10-07T09:23:46.6391786+09:00",
+    "size": 2497293803,
+    "digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen3",
+      "families": [
+        "qwen3"
+      ],
+      "parameter_size": "4.0B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 2560,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "tools",
+      "thinking",
+      "completion"
+    ]
+  },
+  "runtime": "Ollama 0.40.0 / LangGraph / Windows CPU",
+  "context": 4096,
+  "sourceSha256": {
+    "agent_backend.py": "a138c7b529122e4185a8113664391591826d4ce443bd6a66d9807bf88684b68f",
+    "domain_tools.py": "3ad3bdbc7ae5ac93d9b5d620a70c3fb1566fc170a62cb6da51e07c923d33fb3b",
+    "tool_bridge.js": "474b7829ecc59a5cb6e7fe14846a5347b19e2c3ec9e4de64785bc9635d54117c",
+    "evaluate_agent.py": "f6b845a2a8f1e518f542644e5d6b4cc39f4bf9ba71f62339692e21215d6d96de",
+    "fixtures/demo-state.json": "3f95f2abc86596f66711b98c018d7eaadfca017c9629a107ca044284376fa2f7"
+  },
+  "limitations": [
+    "Small synthetic smoke set; no production accuracy or speed claim.",
+    "Evidence-card invariants and task outputs evaluated; complete free-text semantics not proven.",
+    "Interactive GUI verification may compete for the same CPU model while this smoke set runs; timings are observed local response times, not an isolated benchmark.",
+    "OCR is evaluated separately; mock-transport tests are not live model evaluations."
+  ],
+  "cases": [
+    {
+      "case": "missing-assumption",
+      "question": "LOT-007을 더 빨리 출하하는 조건을 비교하세요. 재검사 수분과 온도 값은 아직 모릅니다.",
+      "task": "simulate",
+      "passed": true,
+      "checks": {
+        "actual_native_tool_call": true,
+        "fact_ids_exist": true,
+        "narrative_not_claimed_verified": true,
+        "missing_values_abstained": true,
+        "original_unchanged": true
+      },
+      "elapsedMs": 51062,
+      "trace": [
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 1,
+            "model": "qwen3:4b-instruct",
+            "phase": "tool-selection",
+            "options": {
+              "temperature": 0,
+              "num_ctx": 4096,
+              "num_predict": 225
+            }
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 1
+          },
+          "result": {
+            "toolNames": [
+              "trace_lot"
+            ],
+            "doneReason": "stop",
+            "evalCount": 25,
+            "totalDurationNs": 15489327200
+          },
+          "elapsedMs": 15492
+        },
+        {
+          "tool": "trace_lot",
+          "args": {
+            "lot_id": "LOT-007"
+          },
+          "result": {
+            "lot": {
+              "id": "LOT-007",
+              "rawId": "RAW-2403",
+              "product": "산란계 사료",
+              "quantity": 4500,
+              "stage": "warehouse",
+              "progress": 0.2,
+              "status": "hold",
+              "qc": {
+                "moisture": 11.9,
+                "temperature": 31,
+                "stale": false
+              },
+              "shipment": null,
+              "holdReason": "보관 온도 기준 초과",
+              "qualityChecked": false,
+              "storageChecked": true,
+              "imported": false
+            },
+            "relatedLots": [
+              {
+                "id": "LOT-004",
+                "quantity": 5200,
+                "stage": "mixing"
+              },
+              {
+                "id": "LOT-007",
+                "quantity": 4500,
+                "stage": "warehouse"
+              }
+            ],
+            "assetIds": [
+              "TRK-02",
+              "CNT-02",
+              "WH-01",
+              "FL-01"
+            ],
+            "alerts": [
+              {
+                "id": "ALT-1",
+                "lotId": "LOT-007",
+                "type": "temperature",
+                "title": "보관 온도 기준 초과",
+                "details": "기록 31°C / 데모 기준 28°C",
+                "resolved": false,
+                "tick": 0,
+                "blocking": true,
+                "shippedImpact": false,
+                "resolution": null
+              }
+            ],
+            "evidence": [
+              {
+                "id": "LOT-007-quantity",
+                "label": "LOT-007 물량 kg",
+                "value": 4500,
+                "lotId": "LOT-007"
+              },
+              {
+                "id": "LOT-007-temperature",
+                "label": "LOT-007 온도 °C",
+                "value": 31,
+                "lotId": "LOT-007"
+              },
+              {
+                "id": "LOT-007-moisture",
+                "label": "LOT-007 수분 %",
+                "value": 11.9,
+                "lotId": "LOT-007"
+              },
+              {
+                "id": "LOT-007-status",
+                "label": "LOT-007 상태",
+                "value": "hold",
+                "lotId": "LOT-007"
+              },
+              {
+                "id": "LOT-007-rawId",
+                "label": "LOT-007 원료",
+                "value": "RAW-2403",
+                "lotId": "LOT-007"
+              },
+              {
+                "id": "LOT-007-stage",
+                "label": "LOT-007 단계",
+                "value": "warehouse",
+                "lotId": "LOT-007"
+              },
+              {
+                "id": "SETTING-storageLimit",
+                "label": "데모 보관 온도 기준 °C",
+                "value": 28
+              },
+              {
+                "id": "SETTING-moistureLimit",
+                "label": "데모 수분 기준 %",
+                "value": 14
+              }
+            ]
+          },
+          "elapsedMs": 761
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "round": 2,
+            "model": "qwen3:4b-instruct",
+            "phase": "tool-selection",
+            "options": {
+              "temperature": 0,
+              "num_ctx": 4096,
+              "num_predict": 225
+            }
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.chat",
+          "args": {
+            "round": 2
+          },
+          "result": {
+            "toolNames": [],
+            "doneReason": "stop",
+            "evalCount": 103,
+            "totalDurationNs": 34783768600
+          },
+          "elapsedMs": 34787
+        }
+      ],
+      "result": {
+        "summary": "모델 서술에서 근거로 확인하지 못한 수치가 발견되어 설명을 보류했습니다. 검증된 수치 카드와 도구 기록을 확인하세요.",
+        "facts": [
+          {
+            "label": "LOT-007 물량 kg",
+            "value": 4500,
+            "evidenceIds": [
+              "LOT-007-quantity"
+            ]
+          },
+          {
+            "label": "LOT-007 온도 °C",
+            "value": 31,
+            "evidenceIds": [
+              "LOT-007-temperature"
+            ]
+          },
+          {
+            "label": "LOT-007 수분 %",
+            "value": 11.9,
+            "evidenceIds": [
+              "LOT-007-moisture"
+            ]
+          },
+          {
+            "label": "LOT-007 상태",
+            "value": "hold",
+            "evidenceIds": [
+              "LOT-007-status"
+            ]
+          },
+          {
+            "label": "LOT-007 원료",
+            "value": "RAW-2403",
+            "evidenceIds": [
+              "LOT-007-rawId"
+            ]
+          },
+          {
+            "label": "LOT-007 단계",
+            "value": "warehouse",
+            "evidenceIds": [
+              "LOT-007-stage"
+            ]
+          },
+          {
+            "label": "데모 보관 온도 기준 °C",
+            "value": 28,
+            "evidenceIds": [
+              "SETTING-storageLimit"
+            ]
+          },
+          {
+            "label": "데모 수분 기준 %",
+            "value": 14,
+            "evidenceIds": [
+              "SETTING-moistureLimit"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "LOT-007-quantity",
+            "label": "LOT-007 물량 kg",
+            "value": 4500,
+            "lotId": "LOT-007"
+          },
+          {
+            "id": "LOT-007-temperature",
+            "label": "LOT-007 온도 °C",
+            "value": 31,
+            "lotId": "LOT-007"
+          },
+          {
+            "id": "LOT-007-moisture",
+            "label": "LOT-007 수분 %",
+            "value": 11.9,
+            "lotId": "LOT-007"
+          },
+          {
+            "id": "LOT-007-status",
+            "label": "LOT-007 상태",
+            "value": "hold",
+            "lotId": "LOT-007"
+          },
+          {
+            "id": "LOT-007-rawId",
+            "label": "LOT-007 원료",
+            "value": "RAW-2403",
+            "lotId": "LOT-007"
+          },
+          {
+            "id": "LOT-007-stage",
+            "label": "LOT-007 단계",
+            "value": "warehouse",
+            "lotId": "LOT-007"
+          },
+          {
+            "id": "SETTING-storageLimit",
+            "label": "데모 보관 온도 기준 °C",
+            "value": 28
+          },
+          {
+            "id": "SETTING-moistureLimit",
+            "label": "데모 수분 기준 %",
+            "value": 14
+          }
+        ],
+        "proposals": [],
+        "warnings": [
+          "합성 데모/사용자 입력 자료입니다. 실제 공장 적합 판정이 아닙니다.",
+          "근거 카드와 계산은 도구 결과입니다. 모델 자유 서술과 의미 매핑은 완전 검증되지 않았습니다.",
+          "Grounding rejected unsupported numeric literals: [12.0, 25.0, 60.0]"
+        ],
+        "stateHash": "6a21c32b1631671529dae327c04e387d9a497972e6e9e9c8f32895ce644f2636",
+        "summaryVerified": false
+      }
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "p50Ms": 51062,
+    "p95Ms": 51062
+  }
+}

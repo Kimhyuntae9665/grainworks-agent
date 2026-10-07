@@ -75,6 +75,9 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--case');p.add_argument('--out',type=Path,default=ROOT/'docs/evaluation/live-model.json');args=p.parse_args()
     if not backend_status()['available']: raise SystemExit('Local model unavailable; no evaluation fallback')
     chosen=[c for c in cases() if not args.case or c[0]==args.case]
+    # Recheck the observed model failures first; every case has a separate state.
+    priority={'reconciliation':0,'document':1,'document-injection':2,'shipment':3,'simulation':4}
+    chosen.sort(key=lambda c:priority.get(c[0],5))
     source_hashes={name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in ['agent_backend.py','domain_tools.py','tool_bridge.js','evaluate_agent.py','fixtures/demo-state.json']}
     reports=[]
     for name,task,question,state,inputs,kind in chosen:

@@ -181,7 +181,7 @@ class Handler(SimpleHTTPRequestHandler):
         if not resolved.is_relative_to(ROOT): return False
         relative=resolved.relative_to(ROOT).as_posix()
         if relative in ['.','index.html','app.js','engine.js','assets.js','bootstrap.js','scene.js','styles.css','agent.css','agent.js','agent-ui.js','sample-lots.csv','README.md']: return True
-        if relative.startswith('docs/') and resolved.is_file() and resolved.suffix.lower() in ['.pdf','.png','.jpg','.svg','.md']: return True
+        if relative.startswith('docs/') and resolved.is_file() and resolved.suffix.lower() in ['.pdf','.png','.jpg','.svg','.md','.json','.mp4']: return True
         return relative.startswith('vendor/') and resolved.is_file() and resolved.suffix in ['.js','.css','.woff','.woff2','.png','.jpg','.svg']
 
     def do_HEAD(self):

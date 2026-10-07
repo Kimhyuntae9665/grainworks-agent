@@ -1,0 +1,54 @@
+{
+  "verified": true,
+  "repo_published": true,
+  "date": "2026.10.07",
+  "repo_url": "https://github.com/Kimhyuntae9665/grainworks-agent",
+  "demo_file": "demo-60s.mp4",
+  "model": "qwen3:4b-instruct",
+  "runtime": "Ollama CPU",
+  "screens": {
+    "overview": {
+      "file": "assets/01-overview.png",
+      "crop": [
+        0,
+        106,
+        1164,
+        698
+      ]
+    },
+    "agent_result": {
+      "file": "assets/02-agent-result.png",
+      "crop": null
+    },
+    "proposal": {
+      "file": "assets/03-proposal.png",
+      "crop": null
+    },
+    "reconcile": {
+      "file": "assets/04-reconcile.png",
+      "crop": null
+    },
+    "document": {
+      "file": "assets/05-document.png",
+      "crop": null
+    },
+    "simulation": {
+      "file": "assets/06-simulation.png",
+      "crop": null
+    }
+  },
+  "tool_trace_label": "실제 호출: list_blocking_alerts → trace_lot → get_asset_manifest → prepare_action_proposal",
+  "evaluation": {
+    "label": "실제 모델·가드 평가",
+    "summary": "실제 모델 12건: 10 조건 통과·2 실패 → 수정 후 관련 2/2 재검증.\n자동 검사 64개 통과. AI 서술 전체 정확도는 미검증.",
+    "failure_input": "단위가 다른 두 CSV의 Lot 물량 대조",
+    "failure_observed": "모델이 수량 컬럼을 단위 컬럼으로 지정해\n4500을 단위로 해석. 도구가 실행을 거부했습니다.",
+    "failure_handling": "단위 방식과 출처를 필수 schema로 분리해 재평가.\n미검증 모델 사유는 수동 조치 창에 채우지 않습니다."
+  },
+  "simulation": {
+    "minutes": 60,
+    "baseline_kg": 40000,
+    "branch_kg": 44500,
+    "original_unchanged": true
+  }
+}
