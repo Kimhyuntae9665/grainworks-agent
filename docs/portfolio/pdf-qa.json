@@ -1,12 +1,12 @@
 {
-  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v5.pdf",
+  "pdf": "김현태_우성_IT_AX_Grainworks_Agent_포트폴리오_v6.pdf",
   "pages": [
     {
       "page": 1,
-      "selectable_chars": 808,
+      "selectable_chars": 870,
       "min_font_pt": 11.0,
       "urls": [
-        "https://www.woosungfeed.co.kr/m11.php",
+        "https://www.woosungfeed.co.kr/board/board.php?bo_table=press&idx=427",
         "https://github.com/Kimhyuntae9665/grainworks-agent",
         "https://github.com/Kimhyuntae9665/grainworks-agent/blob/main/docs/portfolio/demo-60s.mp4",
         "https://github.com/Kimhyuntae9665/grainworks-agent"
@@ -14,13 +14,13 @@
     },
     {
       "page": 2,
-      "selectable_chars": 756,
+      "selectable_chars": 762,
       "min_font_pt": 11.0,
       "urls": []
     },
     {
       "page": 3,
-      "selectable_chars": 667,
+      "selectable_chars": 665,
       "min_font_pt": 11.0,
       "urls": []
     }
@@ -30,35 +30,28 @@
     720
   ],
   "margin_footer_checks": "PASS",
-  "all_pages_visual_review": "PASS",
-  "pdf_sha256": "09f4f4068097acbaa152a8e9d9c84e062d78d85b9d039a8605fb1a27d7315789",
-  "previous_v4_preserved": true,
-  "page_2_unchanged": true,
-  "narrative_source_unchanged": true,
-  "overview": {
-    "before_pt": [
-      595.5540771484375,
-      183.0,
-      1067.446044921875,
-      423.0
-    ],
-    "after_pt": [
-      431.375,
-      183.0,
-      1231.625,
-      590.0
-    ],
-    "linear_scale_ratio": 1.696
+  "version": "v6",
+  "expected_canvas_verified": [
+    1280,
+    720
+  ],
+  "first_page_image_pt": [
+    801,
+    407
+  ],
+  "architecture_flow_page": 3,
+  "qr_final_pdf_decoded": "https://github.com/Kimhyuntae9665/grainworks-agent",
+  "sha256": "43e4581e091c21db764f7f9bd8324b7131ef48008b20b43eb5e627430fc3080a",
+  "alias_matches": true,
+  "narrative_review": {
+    "route": "light",
+    "change_rate_percent": 0.03,
+    "gate": "PASS"
   },
-  "architecture_flow": {
-    "page": 3,
-    "file": "flow/architecture-flow-compact.png",
-    "card_size_pt": [
-      79,
-      79
-    ],
-    "labels_pt": 15.8,
-    "visual_review": "PASS"
+  "link_checks": {
+    "repo": "public GitHub main confirmed",
+    "demo": "GitHub content API confirmed",
+    "company": "official search index checked; direct access limited"
   },
-  "runtime_code_changed": false
+  "all_pages_visually_inspected": true
 }

@@ -22,7 +22,7 @@ Qwen 모델이 Ollama의 native `tool_calls`를 반환하면 LangGraph가 허용
 
 ## 60초 시연과 포트폴리오
 
-- [3페이지 포트폴리오](docs/portfolio/portfolio.pdf)
+- [3페이지 포트폴리오](docs/portfolio/portfolio.pdf) - v6: AX 목적·본인 역할·LLM/계산 도구 구분 보강
 - [실제 화면으로 구성한 60초 시연](docs/portfolio/demo-60s.mp4)
 - [실제 모델 평가 기록](docs/evaluation/live-model.json) · [평가 설명](docs/evaluation/README.md)
 - [문서 추출 검증과 한글 OCR 한계](DOCUMENT_INTAKE.md)
