@@ -5,7 +5,7 @@
       "page": 1,
       "width_pt": 1280.0,
       "height_pt": 720.0,
-      "text_chars": 636,
+      "text_chars": 647,
       "raster_images": 1,
       "annotation_urls": [
         "https://www.woosungfeed.co.kr/m11.php"
@@ -15,7 +15,7 @@
       "page": 2,
       "width_pt": 1280.0,
       "height_pt": 720.0,
-      "text_chars": 792,
+      "text_chars": 862,
       "raster_images": 1,
       "annotation_urls": []
     },
@@ -23,7 +23,7 @@
       "page": 3,
       "width_pt": 1280.0,
       "height_pt": 720.0,
-      "text_chars": 760,
+      "text_chars": 832,
       "raster_images": 1,
       "annotation_urls": [
         "https://github.com/Kimhyuntae9665/grainworks-agent",
@@ -34,11 +34,11 @@
   ],
   "issues": [],
   "rendered_pages": [
-    "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-callouts\\render\\page-1.png",
-    "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-callouts\\render\\page-2.png",
-    "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-callouts\\render\\page-3.png"
+    "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-all-guides\\render\\page-1.png",
+    "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-all-guides\\render\\page-2.png",
+    "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-all-guides\\render\\page-3.png"
   ],
-  "contact_sheet": "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-callouts\\contact.png",
+  "contact_sheet": "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\work\\portfolio-all-guides\\contact.png",
   "pdf": "C:\\Users\\김현태\\Documents\\Codex\\2026-10-06\\new-chat-7\\outputs\\grainworks-agent\\docs\\portfolio\\portfolio.pdf",
   "status": "PASS"
 }

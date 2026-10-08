@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'docs/portfolio';ORD=ROOT/'docs/orders';EVID=OUT/'evidence'
-PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v9.pdf'
+PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v10.pdf'
 REPO='https://github.com/Kimhyuntae9665/grainworks-agent'
 MES='https://www.woosungfeed.co.kr/m11.php'
 JD='https://woosung.recruiter.co.kr/career/jobs/128746'
@@ -58,22 +58,25 @@ def build():
   c.drawImage(ImageReader(im),ix,H-it-ih,width=iw,height=ih,mask='auto')
   frames.append({'page':page,'file':str(file.relative_to(ROOT)),'image':[ix,it,iw,ih],'outerBorder':[ix-3,it-3,iw+6,ih+6],'stroke':'#52728a'})
   return ix,it,iw,ih
- def guide(frame,pixel,target,lane,number,title,detail,color):
-  ix,it,iw,ih=frame
-  ax,at=ix+iw*pixel[0]/1265,it+ih*pixel[1]/712
+ def annotate(page,anchor,route,label,number,title,detail,color,heading_size=12,detail_size=11,detail_offset=21,badge=True,kind='screenshot'):
+  ax,at=anchor;lx,lt=label;path=[anchor]+route
   # Leader overlays are separate from the unchanged source screenshot.
   # The label end and image end share a number; white backing keeps the line visible.
-  path=[(ax,at),(ax,lane),(target,lane),(target,625)]
   for width,stroke in [(3.6,'#ffffff'),(1.2,color)]:
    c.setLineWidth(width);c.setStrokeColor(HexColor(stroke))
    for (x,t),(x2,t2) in zip(path,path[1:]):c.line(x,H-t,x2,H-t2)
   c.setFillColor(HexColor(color));c.setStrokeColor(HexColor('#ffffff'));c.setLineWidth(1.2)
-  c.circle(ax,H-at,8.5,fill=1,stroke=1)
-  c.setFillColor(HexColor('#ffffff'));c.setFont('MGB',11)
-  c.drawCentredString(ax,H-at-3.8,str(number))
-  txt(f'{number:02d}  {title}',target-75,630,12,color,True)
-  txt(detail,target-75,649,11,MUTED)
-  callouts.append({'number':number,'title':title,'sourcePixel':pixel,'anchor':[ax,at],'leader':path,'label':[target-75,630],'detail':detail})
+  c.circle(ax,H-at,8.5 if badge else 3,fill=1,stroke=1)
+  if badge:
+   c.setFillColor(HexColor('#ffffff'));c.setFont('MGB',11)
+   c.drawCentredString(ax,H-at-3.8,str(number))
+  txt(f'{number:02d}  {title}',lx,lt,heading_size,color,True)
+  txt(detail,lx,lt+detail_offset,detail_size,MUTED)
+  callouts.append({'page':page,'kind':kind,'number':number,'title':title,'anchor':[ax,at],'leader':path,'label':[lx,lt],'detail':detail})
+ def guide(frame,pixel,target,lane,number,title,detail,color):
+  ix,it,iw,ih=frame;ax,at=ix+iw*pixel[0]/1265,it+ih*pixel[1]/712
+  annotate(1,(ax,at),[(ax,lane),(target,lane),(target,625)],(target-75,630),number,title,detail,color,detail_offset=19)
+  callouts[-1]['sourcePixel']=pixel
  def arrow(x,t,x2,t2,color=BLUE):
   c.setStrokeColor(HexColor(color));c.setLineWidth(1.5);c.line(x,H-t,x2,H-t2)
   import math
@@ -96,9 +99,9 @@ def build():
  link('공개 MES 사례 ↗',MES,48,509)
  hero=pic(ORD/'order-hero.png',366,160,866,450,1)
  txt('관찰 안내',376,615,11,MUTED,True)
- guide(hero,(530,503),510,621,1,'공장 흐름','원료·배합·검사 설비',BLUE)
- guide(hero,(586,593),817,617,2,'주문 관리','요청·보류·미배정 물량','#287968')
- guide(hero,(1179,310),1103,613,3,'품질 근거','검사값·기준값·연결 Lot',AMBER)
+ guide(hero,(530,503),510,621,1,'공장 흐름','설비를 선택해 공정·상태 확인',BLUE)
+ guide(hero,(586,593),817,617,2,'주문 관리','요청·보류·미배정 물량 비교','#287968')
+ guide(hero,(1179,310),1103,613,3,'품질 근거','검사값·기준값·연결 Lot 대조',AMBER)
  txt('실제 실행 화면 · 주문·납기·검사 기준은 합성 가정',376,665,11,MUTED)
  txt('본인 / Codex 역할',48,542,16,INK,True)
  para(b['cover.role'],48,568,294,13,limit=100)
@@ -110,7 +113,7 @@ def build():
  rect(48,171,700,56,'#edf4f8',LINE)
  txt('SO-001 · 육계 성장 사료',64,181,17,INK,True)
  txt('요청 13,000 kg = 출하 4,000 + 미출하 보류 8,400 + 미배정 600',64,209,13,BLUE)
- for x,w,label,total,detail,col in [(48,217,'미출하 보류','8,400 kg','LOT-001 4,800 + LOT-003 3,600',AMBER),(282,233,'이미 출하한 영향','4,000 kg','LOT-009 · 출하 이력 안의 영향',BLUE),(532,216,'아직 배정하지 않은 수요','600 kg','재고를 추가 생성하지 않음',MUTED)]:
+ for x,w,label,total,detail,col in [(48,217,'01  미출하 보류','8,400 kg','LOT-001 4,800 + LOT-003 3,600',AMBER),(282,233,'02  이미 출하한 영향','4,000 kg','LOT-009 · 출하 이력 안의 영향',BLUE),(532,216,'03  미배정 수요','600 kg','재고를 추가 생성하지 않음','#287968')]:
   rect(x,246,w,117,'#fff9ef'if col==AMBER else'#f0f5f8',LINE)
   txt(label,x+14,258,14,col,True);txt(total,x+14,283,23,col,True)
   para(detail,x+14,325,w-28,12,limit=35)
@@ -126,11 +129,22 @@ def build():
  txt('미배정',420,570,14,BODY);txt('600 → 2,400 kg',499,570,14,BLUE,True)
  txt('Lot 재고 4,800 kg은 그대로이며, 품질 보류를 해제한 결과가 아닙니다.',48,610,13.5,BODY)
  para(b['order.integrity'],48,637,700,13.5,limit=43)
- pic(EVID/'order-detail.png',790,170,442,300,2)
- txt('실제 주문 상세 확대 · 요청·보류·미배정 확인',800,481,12,MUTED)
- txt('한 창에서 이어지는 작업',798,517,18,INK,True)
- for i,(head,sub) in enumerate([('주문 선택','연결 Lot·트럭·공정 확인'),('근거 확인','검사값·기준값·경보 조회'),('수동 변경·기록','배정 수정 및 저장·활동 기록')]):
-  t=551+i*38;txt(str(i+1).zfill(2),798,t,15,BLUE,True);txt(head,832,t,14,INK,True);txt(sub,832,t+18,12,MUTED)
+ txt('실제 주문 상세 확대 · 합성 주문 SO-001',770,153,11,MUTED)
+ detail_frame=pic(EVID/'order-detail.png',770,170,442,300,2)
+ txt('관찰 안내 · 화면의 숫자를 읽는 법',780,478,14,INK,True)
+ dx,dt,dw,dh=detail_frame
+ for number,pixel,gutter,title,detail,col in [
+  (1,(485,199),1230,'미출하 보류 8,400 kg','출하 전 품질 문제로 막힌 물량입니다.',AMBER),
+  (2,(594,317),1222,'기출하 영향 4,000 kg','이미 출하한 기록의 영향을 따로 봅니다.',BLUE),
+  (3,(265,259),758,'미배정 600 kg','요청량 중 아직 Lot에 연결하지 않은 물량입니다.','#287968')]:
+  ax,at=dx+dw*pixel[0]/611,dt+dh*pixel[1]/400
+  lane=505+(number-1)*53;lt=514+(number-1)*53
+  if number==3:
+   blank_row=dt+dh*287/400
+   route=[(ax,blank_row),(gutter,blank_row),(gutter,lane),(805,lane),(805,lt-5)]
+  else:route=[(gutter,at),(gutter,lane),(805,lane),(805,lt-5)]
+  annotate(2,(ax,at),route,(790,lt),number,title,detail,col,heading_size=14,detail_size=12)
+  callouts[-1]['sourcePixel']=pixel
  c.showPage()
  # 03: Logo flow is a verified runtime, not a vendor inventory or company deployment.
  base(3,'03  실제 오픈소스 LLM·검증·운영 경계')
@@ -138,8 +152,14 @@ def build():
  txt('공고의 AI 기반 업무를 위해, Qwen3 4B·Ollama·LangGraph에 근거 조회 도구를 연결했습니다.',48,125,16,BLUE)
  flow=OUT/'flow/architecture-flow.png'
  c.drawImage(ImageReader(Image.open(flow)),48,H-168-222,width=1184,height=222,mask='auto')
- txt('질문·저장 상태 → 모델의 도구 선택 → 주문 조회 → 근거·답변 → 사람 검토',48,404,16,BLUE,True)
- txt('Ollama가 Qwen을 로컬 실행합니다. LangGraph의 허용 도구는 읽기·복사본 계산만 수행합니다.',48,433,13,MUTED)
+ for number,anchor_x,card_x,title,detail,col in [
+  (1,211,48,'Python API · 근거 조회','주문·Lot 기록과 계산 결과를 조회합니다.',BLUE),
+  (2,494,351,'LangGraph · 도구 연결','모델이 고른 허용 도구를 호출합니다.','#287968'),
+  (3,776,654,'Ollama · 로컬 실행','Qwen 모델을 이 PC에서 실행합니다.',BLUE),
+  (4,1057,957,'Qwen · 설명 생성','조회한 근거로 설명을 씁니다. 사람 검토 필요.',AMBER)]:
+  rect(card_x,414,275,48,'#edf4f8',LINE)
+  center=card_x+137.5
+  annotate(3,(anchor_x,386),[(anchor_x,403),(center,403),(center,414)],(card_x+12,419),number,title,detail,col,badge=False,kind='architecture')
  txt('AI를 붙인 뒤, 실제 오류를 확인했습니다.',48,474,18,INK,True)
  para(b['agent.failure'],48,509,558,15,limit=95)
  para(b['agent.validation'],48,613,558,13.5,limit=54)
