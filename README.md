@@ -35,7 +35,7 @@ Qwen 모델이 Ollama의 native `tool_calls`를 반환하면 LangGraph가 허용
 
 ## 포트폴리오와 실행 근거
 
-- [3페이지 포트폴리오](docs/portfolio/portfolio.pdf) - v11: 첫 장 실제 화면 확대와 화살표 설명, 배정 전후·실제 LLM 구조와 오류 검증
+- [3페이지 포트폴리오](docs/portfolio/portfolio.pdf) - v12: 큰 실제 화면의 영역 테두리와 연결 설명, 배정 전후·실제 LLM 구조와 오류 검증
 - [주문 연결 실행·검수 기록](docs/orders/README.md)
 - [새 설비 조회·정지 비교·품질 영향의 실제 모델 기록](docs/factory/README.md)
 - [실제 모델 평가 기록](docs/evaluation/live-model.json) · [평가 설명](docs/evaluation/README.md)

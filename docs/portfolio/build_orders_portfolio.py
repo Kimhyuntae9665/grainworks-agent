@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'docs/portfolio';ORD=ROOT/'docs/orders';EVID=OUT/'evidence'
-PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v11.pdf'
+PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v12.pdf'
 REPO='https://github.com/Kimhyuntae9665/grainworks-agent'
 MES='https://www.woosungfeed.co.kr/m11.php'
 JD='https://woosung.recruiter.co.kr/career/jobs/128746'
@@ -61,21 +61,30 @@ def build():
   c.restoreState()
   frames.append({'page':page,'file':str(file.relative_to(ROOT)),'image':[ix,it,iw,ih],'sourceCrop':[left,top,right,bottom],'outerBorder':[ix-3,it-3,iw+6,ih+6],'stroke':'#52728a'})
   return ix,it,iw,ih
- def annotate(page,anchor,route,label,number,title,detail,color,heading_size=12,detail_size=11,detail_offset=21,badge=True,kind='screenshot'):
+ def annotate(page,anchor,route,label,number,title,detail,color,heading_size=12,detail_size=11,detail_offset=21,badge=True,kind='screenshot',region=None):
   ax,at=anchor;lx,lt=label;path=[anchor]+route
   # Leader overlays are separate from the unchanged source screenshot.
   # The label end and image end share a number; white backing keeps the line visible.
   for width,stroke in [(3.6,'#ffffff'),(1.2,color)]:
    c.setLineWidth(width);c.setStrokeColor(HexColor(stroke))
    for (x,t),(x2,t2) in zip(path,path[1:]):c.line(x,H-t,x2,H-t2)
-  c.setFillColor(HexColor(color));c.setStrokeColor(HexColor('#ffffff'));c.setLineWidth(1.2)
-  c.circle(ax,H-at,8.5 if badge else 3,fill=1,stroke=1)
-  if badge:
+  if region:
+   rx,rt,rw,rh=region
+   # Transparent annotation: the box encloses the real target, with its number outside.
+   for width,stroke in [(1.8,'#ffffff'),(0.9,color)]:
+    c.setLineWidth(width);c.setStrokeColor(HexColor(stroke));c.rect(rx,H-rt-rh,rw,rh,fill=0,stroke=1)
+   rect(rx+rw-15,rt-15,15,15,color)
+   c.setFillColor(HexColor('#ffffff'));c.setFont('MGB',11)
+   c.drawCentredString(rx+rw-7.5,H-rt+3,str(number))
+  else:
+   c.setFillColor(HexColor(color));c.setStrokeColor(HexColor('#ffffff'));c.setLineWidth(1.2)
+   c.circle(ax,H-at,8.5 if badge else 3,fill=1,stroke=1)
+  if badge and not region:
    c.setFillColor(HexColor('#ffffff'));c.setFont('MGB',11)
    c.drawCentredString(ax,H-at-3.8,str(number))
   txt(f'{number:02d}  {title}',lx,lt,heading_size,color,True)
   txt(detail,lx,lt+detail_offset,detail_size,MUTED)
-  callouts.append({'page':page,'kind':kind,'number':number,'title':title,'anchor':[ax,at],'leader':path,'label':[lx,lt],'detail':detail})
+  callouts.append({'page':page,'kind':kind,'number':number,'title':title,'anchor':[ax,at],'leader':path,'label':[lx,lt],'detail':detail,'region':list(region) if region else None})
  def arrow(x,t,x2,t2,color=BLUE):
   c.setStrokeColor(HexColor(color));c.setLineWidth(1.5);c.line(x,H-t,x2,H-t2)
   import math
@@ -95,16 +104,16 @@ def build():
  crop=(0,144,1265,630)
  hero=pic(ORD/'order-hero.png',48,169,1184,444,1,crop=crop)
  hx,ht,hw,hh=hero
- for number,pixel,target,lane,label,title,detail,col in [
-  (1,(530,503),244,623,(76,632),'설비를 선택해 공정 확인','설비를 눌러 연결 Lot과 진행 단계를 확인합니다.',BLUE),
-  (2,(586,593),646,619,(463,632),'주문별 출하 영향을 구분','요청 13,000kg의 보류·기출하 영향·미배정을 구분합니다.','#287968'),
-  (3,(1179,310),1050,615,(858,632),'검사 근거를 보고 조치','검사값과 기준값을 대조하고, 보류·해제는 사람이 결정합니다.',AMBER)]:
+ for number,source_box,pixel,target,lane,label,title,detail,col in [
+  (1,(122,235,552,552),(337,552),244,623,(76,632),'설비를 선택해 공정 확인','설비를 눌러 연결 Lot과 진행 단계를 확인합니다.',BLUE),
+  (2,(571,194,876,604),(724,604),646,619,(463,632),'주문별 출하 영향을 구분','요청 13,000kg의 보류·기출하 영향·미배정을 구분합니다.','#287968'),
+  (3,(895,277,1177,494),(1177,494),1050,615,(858,632),'검사 근거를 보고 조치','검사값과 기준값을 대조하고, 보류·해제는 사람이 결정합니다.',AMBER)]:
   ax,at=hx+hw*(pixel[0]-crop[0])/(crop[2]-crop[0]),ht+hh*(pixel[1]-crop[1])/(crop[3]-crop[1])
-  annotate(1,(ax,at),[(ax,lane),(target,lane),(target,627)],label,number,title,detail,col,heading_size=14,detail_size=12,detail_offset=22)
-  # Arrowhead points toward the selected region; the source pixels remain intact.
-  c.setStrokeColor(HexColor(col));c.setLineWidth(1.6)
-  c.line(ax-4,H-(at+17),ax,H-(at+10));c.line(ax+4,H-(at+17),ax,H-(at+10))
-  callouts[-1].update({'sourcePixel':pixel,'arrowhead':True})
+  sl,st,sr,sb=source_box
+  region=(hx+hw*(sl-crop[0])/(crop[2]-crop[0]),ht+hh*(st-crop[1])/(crop[3]-crop[1]),hw*(sr-sl)/(crop[2]-crop[0]),hh*(sb-st)/(crop[3]-crop[1]))
+  route=[(ax,lane),(target,lane),(target,627)] if number<3 else [(1216,at),(1216,lane),(target,lane),(target,627)]
+  annotate(1,(ax,at),route,label,number,title,detail,col,heading_size=14,detail_size=12,detail_offset=22,region=region)
+  callouts[-1].update({'sourcePixel':pixel,'sourceRegion':source_box})
  c.showPage()
  # 02: Inventory allocation is an inclusion relation; quality changes propagate separately.
  base(2,'02  주문 연결·상태 구분·입력 변경 검증')
@@ -133,18 +142,19 @@ def build():
  detail_frame=pic(EVID/'order-detail.png',770,170,442,300,2)
  txt('관찰 안내 · 화면의 숫자를 읽는 법',780,478,14,INK,True)
  dx,dt,dw,dh=detail_frame
- for number,pixel,gutter,title,detail,col in [
-  (1,(485,199),1230,'미출하 보류 8,400 kg','출하 전 품질 문제로 막힌 물량입니다.',AMBER),
-  (2,(594,317),1222,'기출하 영향 4,000 kg','이미 출하한 기록의 영향을 따로 봅니다.',BLUE),
-  (3,(265,259),758,'미배정 600 kg','요청량 중 아직 Lot에 연결하지 않은 물량입니다.','#287968')]:
+ for number,source_box,pixel,gutter,title,detail,col in [
+  (1,(408,166,520,226),(520,226),1230,'미출하 보류 8,400 kg','출하 전 품질 문제로 막힌 물량입니다.',AMBER),
+  (2,(10,298,605,336),(590,336),1222,'기출하 영향 4,000 kg','이미 출하한 기록의 영향을 따로 봅니다.',BLUE),
+  (3,(208,229,313,284),(258,284),758,'미배정 600 kg','요청량 중 아직 Lot에 연결하지 않은 물량입니다.','#287968')]:
   ax,at=dx+dw*pixel[0]/611,dt+dh*pixel[1]/400
+  sl,st,sr,sb=source_box;region=(dx+dw*sl/611,dt+dh*st/400,dw*(sr-sl)/611,dh*(sb-st)/400)
   lane=505+(number-1)*53;lt=514+(number-1)*53
   if number==3:
    blank_row=dt+dh*287/400
    route=[(ax,blank_row),(gutter,blank_row),(gutter,lane),(805,lane),(805,lt-5)]
   else:route=[(gutter,at),(gutter,lane),(805,lane),(805,lt-5)]
-  annotate(2,(ax,at),route,(790,lt),number,title,detail,col,heading_size=14,detail_size=12)
-  callouts[-1]['sourcePixel']=pixel
+  annotate(2,(ax,at),route,(790,lt),number,title,detail,col,heading_size=14,detail_size=12,region=region)
+  callouts[-1].update({'sourcePixel':pixel,'sourceRegion':source_box})
  c.showPage()
  # 03: Logo flow is a verified runtime, not a vendor inventory or company deployment.
  base(3,'03  실제 오픈소스 LLM·검증·운영 경계')
@@ -159,7 +169,8 @@ def build():
   (4,1057,957,'Qwen · 설명 생성','조회한 근거로 설명을 씁니다. 사람 검토 필요.',AMBER)]:
   rect(card_x,414,275,48,'#edf4f8',LINE)
   center=card_x+137.5
-  annotate(3,(anchor_x,386),[(anchor_x,403),(center,403),(center,414)],(card_x+12,419),number,title,detail,col,badge=False,kind='architecture')
+  region=(anchor_x-70,199,140,174)
+  annotate(3,(anchor_x,373),[(anchor_x,403),(center,403),(center,414)],(card_x+12,419),number,title,detail,col,badge=False,kind='architecture',region=region)
  txt('AI를 붙인 뒤, 실제 오류를 확인했습니다.',48,474,18,INK,True)
  para(b['agent.failure'],48,509,558,15,limit=95)
  txt('본인: 방향·요구사항·가독성 검토 / Codex: 구현·자동 검사·실행 검증',48,597,11,MUTED)

@@ -17,7 +17,7 @@
     },
     {
       "page": 3,
-      "characters": 876,
+      "characters": 884,
       "minFontPt": 11.0,
       "links": [
         "https://github.com/Kimhyuntae9665/grainworks-agent",
@@ -81,16 +81,16 @@
       "number": 1,
       "title": "설비를 선택해 공정 확인",
       "anchor": [
-        548.8888888888889,
-        494.1111111111111
+        377.33333333333337,
+        537.6666666666667
       ],
       "leader": [
         [
-          548.8888888888889,
-          494.1111111111111
+          377.33333333333337,
+          537.6666666666667
         ],
         [
-          548.8888888888889,
+          377.33333333333337,
           623
         ],
         [
@@ -107,11 +107,22 @@
         632
       ],
       "detail": "설비를 눌러 연결 Lot과 진행 단계를 확인합니다.",
-      "sourcePixel": [
-        530,
-        503
+      "region": [
+        186.22222222222229,
+        255.88888888888889,
+        382.2222222222222,
+        281.77777777777777
       ],
-      "arrowhead": true
+      "sourcePixel": [
+        337,
+        552
+      ],
+      "sourceRegion": [
+        122,
+        235,
+        552,
+        552
+      ]
     },
     {
       "page": 1,
@@ -119,16 +130,16 @@
       "number": 2,
       "title": "주문별 출하 영향을 구분",
       "anchor": [
-        598.6666666666666,
-        574.1111111111111
+        721.3333333333334,
+        583.8888888888889
       ],
       "leader": [
         [
-          598.6666666666666,
-          574.1111111111111
+          721.3333333333334,
+          583.8888888888889
         ],
         [
-          598.6666666666666,
+          721.3333333333334,
           619
         ],
         [
@@ -145,11 +156,22 @@
         632
       ],
       "detail": "요청 13,000kg의 보류·기출하 영향·미배정을 구분합니다.",
-      "sourcePixel": [
-        586,
-        593
+      "region": [
+        585.3333333333334,
+        219.44444444444446,
+        271.1111111111111,
+        364.44444444444446
       ],
-      "arrowhead": true
+      "sourcePixel": [
+        724,
+        604
+      ],
+      "sourceRegion": [
+        571,
+        194,
+        876,
+        604
+      ]
     },
     {
       "page": 1,
@@ -157,16 +179,20 @@
       "number": 3,
       "title": "검사 근거를 보고 조치",
       "anchor": [
-        1125.7777777777776,
-        322.55555555555554
+        1124.0,
+        486.1111111111111
       ],
       "leader": [
         [
-          1125.7777777777776,
-          322.55555555555554
+          1124.0,
+          486.1111111111111
         ],
         [
-          1125.7777777777776,
+          1216,
+          486.1111111111111
+        ],
+        [
+          1216,
           615
         ],
         [
@@ -183,11 +209,22 @@
         632
       ],
       "detail": "검사값과 기준값을 대조하고, 보류·해제는 사람이 결정합니다.",
-      "sourcePixel": [
-        1179,
-        310
+      "region": [
+        873.3333333333333,
+        293.22222222222223,
+        250.66666666666666,
+        192.88888888888889
       ],
-      "arrowhead": true
+      "sourcePixel": [
+        1177,
+        494
+      ],
+      "sourceRegion": [
+        895,
+        277,
+        1177,
+        494
+      ]
     },
     {
       "page": 2,
@@ -195,17 +232,17 @@
       "number": 1,
       "title": "미출하 보류 8,400 kg",
       "anchor": [
-        1117.3256955810148,
-        319.2962356792144
+        1141.9574468085107,
+        338.29787234042556
       ],
       "leader": [
         [
-          1117.3256955810148,
-          319.2962356792144
+          1141.9574468085107,
+          338.29787234042556
         ],
         [
           1230,
-          319.2962356792144
+          338.29787234042556
         ],
         [
           1230,
@@ -225,9 +262,21 @@
         514
       ],
       "detail": "출하 전 품질 문제로 막힌 물량입니다.",
+      "region": [
+        1063.1358428805238,
+        296.0720130932897,
+        78.82160392798691,
+        42.225859247135844
+      ],
       "sourcePixel": [
-        485,
-        199
+        520,
+        226
+      ],
+      "sourceRegion": [
+        408,
+        166,
+        520,
+        226
       ]
     },
     {
@@ -236,17 +285,17 @@
       "number": 2,
       "title": "기출하 영향 4,000 kg",
       "anchor": [
-        1194.0360065466448,
-        402.3404255319149
+        1191.2209492635025,
+        415.71194762684127
       ],
       "leader": [
         [
-          1194.0360065466448,
-          402.3404255319149
+          1191.2209492635025,
+          415.71194762684127
         ],
         [
           1222,
-          402.3404255319149
+          415.71194762684127
         ],
         [
           1222,
@@ -266,9 +315,21 @@
         567
       ],
       "detail": "이미 출하한 기록의 영향을 따로 봅니다.",
+      "region": [
+        783.0376432078559,
+        388.9689034369885,
+        418.7397708674304,
+        26.7430441898527
+      ],
       "sourcePixel": [
-        594,
-        317
+        590,
+        336
+      ],
+      "sourceRegion": [
+        10,
+        298,
+        605,
+        336
       ]
     },
     {
@@ -277,16 +338,16 @@
       "number": 3,
       "title": "미배정 600 kg",
       "anchor": [
-        962.4975450081834,
-        361.52209492635023
+        957.5711947626842,
+        379.11620294599015
       ],
       "leader": [
         [
-          962.4975450081834,
-          361.52209492635023
+          957.5711947626842,
+          379.11620294599015
         ],
         [
-          962.4975450081834,
+          957.5711947626842,
           381.22749590834695
         ],
         [
@@ -311,9 +372,21 @@
         620
       ],
       "detail": "요청량 중 아직 Lot에 연결하지 않은 물량입니다.",
+      "region": [
+        922.3829787234042,
+        340.4091653027823,
+        73.89525368248772,
+        38.70703764320785
+      ],
       "sourcePixel": [
-        265,
-        259
+        258,
+        284
+      ],
+      "sourceRegion": [
+        208,
+        229,
+        313,
+        284
       ]
     },
     {
@@ -323,12 +396,12 @@
       "title": "Python API · 근거 조회",
       "anchor": [
         211,
-        386
+        373
       ],
       "leader": [
         [
           211,
-          386
+          373
         ],
         [
           211,
@@ -347,7 +420,13 @@
         60,
         419
       ],
-      "detail": "주문·Lot 기록과 계산 결과를 조회합니다."
+      "detail": "주문·Lot 기록과 계산 결과를 조회합니다.",
+      "region": [
+        141,
+        199,
+        140,
+        174
+      ]
     },
     {
       "page": 3,
@@ -356,12 +435,12 @@
       "title": "LangGraph · 도구 연결",
       "anchor": [
         494,
-        386
+        373
       ],
       "leader": [
         [
           494,
-          386
+          373
         ],
         [
           494,
@@ -380,7 +459,13 @@
         363,
         419
       ],
-      "detail": "모델이 고른 허용 도구를 호출합니다."
+      "detail": "모델이 고른 허용 도구를 호출합니다.",
+      "region": [
+        424,
+        199,
+        140,
+        174
+      ]
     },
     {
       "page": 3,
@@ -389,12 +474,12 @@
       "title": "Ollama · 로컬 실행",
       "anchor": [
         776,
-        386
+        373
       ],
       "leader": [
         [
           776,
-          386
+          373
         ],
         [
           776,
@@ -413,7 +498,13 @@
         666,
         419
       ],
-      "detail": "Qwen 모델을 이 PC에서 실행합니다."
+      "detail": "Qwen 모델을 이 PC에서 실행합니다.",
+      "region": [
+        706,
+        199,
+        140,
+        174
+      ]
     },
     {
       "page": 3,
@@ -422,12 +513,12 @@
       "title": "Qwen · 설명 생성",
       "anchor": [
         1057,
-        386
+        373
       ],
       "leader": [
         [
           1057,
-          386
+          373
         ],
         [
           1057,
@@ -446,35 +537,26 @@
         969,
         419
       ],
-      "detail": "조회한 근거로 설명을 씁니다. 사람 검토 필요."
+      "detail": "조회한 근거로 설명을 씁니다. 사람 검토 필요.",
+      "region": [
+        987,
+        199,
+        140,
+        174
+      ]
     }
   ],
-  "allScreenshotBorders": "PASS — continuous four outer edges; captions and annotations remain distinct",
+  "allScreenshotBorders": "PASS — continuous four outer edges; separate from transparent internal annotation rectangles",
   "synthetic": true,
-  "sha256": "5a4c6caa09a2c8baa1b9ca6ce749526653a272d52e959f2f1d6e50173ae31b54",
+  "sha256": "5e335900929472585478d4a93c1af646318396b1589e9c84610ec3beec5e23ad",
   "narrativeAccuracy": "Single recorded case; not a general AI accuracy claim",
   "actualModelElapsedMs": 53397,
-  "visualReview": "PASS — all three pages viewed at full-page and 100%; revised pages 1 and 3 also viewed at 150%",
-  "revision": "v11 / 2026-10-08",
-  "calloutReview": "PASS — 3 factory arrow guides, 3 order quantity guides, 4 technology role guides. Anchors checked against actual elements; no critical UI text obscured.",
-  "firstPageChange": {
-    "removed": "Long problem/company/contribution column",
-    "screenWidthIncreasePercent": 44.5,
-    "sourceCrop": [
-      0,
-      144,
-      1265,
-      630
-    ],
-    "scope": "Focused factory/order/quality viewport; explicitly captioned as an enlarged screen portion",
-    "contribution": "Moved to one line on page 3"
-  },
+  "visualReview": "PASS — all three pages viewed full-page and 100%; region boxes checked against actual targets",
   "originalAssetsUnchanged": {
     "docs/orders/order-hero.png": "0a93577faf2630d6a40f6f75e30bcd0a94d3779def4e1296942114858ee2f5ce",
     "docs/portfolio/evidence/order-detail.png": "2fb944e662f097e69d0a2ddc12e5ee2065a74b2f488c9b0e529d12f440f99266",
     "docs/portfolio/flow/architecture-flow.png": "72797b381a7aae862f49bbd07f5d1e6082446a95cac99417bcfa6de4ab19b0f5"
   },
-  "qrDecodedAt100Percent": "https://github.com/Kimhyuntae9665/grainworks-agent",
   "jobLinkage": [
     {
       "page": 1,
@@ -510,11 +592,13 @@
     "Qwen": "Generates narrative; human comparison required"
   },
   "proseReview": {
-    "scope": "Three first-page explanations and contribution line",
-    "route": "light",
-    "changeRatePercent": 0.0,
-    "gateExitCode": 0,
-    "manualComparison": "PASS"
+    "scope": "Body unchanged from v11; no new narrative",
+    "route": "not rerun for geometry-only change",
+    "previousLightGateExitCode": 0
   },
-  "orchestration": "Root-only: one PDF builder owns tightly coupled layout, geometry and final visual review; no app behavior changed"
+  "orchestration": "Root-only: one PDF builder owns tightly coupled layout, geometry and final visual review; no app behavior changed",
+  "revision": "v12 / 2026-10-08",
+  "calloutReview": "PASS — 10 thin region rectangles, number tabs outside each rectangle, all leaders start on rectangle boundary; no critical text or controls obscured",
+  "qrDecodedAt100Percent": "https://github.com/Kimhyuntae9665/grainworks-agent",
+  "contentComparison": "PASS — all three pages retain v11 text and original image assets; only annotation geometry and number tabs changed"
 }
