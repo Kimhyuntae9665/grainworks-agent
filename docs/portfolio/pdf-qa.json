@@ -3,7 +3,7 @@
   "pages": [
     {
       "page": 1,
-      "characters": 557,
+      "characters": 637,
       "minFontPt": 11.0,
       "links": [
         "https://www.woosungfeed.co.kr/m11.php"
@@ -11,13 +11,13 @@
     },
     {
       "page": 2,
-      "characters": 775,
+      "characters": 793,
       "minFontPt": 11.0,
       "links": []
     },
     {
       "page": 3,
-      "characters": 751,
+      "characters": 761,
       "minFontPt": 11.0,
       "links": [
         "https://github.com/Kimhyuntae9665/grainworks-agent",
@@ -31,16 +31,16 @@
       "page": 1,
       "file": "docs\\orders\\order-hero.png",
       "image": [
-        404.57584269662925,
-        198.0,
-        788.8483146067415,
-        444.0
+        409.9058988764045,
+        166.0,
+        778.188202247191,
+        438.0
       ],
       "outerBorder": [
-        401.57584269662925,
-        195.0,
-        794.8483146067415,
-        450.0
+        406.9058988764045,
+        163.0,
+        784.188202247191,
+        444.0
       ],
       "stroke": "#52728a"
     },
@@ -62,26 +62,152 @@
       "stroke": "#52728a"
     }
   ],
-  "allScreenshotBorders": "PASS: continuous contrasted outer four edges, content unobscured",
+  "observationGuides": [
+    {
+      "number": 1,
+      "title": "공장 흐름",
+      "sourcePixel": [
+        530,
+        503
+      ],
+      "anchor": [
+        735.9452247191011,
+        475.42977528089887
+      ],
+      "leader": [
+        [
+          735.9452247191011,
+          475.42977528089887
+        ],
+        [
+          735.9452247191011,
+          621
+        ],
+        [
+          510,
+          621
+        ],
+        [
+          510,
+          625
+        ]
+      ],
+      "label": [
+        435,
+        630
+      ],
+      "detail": "원료·배합·검사 설비"
+    },
+    {
+      "number": 2,
+      "title": "주문 관리",
+      "sourcePixel": [
+        586,
+        593
+      ],
+      "anchor": [
+        770.3946629213483,
+        530.7949438202247
+      ],
+      "leader": [
+        [
+          770.3946629213483,
+          530.7949438202247
+        ],
+        [
+          770.3946629213483,
+          617
+        ],
+        [
+          817,
+          617
+        ],
+        [
+          817,
+          625
+        ]
+      ],
+      "label": [
+        742,
+        630
+      ],
+      "detail": "요청·보류·미배정 물량"
+    },
+    {
+      "number": 3,
+      "title": "품질 근거",
+      "sourcePixel": [
+        1179,
+        310
+      ],
+      "anchor": [
+        1135.189606741573,
+        356.7022471910112
+      ],
+      "leader": [
+        [
+          1135.189606741573,
+          356.7022471910112
+        ],
+        [
+          1135.189606741573,
+          613
+        ],
+        [
+          1103,
+          613
+        ],
+        [
+          1103,
+          625
+        ]
+      ],
+      "label": [
+        1028,
+        630
+      ],
+      "detail": "검사값·기준값·연결 Lot"
+    }
+  ],
+  "allScreenshotBorders": "PASS — continuous four outer edges, no clipping; captions outside",
   "synthetic": true,
-  "sha256": "c3e26070c89a93289a370dd7e45cc23b359f1e42ec7f29df50bed2c7ad97127e",
+  "sha256": "09c6e47995aa8b8f418b29a24305b6ee8089e3c5ab2ded78d107d89e1581452d",
   "narrativeAccuracy": "Single recorded case; not a general AI accuracy claim",
   "actualModelElapsedMs": 53397,
-  "visualReview": "PASS: all three pages viewed at 100% and full-page resolution; screenshot borders and captions checked",
-  "independentEvidenceReview": "PASS: no P1/P2 claim or layout findings",
-  "QR": "PASS: decoded from final PDF render at 100% and 150%",
-  "paletteContrast": "PASS: all tested text/background pairs >=4.5",
-  "polish": {
-    "route": "light",
-    "changeRate": 0.0227,
-    "gateExit": 0,
-    "meaningDirectlyCompared": true
+  "visualReview": "PASS — all 3 pages at full-page and 100%; page 1 also reviewed at 150%",
+  "calloutReview": "PASS — compact guide below screenshot; numbered/color-matched leaders; no critical UI text obscured",
+  "originalScreenshotUnchanged": true,
+  "qrDecodedAt100Percent": "https://github.com/Kimhyuntae9665/grainworks-agent",
+  "jobLinkage": [
+    {
+      "page": 1,
+      "position": "제목 아래 한 문장",
+      "sentence": "공고의 데이터·AI 기반 업무를 위해, 생산·품질과 주문의 영향을 함께 확인하는 시스템을 만들었습니다."
+    },
+    {
+      "page": 2,
+      "position": "제목 아래 한 문장",
+      "sentence": "공고의 데이터 기반 업무를 위해, 주문과 품질 보류의 영향을 함께 조회하는 화면을 만들었습니다."
+    },
+    {
+      "page": 3,
+      "position": "제목 아래 한 문장",
+      "sentence": "공고의 AI 기반 업무를 위해, Qwen3 4B·Ollama·LangGraph에 근거 조회 도구를 연결했습니다."
+    }
+  ],
+  "jobSource": {
+    "url": "https://woosung.recruiter.co.kr/career/jobs/128746",
+    "verifiedOn": "2026-10-07",
+    "basis": "사내 시스템·인프라 운영 및 데이터·AI 기반 업무",
+    "reuse": "Prior verified official JD; no fresh recruitment research in this layout revision"
   },
-  "sources": {
-    "date": "2026-10-07",
-    "officialJD": "https://woosung.recruiter.co.kr/career/jobs/128746",
-    "JDMethod": "Actual official ATS DOM and posting image, entry-level IT/AX row: internal systems/infrastructure operations and data/AI work; AI systems development/operations preferred.",
-    "publicMES": "https://www.woosungfeed.co.kr/m11.php",
-    "MESMethod": "Official search index; direct page open 502. Public MES description is not proof of internal project needs."
-  }
+  "proseReview": {
+    "scope": "3 added JD linkage sentences",
+    "route": "light",
+    "changeRatePercent": 0.0,
+    "gateExitCode": 0,
+    "manualFactComparison": "PASS"
+  },
+  "orchestration": "Root-only: page layout, leader geometry and PDF review are tightly coupled",
+  "revision": "v9 / 2026-10-08"
 }

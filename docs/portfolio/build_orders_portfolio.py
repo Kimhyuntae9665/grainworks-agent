@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'docs/portfolio';ORD=ROOT/'docs/orders';EVID=OUT/'evidence'
-PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v8.pdf'
+PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v9.pdf'
 REPO='https://github.com/Kimhyuntae9665/grainworks-agent'
 MES='https://www.woosungfeed.co.kr/m11.php'
 JD='https://woosung.recruiter.co.kr/career/jobs/128746'
@@ -38,7 +38,7 @@ def build():
  c=canvas.Canvas(str(PDF),pagesize=(W,H),pageCompression=1)
  c.setTitle('사료 생산·품질 데이터 통합 AI 업무 지원 시스템 | 김현태')
  c.setAuthor('김현태');c.setSubject('우성 IT/AX · 개인 프로젝트 · 실제 로컬 LLM · 합성 주문')
- frames=[]
+ frames=[];callouts=[]
  def rect(x,t,w,h,fill,stroke=None):
   c.setFillColor(HexColor(fill));c.setStrokeColor(HexColor(stroke or fill));c.setLineWidth(1.25)
   c.rect(x,H-t-h,w,h,fill=1,stroke=bool(stroke))
@@ -57,6 +57,23 @@ def build():
   rect(x,t,w,h,'#e9f0f5');rect(ix-3,it-3,iw+6,ih+6,'#ffffff','#52728a')
   c.drawImage(ImageReader(im),ix,H-it-ih,width=iw,height=ih,mask='auto')
   frames.append({'page':page,'file':str(file.relative_to(ROOT)),'image':[ix,it,iw,ih],'outerBorder':[ix-3,it-3,iw+6,ih+6],'stroke':'#52728a'})
+  return ix,it,iw,ih
+ def guide(frame,pixel,target,lane,number,title,detail,color):
+  ix,it,iw,ih=frame
+  ax,at=ix+iw*pixel[0]/1265,it+ih*pixel[1]/712
+  # Leader overlays are separate from the unchanged source screenshot.
+  # The label end and image end share a number; white backing keeps the line visible.
+  path=[(ax,at),(ax,lane),(target,lane),(target,625)]
+  for width,stroke in [(3.6,'#ffffff'),(1.2,color)]:
+   c.setLineWidth(width);c.setStrokeColor(HexColor(stroke))
+   for (x,t),(x2,t2) in zip(path,path[1:]):c.line(x,H-t,x2,H-t2)
+  c.setFillColor(HexColor(color));c.setStrokeColor(HexColor('#ffffff'));c.setLineWidth(1.2)
+  c.circle(ax,H-at,8.5,fill=1,stroke=1)
+  c.setFillColor(HexColor('#ffffff'));c.setFont('MGB',11)
+  c.drawCentredString(ax,H-at-3.8,str(number))
+  txt(f'{number:02d}  {title}',target-75,630,12,color,True)
+  txt(detail,target-75,649,11,MUTED)
+  callouts.append({'number':number,'title':title,'sourcePixel':pixel,'anchor':[ax,at],'leader':path,'label':[target-75,630],'detail':detail})
  def arrow(x,t,x2,t2,color=BLUE):
   c.setStrokeColor(HexColor(color));c.setLineWidth(1.5);c.line(x,H-t,x2,H-t2)
   import math
@@ -64,28 +81,32 @@ def build():
   for da in [-.55,.55]:c.line(x2,H-t2,x2-8*math.cos(ang+da),H-(t2-8*math.sin(ang+da)))
  def base(page,label):
   rect(0,0,W,H,PAPER);txt('GRAINWORKS / IT & AX',48,22,13,BLUE,True)
-  txt('김현태 · 우성 IT/AX 지원 · 2026.10.07',810,22,13,MUTED)
+  txt('김현태 · 우성 IT/AX 지원 · 2026.10.08',810,22,13,MUTED)
   rect(48,57,1184,1,LINE);rect(48,682,1184,1,LINE)
   txt(label,48,691,11,MUTED);txt(f'{page} / 3',1190,691,11,MUTED)
  # 01: One large integrated screen, the actual problem and personal responsibility.
  base(1,'01  문제·제품·직무 연결')
  txt(b['cover.title'],48,78,30,INK,True)
  txt(b['cover.subtitle'],48,123,17,BLUE)
- txt('공장 → 주문 → 품질 → 출하 영향 → 근거 확인',48,156,15,BLUE,True)
+ txt('공장·주문·품질을 한 창에서 확인',48,156,15,BLUE,True)
  txt('가정한 사용자의 질문',48,205,18,INK,True)
  para(b['cover.problem'],48,240,294,15,limit=117)
  txt('우성 업무와 연결한 이유',48,340,18,INK,True)
  para(b['cover.company'],48,375,294,14,limit=136)
  link('공개 MES 사례 ↗',MES,48,509)
- pic(ORD/'order-hero.png',366,192,866,456,1)
- txt('개인 프로젝트 실제 화면 · 주문·납기·검사 기준은 합성 가정',376,652,12,MUTED)
+ hero=pic(ORD/'order-hero.png',366,160,866,450,1)
+ txt('관찰 안내',376,615,11,MUTED,True)
+ guide(hero,(530,503),510,621,1,'공장 흐름','원료·배합·검사 설비',BLUE)
+ guide(hero,(586,593),817,617,2,'주문 관리','요청·보류·미배정 물량','#287968')
+ guide(hero,(1179,310),1103,613,3,'품질 근거','검사값·기준값·연결 Lot',AMBER)
+ txt('실제 실행 화면 · 주문·납기·검사 기준은 합성 가정',376,665,11,MUTED)
  txt('본인 / Codex 역할',48,542,16,INK,True)
  para(b['cover.role'],48,568,294,13,limit=100)
  c.showPage()
  # 02: Inventory allocation is an inclusion relation; quality changes propagate separately.
  base(2,'02  주문 연결·상태 구분·입력 변경 검증')
  txt(b['order.title'],48,78,30,INK,True)
- txt('SO-001 하나의 주문으로, 보류와 기출하 영향을 구분합니다.',48,126,16,BLUE)
+ txt('공고의 데이터 기반 업무를 위해, 주문과 품질 보류의 영향을 함께 조회하는 화면을 만들었습니다.',48,126,16,BLUE)
  rect(48,171,700,56,'#edf4f8',LINE)
  txt('SO-001 · 육계 성장 사료',64,181,17,INK,True)
  txt('요청 13,000 kg = 출하 4,000 + 미출하 보류 8,400 + 미배정 600',64,209,13,BLUE)
@@ -114,7 +135,7 @@ def build():
  # 03: Logo flow is a verified runtime, not a vendor inventory or company deployment.
  base(3,'03  실제 오픈소스 LLM·검증·운영 경계')
  txt(b['agent.title'],48,78,30,INK,True)
- txt('Qwen3 4B + Ollama + LangGraph · 실제 모델 호출과 근거를 분리해 확인',48,125,16,BLUE)
+ txt('공고의 AI 기반 업무를 위해, Qwen3 4B·Ollama·LangGraph에 근거 조회 도구를 연결했습니다.',48,125,16,BLUE)
  flow=OUT/'flow/architecture-flow.png'
  c.drawImage(ImageReader(Image.open(flow)),48,H-168-222,width=1184,height=222,mask='auto')
  txt('질문·저장 상태 → 모델의 도구 선택 → 주문 조회 → 근거·답변 → 사람 검토',48,404,16,BLUE,True)
@@ -150,7 +171,7 @@ def build():
  for i in range(1,4):
   im=Image.open(OUT/f'preview-page-{i}.png');im.thumbnail((640,360));contact.paste(im,((i-1)*640,0))
  contact.save(OUT/'contact-sheet.png')
- report={'pageCount':3,'pages':pages,'screenshots':frames,'allScreenshotBorders':'continuous four outer edges; final visual review pending','synthetic':True,'sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),'narrativeAccuracy':'Single recorded case; not a general AI accuracy claim','actualModelElapsedMs':live['elapsedMs'],'visualReview':'pending'}
+ report={'pageCount':3,'pages':pages,'screenshots':frames,'observationGuides':callouts,'allScreenshotBorders':'continuous four outer edges; final visual review pending','synthetic':True,'sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),'narrativeAccuracy':'Single recorded case; not a general AI accuracy claim','actualModelElapsedMs':live['elapsedMs'],'visualReview':'pending'}
  (OUT/'pdf-qa.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print(json.dumps({'pdf':str(PDF),'pages':3,'sha256':report['sha256']},ensure_ascii=False))
 if __name__=='__main__':build()
