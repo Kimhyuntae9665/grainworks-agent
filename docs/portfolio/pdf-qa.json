@@ -3,7 +3,7 @@
   "pages": [
     {
       "page": 1,
-      "characters": 648,
+      "characters": 388,
       "minFontPt": 11.0,
       "links": [
         "https://www.woosungfeed.co.kr/m11.php"
@@ -17,7 +17,7 @@
     },
     {
       "page": 3,
-      "characters": 833,
+      "characters": 876,
       "minFontPt": 11.0,
       "links": [
         "https://github.com/Kimhyuntae9665/grainworks-agent",
@@ -31,16 +31,22 @@
       "page": 1,
       "file": "docs\\orders\\order-hero.png",
       "image": [
-        409.9058988764045,
-        166.0,
-        778.188202247191,
-        438.0
+        77.77777777777783,
+        175.0,
+        1124.4444444444443,
+        432.0
+      ],
+      "sourceCrop": [
+        0,
+        144,
+        1265,
+        630
       ],
       "outerBorder": [
-        406.9058988764045,
-        163.0,
-        784.188202247191,
-        444.0
+        74.77777777777783,
+        172.0,
+        1130.4444444444443,
+        438.0
       ],
       "stroke": "#52728a"
     },
@@ -52,6 +58,12 @@
         179.24713584288054,
         430.0,
         281.5057283142389
+      ],
+      "sourceCrop": [
+        0,
+        0,
+        611,
+        400
       ],
       "outerBorder": [
         773.0,
@@ -67,112 +79,115 @@
       "page": 1,
       "kind": "screenshot",
       "number": 1,
-      "title": "공장 흐름",
+      "title": "설비를 선택해 공정 확인",
       "anchor": [
-        735.9452247191011,
-        475.42977528089887
+        548.8888888888889,
+        494.1111111111111
       ],
       "leader": [
         [
-          735.9452247191011,
-          475.42977528089887
+          548.8888888888889,
+          494.1111111111111
         ],
         [
-          735.9452247191011,
-          621
+          548.8888888888889,
+          623
         ],
         [
-          510,
-          621
+          244,
+          623
         ],
         [
-          510,
-          625
+          244,
+          627
         ]
       ],
       "label": [
-        435,
-        630
+        76,
+        632
       ],
-      "detail": "설비를 선택해 공정·상태 확인",
+      "detail": "설비를 눌러 연결 Lot과 진행 단계를 확인합니다.",
       "sourcePixel": [
         530,
         503
-      ]
+      ],
+      "arrowhead": true
     },
     {
       "page": 1,
       "kind": "screenshot",
       "number": 2,
-      "title": "주문 관리",
+      "title": "주문별 출하 영향을 구분",
       "anchor": [
-        770.3946629213483,
-        530.7949438202247
+        598.6666666666666,
+        574.1111111111111
       ],
       "leader": [
         [
-          770.3946629213483,
-          530.7949438202247
+          598.6666666666666,
+          574.1111111111111
         ],
         [
-          770.3946629213483,
-          617
+          598.6666666666666,
+          619
         ],
         [
-          817,
-          617
+          646,
+          619
         ],
         [
-          817,
-          625
+          646,
+          627
         ]
       ],
       "label": [
-        742,
-        630
+        463,
+        632
       ],
-      "detail": "요청·보류·미배정 물량 비교",
+      "detail": "요청 13,000kg의 보류·기출하 영향·미배정을 구분합니다.",
       "sourcePixel": [
         586,
         593
-      ]
+      ],
+      "arrowhead": true
     },
     {
       "page": 1,
       "kind": "screenshot",
       "number": 3,
-      "title": "품질 근거",
+      "title": "검사 근거를 보고 조치",
       "anchor": [
-        1135.189606741573,
-        356.7022471910112
+        1125.7777777777776,
+        322.55555555555554
       ],
       "leader": [
         [
-          1135.189606741573,
-          356.7022471910112
+          1125.7777777777776,
+          322.55555555555554
         ],
         [
-          1135.189606741573,
-          613
+          1125.7777777777776,
+          615
         ],
         [
-          1103,
-          613
+          1050,
+          615
         ],
         [
-          1103,
-          625
+          1050,
+          627
         ]
       ],
       "label": [
-        1028,
-        630
+        858,
+        632
       ],
-      "detail": "검사값·기준값·연결 Lot 대조",
+      "detail": "검사값과 기준값을 대조하고, 보류·해제는 사람이 결정합니다.",
       "sourcePixel": [
         1179,
         310
-      ]
+      ],
+      "arrowhead": true
     },
     {
       "page": 2,
@@ -436,12 +451,24 @@
   ],
   "allScreenshotBorders": "PASS — continuous four outer edges; captions and annotations remain distinct",
   "synthetic": true,
-  "sha256": "f4b4ae26420c83e82601660b441376eba989245334a20bd14faae364ddb1fde1",
+  "sha256": "5a4c6caa09a2c8baa1b9ca6ce749526653a272d52e959f2f1d6e50173ae31b54",
   "narrativeAccuracy": "Single recorded case; not a general AI accuracy claim",
   "actualModelElapsedMs": 53397,
-  "visualReview": "PASS — all three pages viewed at full-page, 100% and 150%",
-  "revision": "v10 / 2026-10-08",
-  "calloutReview": "PASS — 3 factory guides, 3 order quantity guides, 4 technology role guides. Remaining margin crossing distinguished with white casing; no critical UI text obscured.",
+  "visualReview": "PASS — all three pages viewed at full-page and 100%; revised pages 1 and 3 also viewed at 150%",
+  "revision": "v11 / 2026-10-08",
+  "calloutReview": "PASS — 3 factory arrow guides, 3 order quantity guides, 4 technology role guides. Anchors checked against actual elements; no critical UI text obscured.",
+  "firstPageChange": {
+    "removed": "Long problem/company/contribution column",
+    "screenWidthIncreasePercent": 44.5,
+    "sourceCrop": [
+      0,
+      144,
+      1265,
+      630
+    ],
+    "scope": "Focused factory/order/quality viewport; explicitly captioned as an enlarged screen portion",
+    "contribution": "Moved to one line on page 3"
+  },
   "originalAssetsUnchanged": {
     "docs/orders/order-hero.png": "0a93577faf2630d6a40f6f75e30bcd0a94d3779def4e1296942114858ee2f5ce",
     "docs/portfolio/evidence/order-detail.png": "2fb944e662f097e69d0a2ddc12e5ee2065a74b2f488c9b0e529d12f440f99266",
@@ -483,7 +510,7 @@
     "Qwen": "Generates narrative; human comparison required"
   },
   "proseReview": {
-    "scope": "10 observation explanations",
+    "scope": "Three first-page explanations and contribution line",
     "route": "light",
     "changeRatePercent": 0.0,
     "gateExitCode": 0,

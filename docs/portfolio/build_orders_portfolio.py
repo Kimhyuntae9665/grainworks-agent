@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'docs/portfolio';ORD=ROOT/'docs/orders';EVID=OUT/'evidence'
-PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v10.pdf'
+PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v11.pdf'
 REPO='https://github.com/Kimhyuntae9665/grainworks-agent'
 MES='https://www.woosungfeed.co.kr/m11.php'
 JD='https://woosung.recruiter.co.kr/career/jobs/128746'
@@ -51,12 +51,15 @@ def build():
   obj.drawOn(c,x,H-t-h);return h
  def link(s,url,x,t,size=12):
   txt(s,x,t,size,BLUE);c.linkURL(url,(x,H-t-size-4,x+pdfmetrics.stringWidth(s,'MG',size),H-t+3),relative=0)
- def pic(file,x,t,w,h,page):
-  im=Image.open(file);scale=min((w-12)/im.width,(h-12)/im.height);iw,ih=im.width*scale,im.height*scale
+ def pic(file,x,t,w,h,page,crop=None):
+  im=Image.open(file);left,top,right,bottom=crop or (0,0,im.width,im.height)
+  cw,ch=right-left,bottom-top;scale=min((w-12)/cw,(h-12)/ch);iw,ih=cw*scale,ch*scale
   ix=x+(w-iw)/2;it=t+(h-ih)/2
   rect(x,t,w,h,'#e9f0f5');rect(ix-3,it-3,iw+6,ih+6,'#ffffff','#52728a')
-  c.drawImage(ImageReader(im),ix,H-it-ih,width=iw,height=ih,mask='auto')
-  frames.append({'page':page,'file':str(file.relative_to(ROOT)),'image':[ix,it,iw,ih],'outerBorder':[ix-3,it-3,iw+6,ih+6],'stroke':'#52728a'})
+  c.saveState();clip=c.beginPath();clip.rect(ix,H-it-ih,iw,ih);c.clipPath(clip,stroke=0,fill=0)
+  c.drawImage(ImageReader(im),ix-left*scale,H-it+top*scale-im.height*scale,width=im.width*scale,height=im.height*scale,mask='auto')
+  c.restoreState()
+  frames.append({'page':page,'file':str(file.relative_to(ROOT)),'image':[ix,it,iw,ih],'sourceCrop':[left,top,right,bottom],'outerBorder':[ix-3,it-3,iw+6,ih+6],'stroke':'#52728a'})
   return ix,it,iw,ih
  def annotate(page,anchor,route,label,number,title,detail,color,heading_size=12,detail_size=11,detail_offset=21,badge=True,kind='screenshot'):
   ax,at=anchor;lx,lt=label;path=[anchor]+route
@@ -73,10 +76,6 @@ def build():
   txt(f'{number:02d}  {title}',lx,lt,heading_size,color,True)
   txt(detail,lx,lt+detail_offset,detail_size,MUTED)
   callouts.append({'page':page,'kind':kind,'number':number,'title':title,'anchor':[ax,at],'leader':path,'label':[lx,lt],'detail':detail})
- def guide(frame,pixel,target,lane,number,title,detail,color):
-  ix,it,iw,ih=frame;ax,at=ix+iw*pixel[0]/1265,it+ih*pixel[1]/712
-  annotate(1,(ax,at),[(ax,lane),(target,lane),(target,625)],(target-75,630),number,title,detail,color,detail_offset=19)
-  callouts[-1]['sourcePixel']=pixel
  def arrow(x,t,x2,t2,color=BLUE):
   c.setStrokeColor(HexColor(color));c.setLineWidth(1.5);c.line(x,H-t,x2,H-t2)
   import math
@@ -87,24 +86,25 @@ def build():
   txt('김현태 · 우성 IT/AX 지원 · 2026.10.08',810,22,13,MUTED)
   rect(48,57,1184,1,LINE);rect(48,682,1184,1,LINE)
   txt(label,48,691,11,MUTED);txt(f'{page} / 3',1190,691,11,MUTED)
- # 01: One large integrated screen, the actual problem and personal responsibility.
- base(1,'01  문제·제품·직무 연결')
+ # 01: Enlarge the real factory/order/quality viewport, with short action guides.
+ base(1,'01  실제 화면·조작·근거 확인')
  txt(b['cover.title'],48,78,30,INK,True)
  txt(b['cover.subtitle'],48,123,17,BLUE)
- txt('공장·주문·품질을 한 창에서 확인',48,156,15,BLUE,True)
- txt('가정한 사용자의 질문',48,205,18,INK,True)
- para(b['cover.problem'],48,240,294,15,limit=117)
- txt('우성 업무와 연결한 이유',48,340,18,INK,True)
- para(b['cover.company'],48,375,294,14,limit=136)
- link('공개 MES 사례 ↗',MES,48,509)
- hero=pic(ORD/'order-hero.png',366,160,866,450,1)
- txt('관찰 안내',376,615,11,MUTED,True)
- guide(hero,(530,503),510,621,1,'공장 흐름','설비를 선택해 공정·상태 확인',BLUE)
- guide(hero,(586,593),817,617,2,'주문 관리','요청·보류·미배정 물량 비교','#287968')
- guide(hero,(1179,310),1103,613,3,'품질 근거','검사값·기준값·연결 Lot 대조',AMBER)
- txt('실제 실행 화면 · 주문·납기·검사 기준은 합성 가정',376,665,11,MUTED)
- txt('본인 / Codex 역할',48,542,16,INK,True)
- para(b['cover.role'],48,568,294,13,limit=100)
+ txt('실제 화면 일부 확대 · 우성 공개 MES 흐름 참고 · 합성 데이터 · ERP/MES 연동 없음',48,150,11,MUTED)
+ link('공개 MES 사례 ↗',MES,1100,150,11)
+ crop=(0,144,1265,630)
+ hero=pic(ORD/'order-hero.png',48,169,1184,444,1,crop=crop)
+ hx,ht,hw,hh=hero
+ for number,pixel,target,lane,label,title,detail,col in [
+  (1,(530,503),244,623,(76,632),'설비를 선택해 공정 확인','설비를 눌러 연결 Lot과 진행 단계를 확인합니다.',BLUE),
+  (2,(586,593),646,619,(463,632),'주문별 출하 영향을 구분','요청 13,000kg의 보류·기출하 영향·미배정을 구분합니다.','#287968'),
+  (3,(1179,310),1050,615,(858,632),'검사 근거를 보고 조치','검사값과 기준값을 대조하고, 보류·해제는 사람이 결정합니다.',AMBER)]:
+  ax,at=hx+hw*(pixel[0]-crop[0])/(crop[2]-crop[0]),ht+hh*(pixel[1]-crop[1])/(crop[3]-crop[1])
+  annotate(1,(ax,at),[(ax,lane),(target,lane),(target,627)],label,number,title,detail,col,heading_size=14,detail_size=12,detail_offset=22)
+  # Arrowhead points toward the selected region; the source pixels remain intact.
+  c.setStrokeColor(HexColor(col));c.setLineWidth(1.6)
+  c.line(ax-4,H-(at+17),ax,H-(at+10));c.line(ax+4,H-(at+17),ax,H-(at+10))
+  callouts[-1].update({'sourcePixel':pixel,'arrowhead':True})
  c.showPage()
  # 02: Inventory allocation is an inclusion relation; quality changes propagate separately.
  base(2,'02  주문 연결·상태 구분·입력 변경 검증')
@@ -162,6 +162,7 @@ def build():
   annotate(3,(anchor_x,386),[(anchor_x,403),(center,403),(center,414)],(card_x+12,419),number,title,detail,col,badge=False,kind='architecture')
  txt('AI를 붙인 뒤, 실제 오류를 확인했습니다.',48,474,18,INK,True)
  para(b['agent.failure'],48,509,558,15,limit=95)
+ txt('본인: 방향·요구사항·가독성 검토 / Codex: 구현·자동 검사·실행 검증',48,597,11,MUTED)
  para(b['agent.validation'],48,613,558,13.5,limit=54)
  txt('업무 지원 기능과 현재 경계',654,474,18,INK,True)
  txt('주문 질의 · CSV 단위 대조 · 문서 근거 · 인수인계 · 설비 비교',654,510,13,BLUE,True)
