@@ -1,0 +1,405 @@
+{
+  "version": 1,
+  "synthetic": true,
+  "tick": 0,
+  "running": false,
+  "speed": 1,
+  "settings": {
+    "productionRate": 100,
+    "moistureLimit": 14,
+    "storageLimit": 28
+  },
+  "lots": [
+    {
+      "id": "LOT-001",
+      "rawId": "RAW-2401",
+      "product": "육계 성장 사료",
+      "quantity": 4800,
+      "stage": "intake",
+      "progress": 0.35,
+      "status": "hold",
+      "qc": {
+        "moisture": 15.8,
+        "temperature": 22,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": "원료 연계 수분 초과",
+      "qualityChecked": true,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-002",
+      "rawId": "RAW-2402",
+      "product": "양돈 비육 사료",
+      "quantity": 4200,
+      "stage": "intake",
+      "progress": 0.1,
+      "status": "ok",
+      "qc": {
+        "moisture": 12.6,
+        "temperature": 23,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": null,
+      "qualityChecked": false,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-003",
+      "rawId": "RAW-2401",
+      "product": "육계 성장 사료",
+      "quantity": 3600,
+      "stage": "mixing",
+      "progress": 0.5,
+      "status": "hold",
+      "qc": {
+        "moisture": 15.8,
+        "temperature": 24,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": "원료 연계 수분 초과",
+      "qualityChecked": true,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-004",
+      "rawId": "RAW-2403",
+      "product": "산란계 사료",
+      "quantity": 5200,
+      "stage": "mixing",
+      "progress": 0.15,
+      "status": "ok",
+      "qc": {
+        "moisture": 11.9,
+        "temperature": 23,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": null,
+      "qualityChecked": false,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-005",
+      "rawId": "RAW-2402",
+      "product": "양돈 비육 사료",
+      "quantity": 4000,
+      "stage": "quality",
+      "progress": 0.4,
+      "status": "ok",
+      "qc": {
+        "moisture": 12.6,
+        "temperature": 24,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": null,
+      "qualityChecked": false,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-006",
+      "rawId": "RAW-2404",
+      "product": "한우 비육 사료",
+      "quantity": 6000,
+      "stage": "packing",
+      "progress": 0.55,
+      "status": "ok",
+      "qc": {
+        "moisture": 12.1,
+        "temperature": 25,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": null,
+      "qualityChecked": false,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-007",
+      "rawId": "RAW-2403",
+      "product": "산란계 사료",
+      "quantity": 4500,
+      "stage": "warehouse",
+      "progress": 0.2,
+      "status": "ok",
+      "qc": {
+        "moisture": 11.9,
+        "temperature": 25,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": null,
+      "qualityChecked": false,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-008",
+      "rawId": "RAW-2405",
+      "product": "양돈 자돈 사료",
+      "quantity": 3200,
+      "stage": "warehouse",
+      "progress": 0.65,
+      "status": "ok",
+      "qc": {
+        "moisture": 12.8,
+        "temperature": 26,
+        "stale": false
+      },
+      "shipment": null,
+      "holdReason": null,
+      "qualityChecked": false,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-009",
+      "rawId": "RAW-2401",
+      "product": "육계 성장 사료",
+      "quantity": 4000,
+      "stage": "shipped",
+      "progress": 1,
+      "status": "warning",
+      "qc": {
+        "moisture": 15.8,
+        "temperature": 24,
+        "stale": false
+      },
+      "shipment": {
+        "destination": "데모 거래처 A",
+        "time": "초기 출하 기록",
+        "tick": 0
+      },
+      "holdReason": null,
+      "qualityChecked": true,
+      "storageChecked": false,
+      "imported": false
+    },
+    {
+      "id": "LOT-010",
+      "rawId": "RAW-2404",
+      "product": "한우 비육 사료",
+      "quantity": 5000,
+      "stage": "shipped",
+      "progress": 1,
+      "status": "ok",
+      "qc": {
+        "moisture": 12.1,
+        "temperature": 25,
+        "stale": false
+      },
+      "shipment": {
+        "destination": "데모 거래처 B",
+        "time": "초기 출하 기록",
+        "tick": 0
+      },
+      "holdReason": null,
+      "qualityChecked": false,
+      "storageChecked": false,
+      "imported": false
+    }
+  ],
+  "alerts": [
+    {
+      "id": "ALT-1",
+      "lotId": "LOT-001",
+      "type": "moisture",
+      "title": "원료 연계 수분 초과",
+      "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+      "resolved": false,
+      "tick": 0,
+      "blocking": true,
+      "shippedImpact": false,
+      "resolution": null
+    },
+    {
+      "id": "ALT-2",
+      "lotId": "LOT-003",
+      "type": "moisture",
+      "title": "원료 연계 수분 초과",
+      "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+      "resolved": false,
+      "tick": 0,
+      "blocking": true,
+      "shippedImpact": false,
+      "resolution": null
+    },
+    {
+      "id": "ALT-3",
+      "lotId": "LOT-009",
+      "type": "moisture",
+      "title": "원료 연계 수분 초과",
+      "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+      "resolved": false,
+      "tick": 0,
+      "blocking": true,
+      "shippedImpact": true,
+      "resolution": null
+    }
+  ],
+  "events": [
+    {
+      "id": "EVT-1",
+      "tick": 0,
+      "kind": "init",
+      "lotId": null,
+      "message": "합성 데이터 10개 로트를 불러왔습니다. 실공장 데이터가 아닙니다."
+    },
+    {
+      "id": "EVT-2",
+      "tick": 0,
+      "kind": "alert",
+      "lotId": "LOT-001",
+      "message": "원료 연계 수분 초과 · 이동 보류"
+    },
+    {
+      "id": "EVT-3",
+      "tick": 0,
+      "kind": "alert",
+      "lotId": "LOT-003",
+      "message": "원료 연계 수분 초과 · 이동 보류"
+    },
+    {
+      "id": "EVT-4",
+      "tick": 0,
+      "kind": "alert",
+      "lotId": "LOT-009",
+      "message": "원료 연계 수분 초과 · 이미 출하된 로트 영향 확인 필요"
+    }
+  ],
+  "nextId": 11,
+  "nextAlertId": 4,
+  "nextEventId": 5,
+  "orders": [
+    {
+      "id": "SO-001",
+      "customer": "합성 거래처 A",
+      "dueTick": 60,
+      "lines": [
+        {
+          "id": "SO-001-L1",
+          "product": "육계 성장 사료",
+          "requestedKg": 13000,
+          "allocations": [
+            {
+              "lotId": "LOT-001",
+              "quantityKg": 4800,
+              "assetId": "TRK-01"
+            },
+            {
+              "lotId": "LOT-003",
+              "quantityKg": 3600,
+              "assetId": "TRK-01"
+            },
+            {
+              "lotId": "LOT-009",
+              "quantityKg": 4000,
+              "assetId": "TRK-01"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SO-002",
+      "customer": "합성 거래처 B",
+      "dueTick": 60,
+      "lines": [
+        {
+          "id": "SO-002-L1",
+          "product": "양돈 비육 사료",
+          "requestedKg": 8200,
+          "allocations": [
+            {
+              "lotId": "LOT-002",
+              "quantityKg": 4200,
+              "assetId": "TRK-02"
+            },
+            {
+              "lotId": "LOT-005",
+              "quantityKg": 4000,
+              "assetId": "TRK-02"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SO-003",
+      "customer": "합성 거래처 C",
+      "dueTick": 60,
+      "lines": [
+        {
+          "id": "SO-003-L1",
+          "product": "한우 비육 사료",
+          "requestedKg": 11000,
+          "allocations": [
+            {
+              "lotId": "LOT-006",
+              "quantityKg": 6000,
+              "assetId": "TRK-01"
+            },
+            {
+              "lotId": "LOT-010",
+              "quantityKg": 5000,
+              "assetId": "TRK-01"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SO-004",
+      "customer": "합성 거래처 D",
+      "dueTick": 60,
+      "lines": [
+        {
+          "id": "SO-004-L1",
+          "product": "산란계 사료",
+          "requestedKg": 9700,
+          "allocations": [
+            {
+              "lotId": "LOT-004",
+              "quantityKg": 5200,
+              "assetId": "TRK-02"
+            },
+            {
+              "lotId": "LOT-007",
+              "quantityKg": 4500,
+              "assetId": "TRK-02"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SO-005",
+      "customer": "합성 거래처 E",
+      "dueTick": 60,
+      "lines": [
+        {
+          "id": "SO-005-L1",
+          "product": "양돈 자돈 사료",
+          "requestedKg": 3200,
+          "allocations": [
+            {
+              "lotId": "LOT-008",
+              "quantityKg": 3200,
+              "assetId": "TRK-01"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

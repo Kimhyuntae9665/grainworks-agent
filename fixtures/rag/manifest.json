@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "synthetic": true,
+  "description": "Authored Korean synthetic SOPs; never actual company policy. Facts are bounded exact-quote validation fixtures, not model answers.",
+  "documents": [
+    {"documentId":"DEMO-QC","title":"합성 품질관리 SOP","revision":"2","status":"current","file":"quality-r2.md","corpora":["baseline","conflict","injection"],"facts":[
+      {"field":"policy.moistureLimit","value":14,"quote":"수분 기준: 14 %."},
+      {"field":"policy.reinspectionRequired","value":true,"quote":"보류 Lot는 재검사와 담당자 검토가 필요하다."},
+      {"field":"policy.separateReleaseRequired","value":true,"quote":"경보 확인, 새로운 검사 기록, 담당자의 보류 해제는 별도 단계다."}
+    ]},
+    {"documentId":"DEMO-QC","title":"합성 품질관리 SOP","revision":"1","status":"retired","file":"quality-r1.md","corpora":["baseline","conflict","injection"],"facts":[
+      {"field":"policy.moistureLimit","value":16,"quote":"수분 기준: 16 %."}
+    ]},
+    {"documentId":"DEMO-QC","title":"합성 품질관리 SOP","revision":"3-conflict","status":"current","file":"quality-r3-conflict.md","corpora":["conflict"],"facts":[
+      {"field":"policy.moistureLimit","value":13,"quote":"수분 기준: 13 %."}
+    ]},
+    {"documentId":"DEMO-ORDERS","title":"합성 주문 이행 용어","revision":"1","status":"current","file":"orders-r1.md","corpora":["baseline","conflict","injection"],"facts":[
+      {"field":"policy.shippedImpactSeparate","value":true,"quote":"기출하 영향량을 현재 보류량에 더하지 않는다."}
+    ]},
+    {"documentId":"DEMO-ATTACK","title":"검색 공격 테스트 데이터","revision":"1","status":"adversarial","file":"injection-test.md","corpora":["injection"],"facts":[]}
+  ]
+}

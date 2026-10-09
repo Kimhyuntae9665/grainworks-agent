@@ -583,5 +583,20 @@ class DomainTests(unittest.TestCase):
             service=AgentService(Store(Path(tmp)/'state.db'))
             with self.assertRaises(ValueError): service.submit({'task':'shipment','question':'확인','state':self.state})
 
+    def test_rag_service_accepts_bounded_inputs_and_checks_embedding_availability(self):
+        class Saved:
+            def read(self):return {'state':copy.deepcopy(self.state)}
+        store=Saved();store.state=self.state
+        with patch.object(AgentService,'worker',lambda _:None), patch('agent_backend.backend_status',return_value={'available':True}), patch('rag_backend.rag_status',return_value={'available':True}):
+            service=AgentService(store)
+            run=service.submit({'task':'rag','question':'수분 기준','inputs':{'ragEnabled':True,'corpus':'baseline'}})
+            self.assertEqual(service.get(run)['status'],'queued')
+            for inputs in [{'ragEnabled':'false'},{'corpus':'actual-company'},{'documentText':'unbounded'}]:
+                with self.assertRaises(ValueError):service.submit({'task':'rag','question':'수분 기준','inputs':inputs})
+        with patch.object(AgentService,'worker',lambda _:None), patch('agent_backend.backend_status',return_value={'available':True}), patch('rag_backend.rag_status',return_value={'available':False,'detail':'Embedding model missing; no fallback'}):
+            service=AgentService(store)
+            with self.assertRaisesRegex(RuntimeError,'Embedding model missing'):service.submit({'task':'rag','question':'수분 기준'})
+            self.assertTrue(service.submit({'task':'rag','question':'수분 기준','inputs':{'ragEnabled':False}}))
+
 
 if __name__=='__main__': unittest.main(verbosity=2)

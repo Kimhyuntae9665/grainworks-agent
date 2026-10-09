@@ -41,7 +41,7 @@ class APITests(unittest.TestCase):
         except HTTPError as response: return response.code,json.loads(response.read())
 
     def test_backend_files_and_foreign_host_denied(self):
-        for path in ['/agent_backend.py','/domain_tools.py','/tool_bridge.js','/fixtures/demo-state.json','/.runtime/state.sqlite3','/requirements.txt','/vendor/../server.py']:
+        for path in ['/agent_backend.py','/rag_backend.py','/domain_tools.py','/tool_bridge.js','/fixtures/demo-state.json','/fixtures/rag/manifest.json','/.runtime/state.sqlite3','/requirements.txt','/vendor/../server.py']:
             self.assertEqual(self.request(path)[0],404)
         self.assertEqual(self.request('/api/health',headers={'Host':'attacker.invalid:'+str(self.server.server_port)})[0],403)
         self.assertEqual(self.request('/api/state',self.seed,{'Sec-Fetch-Site':'cross-site'})[0],403)
@@ -77,6 +77,35 @@ class APITests(unittest.TestCase):
 
     def test_document_endpoint_rejects_invalid_payload(self):
         self.assertEqual(self.request('/api/documents/extract',{'data_base64':'@@','mime_type':'application/pdf','filename':'x.pdf'})[0],400)
+
+    def test_rag_status_and_local_origin_boundary(self):
+        with patch('rag_backend.rag_status',return_value={'available':False,'detail':'embedding unavailable; no fallback'}):
+            code,body=self.request('/api/rag/status')
+            self.assertEqual(code,200);self.assertFalse(body['available'])
+            self.assertEqual(self.request('/api/rag/status',headers={'Origin':'https://external.invalid'})[0],403)
+
+    def test_rag_input_contract_rejects_guessed_corpus_and_string_flag(self):
+        for inputs in [{'corpus':'../../private'},{'ragEnabled':'false'},{'ragEnabled':1},{'corpus':'baseline','secret':'x'}]:
+            self.assertEqual(self.request('/api/agent/runs',{'task':'rag','question':'LOT-003 수분 기준','inputs':inputs})[0],400)
+
+    def test_rag_run_keeps_read_only_result_and_citation_contract(self):
+        self.store.write(self.seed)
+        def workflow(task,question,state,inputs,record):
+            self.assertEqual(task,'rag');self.assertEqual(inputs,{'ragEnabled':False,'corpus':'baseline'})
+            result=DomainTools(state).result('mock transport contract, not live AI evidence')
+            result['rag']={'validation':{'status':'abstained'},'retrieval':{'enabled':False,'chunks':[]},'originalUnchanged':True}
+            return result
+        with patch('agent_backend.backend_status',return_value={'available':True}),patch('agent_backend.execute_run',side_effect=workflow):
+            code,start=self.request('/api/agent/runs',{'task':'rag','question':'LOT-007 수분 기준','inputs':{'ragEnabled':False,'corpus':'baseline'}})
+            self.assertEqual(code,202)
+            for _ in range(30):
+                _,run=self.request('/api/agent/runs/'+start['runId'])
+                if run['status'] in ['completed','failed']: break
+                time.sleep(.1)
+            self.assertEqual(run['status'],'completed')
+            self.assertFalse(run['result']['summaryVerified']);self.assertEqual(run['result']['proposals'],[])
+            self.assertEqual(run['result']['rag']['validation']['status'],'abstained')
+            self.assertEqual(self.store.read()['state'],self.seed)
 
 
 if __name__=='__main__': unittest.main(verbosity=2)

@@ -136,6 +136,9 @@ class Handler(SimpleHTTPRequestHandler):
             self.respond(200, {"ok": True, "storage": "sqlite", "synthetic": True})
         elif path == "/api/agent/status":
             self.respond(200, backend_status())
+        elif path == "/api/rag/status":
+            from rag_backend import rag_status
+            self.respond(200, rag_status())
         elif path.startswith('/api/agent/runs/'):
             run=self.agent.get(path.rsplit('/',1)[-1]) if self.agent else None
             self.respond(200 if run else 404, run or {'error':'Run not found'})
@@ -204,7 +207,7 @@ class Handler(SimpleHTTPRequestHandler):
         resolved=Path(self.translate_path(path)).resolve()
         if not resolved.is_relative_to(ROOT): return False
         relative=resolved.relative_to(ROOT).as_posix()
-        if relative in ['.','index.html','app.js','engine.js','assets.js','bootstrap.js','scene.js','styles.css','agent.css','agent.js','agent-ui.js','factory_model.js','factory-ui.js','factory-ui.css','order_model.js','order-ui.js','order-ui.css','sample-lots.csv','README.md']: return True
+        if relative in ['.','index.html','app.js','engine.js','assets.js','bootstrap.js','scene.js','styles.css','agent.css','agent.js','agent-ui.js','rag-ui.js','rag.css','factory_model.js','factory-ui.js','factory-ui.css','order_model.js','order-ui.js','order-ui.css','sample-lots.csv','README.md']: return True
         if relative.startswith('docs/') and resolved.is_file() and resolved.suffix.lower() in ['.pdf','.png','.jpg','.svg','.md','.json','.mp4']: return True
         return relative.startswith('vendor/') and resolved.is_file() and resolved.suffix in ['.js','.css','.woff','.woff2','.png','.jpg','.svg']
 

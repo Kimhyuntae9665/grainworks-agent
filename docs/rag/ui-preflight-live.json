@@ -1,0 +1,458 @@
+{
+  "id": "RUN-d04df83f88a84bbfb2dc2521c15a30f4",
+  "status": "completed",
+  "model": "qwen3:4b-instruct",
+  "elapsedMs": 269,
+  "trace": [
+    {
+      "tool": "rag.retrieve",
+      "args": {
+        "corpus": "baseline",
+        "enabled": true
+      },
+      "result": {
+        "enabled": true,
+        "corpus": "baseline",
+        "embeddingModel": "embeddinggemma",
+        "embeddingModelDigest": "3a2d262bdb75dd103c532a4cf9595dc033fd47a2710a061f7a364c7cbb475c9c",
+        "indexFingerprint": "281fa861658e51dbd5ba263f8a10754afdcc1ef83c553608efcb8b8fadb541b1",
+        "cacheHit": true,
+        "elapsedMs": 234,
+        "method": "Ollama embedding vectors / cosine similarity",
+        "topK": 6,
+        "chunks": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:3",
+            "quote": "수분 기준: 14 %. 합성 데모에서 Lot 수분이 14 %를 초과하면 보류 대상으로 표시한다. 이 기준만으로 실제 제품의 적합성이나 부패 원인을 판정하지 않는다.",
+            "chunkSha256": "7c0dfdd210e78af3198f42e914351da329261f5c7f7da9a5dc35ee5805488928",
+            "fields": [
+              "policy.moistureLimit"
+            ],
+            "score": 0.421889
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:1",
+            "quote": "# 합성 품질관리 SOP · 개정 2",
+            "chunkSha256": "17dfcf841d2276c5766056cfb4601194290f2e8105210bed53e349f21e295366",
+            "fields": [],
+            "score": 0.303413
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:2",
+            "quote": "이 문서는 Grainworks 학습용 합성 SOP입니다. 실제 우성 또는 다른 회사의 정책·규격·안전 판정이 아닙니다.",
+            "chunkSha256": "a2aab1100f689f66f1a8255b6a1d2b6dc4ae752ab971d87650ac15db15252e5c",
+            "fields": [],
+            "score": 0.241933
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:1",
+            "quote": "# 합성 주문 이행 용어 · 개정 1",
+            "chunkSha256": "526d5640f867f46d4a307da55bcda8d9683a2fd13f02f7d2a139230cb3ccfb0f",
+            "fields": [],
+            "score": 0.235475
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:4",
+            "quote": "보류 Lot는 재검사와 담당자 검토가 필요하다. 경보 확인, 새로운 검사 기록, 담당자의 보류 해제는 별도 단계다. 검색 답변은 검토 요청이며 검사·출하·보류 해제를 실행하지 않는다.",
+            "chunkSha256": "f1b0c0fa4e209f6e7ed74c9706434b9c207762a5af8549bed65c66861467d476",
+            "fields": [
+              "policy.reinspectionRequired",
+              "policy.separateReleaseRequired"
+            ],
+            "score": 0.223054
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:2",
+            "quote": "이 문서는 학습용 합성 설명이다. 현재 주문 물량은 문서에 기록하지 않으며 get_order_status의 저장 스냅샷과 주문행 배정 기록에서 읽는다.",
+            "chunkSha256": "2dd48a492b15a3b4d76ce11f10597f42538713e65869fcc863ba1f3fb170775d",
+            "fields": [],
+            "score": 0.205779
+          }
+        ],
+        "documents": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true
+          }
+        ],
+        "manifestSha256": "492e5504f777e068635d94f44698d8cbdbd2838cb75114b8ff0dc561eeaa0220",
+        "excludedDocuments": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          }
+        ],
+        "runtime": {
+          "indexEmbedding": null,
+          "queryEmbedding": {
+            "model": "embeddinggemma",
+            "total_duration": 135731800,
+            "load_duration": 32749000,
+            "prompt_eval_count": 22
+          }
+        }
+      },
+      "elapsedMs": 234
+    },
+    {
+      "tool": "rag.preflight",
+      "args": {
+        "supportedFieldCount": 0,
+        "reasonCode": "no-supported-fields",
+        "requiredFields": [
+          "policy.preservativeLimit",
+          "policy.unsupportedCriterion"
+        ]
+      },
+      "result": {
+        "skipped": true,
+        "supportedFieldCount": 0,
+        "reason": "No requested field has retrieved current document evidence or an available typed current record; model invocation skipped by code preflight.",
+        "reasonCode": "no-supported-fields",
+        "conflicts": [],
+        "statePolicyMismatches": []
+      },
+      "elapsedMs": 0
+    }
+  ],
+  "result": {
+    "summary": "요청 항목의 문서·저장 기록 근거가 없어 코드 사전 점검에서 모델 호출을 생략했습니다.",
+    "facts": [],
+    "evidence": [],
+    "proposals": [],
+    "warnings": [
+      "합성 데모/사용자 입력 자료입니다. 실제 공장 적합 판정이 아닙니다.",
+      "근거 카드와 계산은 도구 결과입니다. 모델 자유 서술과 의미 매핑은 완전 검증되지 않았습니다.",
+      "문서는 작성한 합성 SOP입니다. 구조화 필드·값·인용만 검증하며 모델 자유 서술의 의미·실제 품질·업무 적합성은 검증하지 않습니다."
+    ],
+    "stateHash": "749747f63f5cbf31f7f8a50a78f7f3aef042817b38e6747c514f40c841219971",
+    "summaryVerified": false,
+    "rag": {
+      "synthetic": true,
+      "retrieval": {
+        "enabled": true,
+        "corpus": "baseline",
+        "embeddingModel": "embeddinggemma",
+        "embeddingModelDigest": "3a2d262bdb75dd103c532a4cf9595dc033fd47a2710a061f7a364c7cbb475c9c",
+        "indexFingerprint": "281fa861658e51dbd5ba263f8a10754afdcc1ef83c553608efcb8b8fadb541b1",
+        "cacheHit": true,
+        "elapsedMs": 234,
+        "method": "Ollama embedding vectors / cosine similarity",
+        "topK": 6,
+        "chunks": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:3",
+            "quote": "수분 기준: 14 %. 합성 데모에서 Lot 수분이 14 %를 초과하면 보류 대상으로 표시한다. 이 기준만으로 실제 제품의 적합성이나 부패 원인을 판정하지 않는다.",
+            "chunkSha256": "7c0dfdd210e78af3198f42e914351da329261f5c7f7da9a5dc35ee5805488928",
+            "fields": [
+              "policy.moistureLimit"
+            ],
+            "score": 0.421889
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:1",
+            "quote": "# 합성 품질관리 SOP · 개정 2",
+            "chunkSha256": "17dfcf841d2276c5766056cfb4601194290f2e8105210bed53e349f21e295366",
+            "fields": [],
+            "score": 0.303413
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:2",
+            "quote": "이 문서는 Grainworks 학습용 합성 SOP입니다. 실제 우성 또는 다른 회사의 정책·규격·안전 판정이 아닙니다.",
+            "chunkSha256": "a2aab1100f689f66f1a8255b6a1d2b6dc4ae752ab971d87650ac15db15252e5c",
+            "fields": [],
+            "score": 0.241933
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:1",
+            "quote": "# 합성 주문 이행 용어 · 개정 1",
+            "chunkSha256": "526d5640f867f46d4a307da55bcda8d9683a2fd13f02f7d2a139230cb3ccfb0f",
+            "fields": [],
+            "score": 0.235475
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:4",
+            "quote": "보류 Lot는 재검사와 담당자 검토가 필요하다. 경보 확인, 새로운 검사 기록, 담당자의 보류 해제는 별도 단계다. 검색 답변은 검토 요청이며 검사·출하·보류 해제를 실행하지 않는다.",
+            "chunkSha256": "f1b0c0fa4e209f6e7ed74c9706434b9c207762a5af8549bed65c66861467d476",
+            "fields": [
+              "policy.reinspectionRequired",
+              "policy.separateReleaseRequired"
+            ],
+            "score": 0.223054
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:2",
+            "quote": "이 문서는 학습용 합성 설명이다. 현재 주문 물량은 문서에 기록하지 않으며 get_order_status의 저장 스냅샷과 주문행 배정 기록에서 읽는다.",
+            "chunkSha256": "2dd48a492b15a3b4d76ce11f10597f42538713e65869fcc863ba1f3fb170775d",
+            "fields": [],
+            "score": 0.205779
+          }
+        ],
+        "documents": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true
+          }
+        ],
+        "manifestSha256": "492e5504f777e068635d94f44698d8cbdbd2838cb75114b8ff0dc561eeaa0220",
+        "excludedDocuments": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          }
+        ],
+        "runtime": {
+          "indexEmbedding": null,
+          "queryEmbedding": {
+            "model": "embeddinggemma",
+            "total_duration": 135731800,
+            "load_duration": 32749000,
+            "prompt_eval_count": 22
+          }
+        }
+      },
+      "documents": [
+        {
+          "documentId": "DEMO-QC",
+          "title": "합성 품질관리 SOP",
+          "revision": "2",
+          "status": "current",
+          "file": "quality-r2.md",
+          "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+          "synthetic": true
+        },
+        {
+          "documentId": "DEMO-QC",
+          "title": "합성 품질관리 SOP",
+          "revision": "1",
+          "status": "retired",
+          "file": "quality-r1.md",
+          "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+          "synthetic": true
+        },
+        {
+          "documentId": "DEMO-ORDERS",
+          "title": "합성 주문 이행 용어",
+          "revision": "1",
+          "status": "current",
+          "file": "orders-r1.md",
+          "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+          "synthetic": true
+        }
+      ],
+      "claims": [],
+      "validation": {
+        "status": "abstained",
+        "structuredClaimsVerified": false,
+        "acceptedCount": 0,
+        "rejectedCount": 0,
+        "missingFields": [
+          "policy.preservativeLimit",
+          "policy.unsupportedCriterion"
+        ],
+        "conflicts": [],
+        "statePolicyMismatches": [],
+        "schemaErrors": [],
+        "recordErrors": [],
+        "modelAbstained": null,
+        "modelInvoked": false,
+        "scope": "Exact structured field/value, revision, retrieved citation and tool evidence checks only; model prose semantics unverified.",
+        "intentScope": "Bounded named-field demo grammar; requestedFieldsComplete does not prove complete understanding of an arbitrary question.",
+        "checks": {
+          "nonemptyClaims": false,
+          "requestedFieldsComplete": false,
+          "noRejectedClaims": true,
+          "noCurrentRevisionConflict": true,
+          "documentRuleMatchesState": true,
+          "validOutputShape": true,
+          "recordsAvailable": true,
+          "originalUnchanged": true
+        }
+      },
+      "requiredFields": [
+        "policy.preservativeLimit",
+        "policy.unsupportedCriterion"
+      ],
+      "answer": {
+        "text": "요청 항목의 문서·저장 기록 근거가 없어 코드 사전 점검에서 모델 호출을 생략했습니다.",
+        "abstain": true,
+        "reasons": [
+          "Missing supported field: policy.preservativeLimit",
+          "Missing supported field: policy.unsupportedCriterion",
+          "No requested field has retrieved current document evidence or an available typed current record; model invocation skipped by code preflight."
+        ]
+      },
+      "preflight": {
+        "skipped": true,
+        "supportedFieldCount": 0,
+        "reason": "No requested field has retrieved current document evidence or an available typed current record; model invocation skipped by code preflight.",
+        "reasonCode": "no-supported-fields",
+        "conflicts": [],
+        "statePolicyMismatches": []
+      },
+      "modelAnswer": {
+        "text": "",
+        "verified": false,
+        "abstain": null,
+        "invoked": false
+      },
+      "runtime": {
+        "model": "qwen3:4b-instruct",
+        "embeddingModel": "embeddinggemma",
+        "backend": "LangGraph / Ollama structured RAG",
+        "readSelection": "Deterministic explicit-ID read-only tools; model generates cited structured claims",
+        "elapsedMs": 259,
+        "modelInvocationSkipped": true,
+        "modelInvocationSkipReason": "No requested field has retrieved current document evidence or an available typed current record; model invocation skipped by code preflight.",
+        "modelInvocationSkipReasonCode": "no-supported-fields",
+        "supportedFieldCount": 0,
+        "repairAttempted": false,
+        "maxGenerationAttempts": 2,
+        "generationAttempts": [],
+        "generation": null
+      },
+      "originalUnchanged": true
+    },
+    "incomplete": true
+  }
+}

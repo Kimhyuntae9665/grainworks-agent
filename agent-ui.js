@@ -2,6 +2,7 @@
   "use strict";
   const $ = (id) => document.getElementById(id);
   const tasks = {
+    rag: {question: "문서의 수분 기준과 재검사 및 보류 해제 절차, LOT-003 현재 수분과 SO-001 현재 보류량 및 기출하 영향량을 확인해줘."},
     orders: {question: "주문을 선택한 뒤 요청·출하·보류·창고 준비·미배정 물량과 가상 납기 상태를 Lot·트럭·알림 근거로 확인해 주세요."},
     factory: {question: "현재 공장의 설비 상태와 관련 Lot, 품질 보류 물량을 근거와 함께 확인해 주세요."},
     downtime: {question: "선택한 설비의 정지 조건을 비교하고, 포장 완료 물량과 남는 대기 상태를 가정과 함께 설명해 주세요."},
@@ -11,7 +12,7 @@
     handover: {question: "현재 미해결 경보와 품질 보류를 정리하고, 다음 담당자가 먼저 확인할 작업과 근거를 알려주세요."},
     simulate: {question: "LOT-007의 모의 재검사 가정과 별도 해제에 따른 결과를 비교하고, 보류 상태와 남는 제약을 설명해 주세요. 원본 운영 상태는 변경하지 마세요."}
   };
-  let task = "shipment", available = false, busy = false, currentRun = null, runStart = 0, latestTrace = "", sourceUrl = null, extractedDocument = null;
+  let task = "rag", available = false, busy = false, currentRun = null, runStart = 0, latestTrace = "", sourceUrl = null, extractedDocument = null;
   const taskButtons = [...document.querySelectorAll("[data-agent-task]")];
   const node = (tag, className, text) => {const el = document.createElement(tag); if (className) el.className = className; if (text !== undefined) el.textContent = String(text); return el;};
   const printable = (value) => typeof value === "string" ? value : JSON.stringify(value, null, 2);
@@ -19,7 +20,7 @@
   const number = (value) => Number.isFinite(Number(value)) ? Number(value).toLocaleString('ko-KR', {maximumFractionDigits: 2}) : String(value ?? '미확인');
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   function traceCounts(trace) {
-    const model = trace.filter((entry) => entry.tool === 'ollama.chat' || entry.tool === 'ollama.synthesis').length;
+    const model = trace.filter((entry) => ['ollama.chat', 'ollama.synthesis'].includes(entry.tool) || entry.tool === 'ollama.rag' && entry.result?.message).length;
     const requests = trace.filter((entry) => entry.tool === 'ollama.request').length;
     return {model, tools: trace.filter((entry) => !String(entry.tool).startsWith('ollama.')).length, pending: requests > model};
   }
@@ -71,11 +72,12 @@
       available = result.available === true;
       $('agent-status').dataset.state = available ? "ready" : "unavailable";
       $('agent-status').textContent = available ? "실제 모델 연결됨" : "모델 실행 준비 필요";
-      $('agent-model').textContent = [result.model, result.backend, result.detail].filter(Boolean).join(" · ") || "모델 상태 정보가 없습니다.";
+      $('agent-model').textContent = [result.model, result.backend?.replace(' native tool calling', ''), result.detail].filter(Boolean).join(" · ") || "모델 상태 정보가 없습니다.";
     } catch (error) {
       available = false; $('agent-status').dataset.state = "unavailable"; $('agent-status').textContent = "모델 연결 없음"; $('agent-model').textContent = error.message;
     }
     updateRunButton();
+    window.GrainRagUI?.refresh();
   }
   taskButtons.forEach((button) => button.addEventListener("click", () => {
     if (busy) return;
@@ -86,6 +88,7 @@
     $('agent-document-inputs').hidden = task !== "document";
     $('agent-simulation-inputs').hidden = task !== "simulate";
     $('agent-downtime-inputs').hidden = task !== "downtime";
+    $('agent-rag-inputs').hidden = task !== "rag";
     if(task==='simulate') {
       const select=$('agent-sim-lot');select.replaceChildren();
       for(const lot of window.Grainworks.snapshot().lots.filter(l=>l.status==='hold')) {const option=node('option','',lot.id);option.value=lot.id;select.append(option);}
@@ -253,13 +256,18 @@
   function renderResult(run) {
     const root = $('agent-results'); root.replaceChildren();
     const result = run.result || {};
+    if (result.rag?.runtime?.modelInvocationSkipped) $('agent-run-meta').textContent = $('agent-run-meta').textContent.replace(run.model || '모델 확인 중', '모델 미호출');
     const records = list(result.evidence), recordMap = new Map(records.map((record) => [record.id, record]));
     const moistureTargets = new Set(records.filter(record => String(record.id).startsWith('ALT-') && /수분/.test(record.label + ' ' + record.value)).map(record => record.lotId));
     const targets = new Set(($('agent-question').value.match(/\bLOT-[A-Za-z0-9]+\b/g) || []));
-    const summary = node('div', 'agent-answer'), answerHeading = node('div', 'agent-answer-heading');
+    if (result.rag) window.GrainRagUI?.render(result.rag, root);
+    if (!result.rag?.runtime?.modelInvocationSkipped) {
+    const summary = node(result.rag ? 'details' : 'div', 'agent-answer'), answerHeading = node('div', 'agent-answer-heading');
+    if (result.rag) summary.append(node('summary', '', 'AI 설명 초안 · 서술은 별도 검토'));
     answerHeading.append(node('span', 'eyebrow', 'MODEL ANSWER'));
     const verification = node('span', 'agent-summary-verification', 'AI 작성 초안 · 서술 검증 필요'); verification.dataset.verified = String(result.summaryVerified === true); answerHeading.append(verification);
-    summary.append(answerHeading, node('h4', '', '조회 근거를 바탕으로 정리한 답변'), node('p', '', result.summary || '요약이 반환되지 않았습니다. 도구 호출과 근거를 확인하세요.'), node('small', 'agent-summary-note', 'AI의 서술과 도구가 반환한 기록은 구분해서 확인하세요. 답변 전체의 사실 일치가 검증된 것은 아닙니다.')); root.append(summary);
+    summary.append(answerHeading, node('h4', '', '조회 근거를 바탕으로 정리한 답변'), node('p', '', (result.rag ? result.rag.modelAnswer?.text : result.summary) || '모델 설명이 반환되지 않았습니다. 도구 호출과 근거를 확인하세요.'), node('small', 'agent-summary-note', 'AI의 서술과 도구가 반환한 기록은 구분해서 확인하세요. 답변 전체의 사실 일치가 검증된 것은 아닙니다.')); root.append(summary);
+    }
     if (list(result.facts).length) {
       const section = node('section', 'agent-fact-section'); section.append(node('h4', '', '도구로 확인한 기록'));
       const orderFactIds=new Set(list(result.orders?.orders).flatMap(order=>['requestedKg','shippedKg','heldKg','readyKg','unallocatedKg','shippedImpactKg'].map(field=>order.id+'-'+field)));
@@ -325,11 +333,12 @@
   }
   $('agent-form').addEventListener('submit', async (event) => {
     event.preventDefault(); if (busy || !available || !window.Grainworks) return;
-    setError(''); busy = true; updateRunButton(); taskButtons.forEach((button) => {button.disabled = true;}); $('agent-results').replaceChildren(); latestTrace = ''; runStart = Date.now();
+    setError(''); busy = true; updateRunButton(); taskButtons.forEach((button) => {button.disabled = true;}); $('agent-question').disabled = true; $('rag-enabled').disabled = true; $('rag-corpus').disabled = true; $('agent-results').replaceChildren(); latestTrace = ''; runStart = Date.now();
     try {
       progress('시뮬레이션을 멈추고 현재 상태를 저장합니다.', 'Agent가 읽는 원본과 화면의 현재 상태를 맞춥니다.');
       await window.Grainworks.save();
       const inputs = {};
+      if (task === 'rag') {inputs.ragEnabled = $('rag-enabled').checked; inputs.corpus = $('rag-corpus').value;}
       if (task === 'reconcile') {inputs.leftCsv = $('agent-left-csv').value; inputs.rightCsv = $('agent-right-csv').value;}
       if (task === 'document') inputs.documentText = $('agent-document-text').value;
       if (task === 'downtime') {inputs.stationId=$('agent-downtime-station').value;inputs.downtimeMinutes=Number($('agent-downtime-minutes').value);inputs.horizonMinutes=Number($('agent-downtime-horizon').value);}
@@ -344,13 +353,13 @@
         $('agent-run-meta').textContent = [run.model || '모델 확인 중', elapsed + '초', '실행 ' + run.id].join(' · ');
         if (run.status === 'completed') {renderResult(run); $('agent-progress').hidden = true; currentRun = null; break;}
         if (run.status === 'failed') throw Error(typeof run.error === 'string' ? run.error : run.error?.message || 'Agent 실행에 실패했습니다. 모델과 도구 상태를 확인하세요.');
-        const trace = list(run.trace), counts = traceCounts(trace); progress(run.status === 'queued' ? '서버가 실행을 준비하고 있습니다.' : '실제 모델이 기록을 확인하고 있습니다.', '경과 ' + elapsed + '초 · 모델 응답 ' + counts.model + '회 / 도구 호출 ' + counts.tools + '회. 결과를 기다리고 있습니다.');
+        const trace = list(run.trace), counts = traceCounts(trace); progress(run.status === 'queued' ? '서버가 실행을 준비하고 있습니다.' : task === 'rag' ? '문서 검색·기록 조회·답변 항목 대조를 진행하고 있습니다.' : '실제 모델이 기록을 확인하고 있습니다.', '경과 ' + elapsed + '초 · 모델 응답 ' + counts.model + '회 / 도구 호출 ' + counts.tools + '회. 결과를 기다리고 있습니다.');
         const serialized = JSON.stringify(trace);
         if (serialized !== latestTrace) {latestTrace = serialized; $('agent-results').replaceChildren(); if (trace.length) traceView(trace, $('agent-results'));}
         await delay(1300);
       }
     } catch (error) {currentRun = null; $('agent-progress').hidden = true; setError(error.message); if (!$('agent-results').childNodes.length) $('agent-results').append(node('p', 'agent-run-failed', '실행 결과가 없습니다. 연결 문제를 해결한 뒤 다시 실행하세요.'));}
-    finally {busy = false; updateRunButton(); taskButtons.forEach((button) => {button.disabled = false;});}
+    finally {busy = false; updateRunButton(); taskButtons.forEach((button) => {button.disabled = false;}); $('agent-question').disabled = false; $('rag-enabled').disabled = false; $('rag-corpus').disabled = false;}
   });
   function readBase64(file) {return new Promise((resolve, reject) => {const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(',')[1]); reader.onerror = () => reject(Error('파일을 읽지 못했습니다.')); reader.readAsDataURL(file);});}
   $('agent-document-file').addEventListener('change', async (event) => {

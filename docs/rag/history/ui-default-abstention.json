@@ -1,0 +1,2134 @@
+{
+  "id": "RUN-912c8cff4e944d0cbac97b869583efbf",
+  "status": "completed",
+  "model": "qwen3:4b-instruct",
+  "elapsedMs": 45855,
+  "trace": [
+    {
+      "tool": "rag.retrieve",
+      "args": {
+        "corpus": "baseline",
+        "enabled": true
+      },
+      "result": {
+        "enabled": true,
+        "corpus": "baseline",
+        "embeddingModel": "embeddinggemma",
+        "embeddingModelDigest": "3a2d262bdb75dd103c532a4cf9595dc033fd47a2710a061f7a364c7cbb475c9c",
+        "indexFingerprint": "281fa861658e51dbd5ba263f8a10754afdcc1ef83c553608efcb8b8fadb541b1",
+        "cacheHit": true,
+        "elapsedMs": 115,
+        "method": "Ollama embedding vectors / cosine similarity",
+        "topK": 6,
+        "chunks": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:4",
+            "quote": "보류 Lot는 재검사와 담당자 검토가 필요하다. 경보 확인, 새로운 검사 기록, 담당자의 보류 해제는 별도 단계다. 검색 답변은 검토 요청이며 검사·출하·보류 해제를 실행하지 않는다.",
+            "chunkSha256": "f1b0c0fa4e209f6e7ed74c9706434b9c207762a5af8549bed65c66861467d476",
+            "fields": [
+              "policy.reinspectionRequired",
+              "policy.separateReleaseRequired"
+            ],
+            "score": 0.589571
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:3",
+            "quote": "수분 기준: 14 %. 합성 데모에서 Lot 수분이 14 %를 초과하면 보류 대상으로 표시한다. 이 기준만으로 실제 제품의 적합성이나 부패 원인을 판정하지 않는다.",
+            "chunkSha256": "7c0dfdd210e78af3198f42e914351da329261f5c7f7da9a5dc35ee5805488928",
+            "fields": [
+              "policy.moistureLimit"
+            ],
+            "score": 0.563044
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:2",
+            "quote": "이 문서는 Grainworks 학습용 합성 SOP입니다. 실제 우성 또는 다른 회사의 정책·규격·안전 판정이 아닙니다.",
+            "chunkSha256": "a2aab1100f689f66f1a8255b6a1d2b6dc4ae752ab971d87650ac15db15252e5c",
+            "fields": [],
+            "score": 0.395763
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:1",
+            "quote": "# 합성 품질관리 SOP · 개정 2",
+            "chunkSha256": "17dfcf841d2276c5766056cfb4601194290f2e8105210bed53e349f21e295366",
+            "fields": [],
+            "score": 0.391127
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:3",
+            "quote": "heldKg는 현재 미출하 보류량이다. shippedImpactKg는 이미 출하된 물량 중 경보에 연결된 영향량이다. 기출하 영향량을 현재 보류량에 더하지 않는다.",
+            "chunkSha256": "d8b04cddb97c2326b90caef205b0aa8189da5dc3c0ffc49ea2e89dab22582d4b",
+            "fields": [
+              "policy.shippedImpactSeparate"
+            ],
+            "score": 0.387937
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:4",
+            "quote": "readyKg는 차단되지 않은 창고 재고, workInProgressKg는 미출하 공정 물량, unallocatedKg는 Lot 미배정량이다. 이 값은 별도로 읽으며 주문 납기나 실제 출하를 보장하지 않는다.",
+            "chunkSha256": "1648e949491c98c2320cd0948ffcca72ca1db1ba438b4988ed2b440f35c30096",
+            "fields": [],
+            "score": 0.335582
+          }
+        ],
+        "documents": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true
+          }
+        ],
+        "manifestSha256": "492e5504f777e068635d94f44698d8cbdbd2838cb75114b8ff0dc561eeaa0220",
+        "excludedDocuments": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          }
+        ],
+        "runtime": {
+          "indexEmbedding": null,
+          "queryEmbedding": {
+            "model": "embeddinggemma",
+            "total_duration": 73698100,
+            "load_duration": 13831300,
+            "prompt_eval_count": 55
+          }
+        }
+      },
+      "elapsedMs": 115
+    },
+    {
+      "tool": "trace_lot",
+      "args": {
+        "lot_id": "LOT-003"
+      },
+      "result": {
+        "lot": {
+          "id": "LOT-003",
+          "rawId": "RAW-2401",
+          "product": "육계 성장 사료",
+          "quantity": 3600,
+          "stage": "mixing",
+          "progress": 0.5,
+          "status": "hold",
+          "qc": {
+            "moisture": 15.8,
+            "temperature": 24,
+            "stale": false
+          },
+          "shipment": null,
+          "holdReason": "원료 연계 수분 초과",
+          "qualityChecked": true,
+          "storageChecked": false,
+          "imported": false
+        },
+        "relatedLots": [
+          {
+            "id": "LOT-001",
+            "quantity": 4800,
+            "stage": "intake"
+          },
+          {
+            "id": "LOT-003",
+            "quantity": 3600,
+            "stage": "mixing"
+          },
+          {
+            "id": "LOT-009",
+            "quantity": 4000,
+            "stage": "shipped"
+          }
+        ],
+        "assetIds": [
+          "TRK-01"
+        ],
+        "alerts": [
+          {
+            "id": "ALT-2",
+            "lotId": "LOT-003",
+            "type": "moisture",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "resolved": false,
+            "tick": 0,
+            "blocking": true,
+            "shippedImpact": false,
+            "resolution": null
+          }
+        ],
+        "evidence": [
+          {
+            "id": "LOT-003-quantity",
+            "label": "LOT-003 물량 kg",
+            "value": 3600,
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-temperature",
+            "label": "LOT-003 온도 °C",
+            "value": 24,
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-moisture",
+            "label": "LOT-003 수분 %",
+            "value": 15.8,
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-status",
+            "label": "LOT-003 상태",
+            "value": "hold",
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-rawId",
+            "label": "LOT-003 원료",
+            "value": "RAW-2401",
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "LOT-003-stage",
+            "label": "LOT-003 단계",
+            "value": "mixing",
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "SETTING-storageLimit",
+            "label": "데모 보관 온도 기준 °C",
+            "value": 28
+          },
+          {
+            "id": "SETTING-moistureLimit",
+            "label": "데모 수분 기준 %",
+            "value": 14
+          }
+        ]
+      },
+      "elapsedMs": 433
+    },
+    {
+      "tool": "get_order_status",
+      "args": {
+        "order_id": "SO-001"
+      },
+      "result": {
+        "synthetic": true,
+        "scope": "합성 판매주문·Lot 배분 데모. 납기는 가상 분이며 트럭 ID는 배분 연결만 표시합니다. 실제 고객·ERP·운송 경로·배송 완료 예측이 아닙니다. 창고 준비와 기존 출하 기록을 구분합니다.",
+        "tick": 0,
+        "orders": [
+          {
+            "id": "SO-001",
+            "customer": "합성 거래처 A",
+            "lines": [
+              {
+                "id": "SO-001-L1",
+                "product": "육계 성장 사료",
+                "requestedKg": 13000,
+                "allocatedKg": 12400,
+                "unallocatedKg": 600,
+                "shippedKg": 4000,
+                "readyKg": 0,
+                "workInProgressKg": 0,
+                "heldKg": 8400,
+                "shippedImpactKg": 4000,
+                "remainingKg": 9000,
+                "notReadyKg": 9000,
+                "allocations": [
+                  {
+                    "lotId": "LOT-001",
+                    "quantityKg": 4800,
+                    "assetId": "TRK-01",
+                    "product": "육계 성장 사료",
+                    "lotQuantityKg": 4800,
+                    "stage": "intake",
+                    "lotStatus": "hold",
+                    "status": "held",
+                    "state": "held",
+                    "blocked": true,
+                    "blockingReasons": [
+                      "원료 연계 수분 초과",
+                      "수분 기록 15.8% / 저장된 기준 14% 초과"
+                    ],
+                    "alertIds": [
+                      "ALT-1"
+                    ],
+                    "needsConfirmation": false,
+                    "shippedImpact": false
+                  },
+                  {
+                    "lotId": "LOT-003",
+                    "quantityKg": 3600,
+                    "assetId": "TRK-01",
+                    "product": "육계 성장 사료",
+                    "lotQuantityKg": 3600,
+                    "stage": "mixing",
+                    "lotStatus": "hold",
+                    "status": "held",
+                    "state": "held",
+                    "blocked": true,
+                    "blockingReasons": [
+                      "원료 연계 수분 초과",
+                      "수분 기록 15.8% / 저장된 기준 14% 초과"
+                    ],
+                    "alertIds": [
+                      "ALT-2"
+                    ],
+                    "needsConfirmation": false,
+                    "shippedImpact": false
+                  },
+                  {
+                    "lotId": "LOT-009",
+                    "quantityKg": 4000,
+                    "assetId": "TRK-01",
+                    "product": "육계 성장 사료",
+                    "lotQuantityKg": 4000,
+                    "stage": "shipped",
+                    "lotStatus": "warning",
+                    "status": "shipped",
+                    "state": "shipped",
+                    "blocked": true,
+                    "blockingReasons": [
+                      "원료 연계 수분 초과",
+                      "수분 기록 15.8% / 저장된 기준 14% 초과"
+                    ],
+                    "alertIds": [
+                      "ALT-3"
+                    ],
+                    "needsConfirmation": false,
+                    "shippedImpact": true
+                  }
+                ],
+                "linkedLotIds": [
+                  "LOT-001",
+                  "LOT-003",
+                  "LOT-009"
+                ],
+                "linkedAssetIds": [
+                  "TRK-01"
+                ],
+                "dueTick": 60,
+                "overdue": false,
+                "status": "held",
+                "state": "held"
+              }
+            ],
+            "requestedKg": 13000,
+            "allocatedKg": 12400,
+            "unallocatedKg": 600,
+            "shippedKg": 4000,
+            "readyKg": 0,
+            "workInProgressKg": 0,
+            "heldKg": 8400,
+            "shippedImpactKg": 4000,
+            "remainingKg": 9000,
+            "notReadyKg": 9000,
+            "linkedLotIds": [
+              "LOT-001",
+              "LOT-003",
+              "LOT-009"
+            ],
+            "linkedAssetIds": [
+              "TRK-01"
+            ],
+            "dueTick": 60,
+            "overdue": false,
+            "status": "held",
+            "state": "held"
+          }
+        ],
+        "totals": {
+          "requestedKg": 13000,
+          "allocatedKg": 12400,
+          "unallocatedKg": 600,
+          "shippedKg": 4000,
+          "readyKg": 0,
+          "workInProgressKg": 0,
+          "heldKg": 8400,
+          "shippedImpactKg": 4000,
+          "remainingKg": 9000,
+          "notReadyKg": 9000
+        },
+        "blockingAlerts": [
+          {
+            "id": "ALT-1",
+            "lotId": "LOT-001",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "blocking": true,
+            "shippedImpact": false
+          },
+          {
+            "id": "ALT-2",
+            "lotId": "LOT-003",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "blocking": true,
+            "shippedImpact": false
+          },
+          {
+            "id": "ALT-3",
+            "lotId": "LOT-009",
+            "title": "원료 연계 수분 초과",
+            "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+            "blocking": true,
+            "shippedImpact": true
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ORDER-SO-001",
+            "label": "SO-001 합성 주문",
+            "value": {
+              "id": "SO-001",
+              "customer": "합성 거래처 A",
+              "lines": [
+                {
+                  "id": "SO-001-L1",
+                  "product": "육계 성장 사료",
+                  "requestedKg": 13000,
+                  "allocatedKg": 12400,
+                  "unallocatedKg": 600,
+                  "shippedKg": 4000,
+                  "readyKg": 0,
+                  "workInProgressKg": 0,
+                  "heldKg": 8400,
+                  "shippedImpactKg": 4000,
+                  "remainingKg": 9000,
+                  "notReadyKg": 9000,
+                  "allocations": [
+                    {
+                      "lotId": "LOT-001",
+                      "quantityKg": 4800,
+                      "assetId": "TRK-01",
+                      "product": "육계 성장 사료",
+                      "lotQuantityKg": 4800,
+                      "stage": "intake",
+                      "lotStatus": "hold",
+                      "status": "held",
+                      "state": "held",
+                      "blocked": true,
+                      "blockingReasons": [
+                        "원료 연계 수분 초과",
+                        "수분 기록 15.8% / 저장된 기준 14% 초과"
+                      ],
+                      "alertIds": [
+                        "ALT-1"
+                      ],
+                      "needsConfirmation": false,
+                      "shippedImpact": false
+                    },
+                    {
+                      "lotId": "LOT-003",
+                      "quantityKg": 3600,
+                      "assetId": "TRK-01",
+                      "product": "육계 성장 사료",
+                      "lotQuantityKg": 3600,
+                      "stage": "mixing",
+                      "lotStatus": "hold",
+                      "status": "held",
+                      "state": "held",
+                      "blocked": true,
+                      "blockingReasons": [
+                        "원료 연계 수분 초과",
+                        "수분 기록 15.8% / 저장된 기준 14% 초과"
+                      ],
+                      "alertIds": [
+                        "ALT-2"
+                      ],
+                      "needsConfirmation": false,
+                      "shippedImpact": false
+                    },
+                    {
+                      "lotId": "LOT-009",
+                      "quantityKg": 4000,
+                      "assetId": "TRK-01",
+                      "product": "육계 성장 사료",
+                      "lotQuantityKg": 4000,
+                      "stage": "shipped",
+                      "lotStatus": "warning",
+                      "status": "shipped",
+                      "state": "shipped",
+                      "blocked": true,
+                      "blockingReasons": [
+                        "원료 연계 수분 초과",
+                        "수분 기록 15.8% / 저장된 기준 14% 초과"
+                      ],
+                      "alertIds": [
+                        "ALT-3"
+                      ],
+                      "needsConfirmation": false,
+                      "shippedImpact": true
+                    }
+                  ],
+                  "linkedLotIds": [
+                    "LOT-001",
+                    "LOT-003",
+                    "LOT-009"
+                  ],
+                  "linkedAssetIds": [
+                    "TRK-01"
+                  ],
+                  "dueTick": 60,
+                  "overdue": false,
+                  "status": "held",
+                  "state": "held"
+                }
+              ],
+              "requestedKg": 13000,
+              "allocatedKg": 12400,
+              "unallocatedKg": 600,
+              "shippedKg": 4000,
+              "readyKg": 0,
+              "workInProgressKg": 0,
+              "heldKg": 8400,
+              "shippedImpactKg": 4000,
+              "remainingKg": 9000,
+              "notReadyKg": 9000,
+              "linkedLotIds": [
+                "LOT-001",
+                "LOT-003",
+                "LOT-009"
+              ],
+              "linkedAssetIds": [
+                "TRK-01"
+              ],
+              "dueTick": 60,
+              "overdue": false,
+              "status": "held",
+              "state": "held"
+            }
+          },
+          {
+            "id": "SO-001-requestedKg",
+            "label": "SO-001 requestedKg kg",
+            "value": 13000
+          },
+          {
+            "id": "SO-001-allocatedKg",
+            "label": "SO-001 allocatedKg kg",
+            "value": 12400
+          },
+          {
+            "id": "SO-001-unallocatedKg",
+            "label": "SO-001 unallocatedKg kg",
+            "value": 600
+          },
+          {
+            "id": "SO-001-shippedKg",
+            "label": "SO-001 shippedKg kg",
+            "value": 4000
+          },
+          {
+            "id": "SO-001-readyKg",
+            "label": "SO-001 readyKg kg",
+            "value": 0
+          },
+          {
+            "id": "SO-001-workInProgressKg",
+            "label": "SO-001 workInProgressKg kg",
+            "value": 0
+          },
+          {
+            "id": "SO-001-heldKg",
+            "label": "SO-001 heldKg kg",
+            "value": 8400
+          },
+          {
+            "id": "SO-001-shippedImpactKg",
+            "label": "SO-001 shippedImpactKg kg",
+            "value": 4000
+          },
+          {
+            "id": "SO-001-remainingKg",
+            "label": "SO-001 remainingKg kg",
+            "value": 9000
+          },
+          {
+            "id": "SO-001-notReadyKg",
+            "label": "SO-001 notReadyKg kg",
+            "value": 9000
+          },
+          {
+            "id": "ORDER-SO-001-SO-001-L1",
+            "label": "SO-001 / SO-001-L1 주문행",
+            "value": {
+              "id": "SO-001-L1",
+              "product": "육계 성장 사료",
+              "requestedKg": 13000,
+              "allocatedKg": 12400,
+              "unallocatedKg": 600,
+              "shippedKg": 4000,
+              "readyKg": 0,
+              "workInProgressKg": 0,
+              "heldKg": 8400,
+              "shippedImpactKg": 4000,
+              "remainingKg": 9000,
+              "notReadyKg": 9000,
+              "allocations": [
+                {
+                  "lotId": "LOT-001",
+                  "quantityKg": 4800,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 4800,
+                  "stage": "intake",
+                  "lotStatus": "hold",
+                  "status": "held",
+                  "state": "held",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-1"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": false
+                },
+                {
+                  "lotId": "LOT-003",
+                  "quantityKg": 3600,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 3600,
+                  "stage": "mixing",
+                  "lotStatus": "hold",
+                  "status": "held",
+                  "state": "held",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-2"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": false
+                },
+                {
+                  "lotId": "LOT-009",
+                  "quantityKg": 4000,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 4000,
+                  "stage": "shipped",
+                  "lotStatus": "warning",
+                  "status": "shipped",
+                  "state": "shipped",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-3"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": true
+                }
+              ],
+              "linkedLotIds": [
+                "LOT-001",
+                "LOT-003",
+                "LOT-009"
+              ],
+              "linkedAssetIds": [
+                "TRK-01"
+              ],
+              "dueTick": 60,
+              "overdue": false,
+              "status": "held",
+              "state": "held"
+            }
+          },
+          {
+            "id": "SO-001-SO-001-L1-requestedKg",
+            "label": "SO-001 / SO-001-L1 requestedKg kg",
+            "value": 13000
+          },
+          {
+            "id": "SO-001-SO-001-L1-allocatedKg",
+            "label": "SO-001 / SO-001-L1 allocatedKg kg",
+            "value": 12400
+          },
+          {
+            "id": "SO-001-SO-001-L1-unallocatedKg",
+            "label": "SO-001 / SO-001-L1 unallocatedKg kg",
+            "value": 600
+          },
+          {
+            "id": "SO-001-SO-001-L1-shippedKg",
+            "label": "SO-001 / SO-001-L1 shippedKg kg",
+            "value": 4000
+          },
+          {
+            "id": "SO-001-SO-001-L1-readyKg",
+            "label": "SO-001 / SO-001-L1 readyKg kg",
+            "value": 0
+          },
+          {
+            "id": "SO-001-SO-001-L1-workInProgressKg",
+            "label": "SO-001 / SO-001-L1 workInProgressKg kg",
+            "value": 0
+          },
+          {
+            "id": "SO-001-SO-001-L1-heldKg",
+            "label": "SO-001 / SO-001-L1 heldKg kg",
+            "value": 8400
+          },
+          {
+            "id": "SO-001-SO-001-L1-shippedImpactKg",
+            "label": "SO-001 / SO-001-L1 shippedImpactKg kg",
+            "value": 4000
+          },
+          {
+            "id": "SO-001-SO-001-L1-remainingKg",
+            "label": "SO-001 / SO-001-L1 remainingKg kg",
+            "value": 9000
+          },
+          {
+            "id": "SO-001-SO-001-L1-notReadyKg",
+            "label": "SO-001 / SO-001-L1 notReadyKg kg",
+            "value": 9000
+          },
+          {
+            "id": "SO-001-SO-001-L1-LOT-001-allocation",
+            "label": "SO-001 / SO-001-L1 / LOT-001 배정 kg",
+            "value": 4800,
+            "lotId": "LOT-001",
+            "assetId": "TRK-01"
+          },
+          {
+            "id": "ORDER-LOT-LOT-001",
+            "label": "LOT-001 주문 연계 현재 Lot",
+            "value": {
+              "id": "LOT-001",
+              "stage": "intake",
+              "status": "hold",
+              "quantity": 4800
+            },
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "SO-001-SO-001-L1-LOT-003-allocation",
+            "label": "SO-001 / SO-001-L1 / LOT-003 배정 kg",
+            "value": 3600,
+            "lotId": "LOT-003",
+            "assetId": "TRK-01"
+          },
+          {
+            "id": "ORDER-LOT-LOT-003",
+            "label": "LOT-003 주문 연계 현재 Lot",
+            "value": {
+              "id": "LOT-003",
+              "stage": "mixing",
+              "status": "hold",
+              "quantity": 3600
+            },
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "SO-001-SO-001-L1-LOT-009-allocation",
+            "label": "SO-001 / SO-001-L1 / LOT-009 배정 kg",
+            "value": 4000,
+            "lotId": "LOT-009",
+            "assetId": "TRK-01"
+          },
+          {
+            "id": "ORDER-LOT-LOT-009",
+            "label": "LOT-009 주문 연계 현재 Lot",
+            "value": {
+              "id": "LOT-009",
+              "stage": "shipped",
+              "status": "warning",
+              "quantity": 4000
+            },
+            "lotId": "LOT-009"
+          },
+          {
+            "id": "ALT-1",
+            "label": "주문 연계 현재 차단 ALT-1",
+            "value": {
+              "id": "ALT-1",
+              "lotId": "LOT-001",
+              "title": "원료 연계 수분 초과",
+              "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+              "blocking": true,
+              "shippedImpact": false
+            },
+            "lotId": "LOT-001"
+          },
+          {
+            "id": "ALT-2",
+            "label": "주문 연계 현재 차단 ALT-2",
+            "value": {
+              "id": "ALT-2",
+              "lotId": "LOT-003",
+              "title": "원료 연계 수분 초과",
+              "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+              "blocking": true,
+              "shippedImpact": false
+            },
+            "lotId": "LOT-003"
+          },
+          {
+            "id": "ALT-3",
+            "label": "주문 연계 기출하 영향 ALT-3",
+            "value": {
+              "id": "ALT-3",
+              "lotId": "LOT-009",
+              "title": "원료 연계 수분 초과",
+              "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+              "blocking": true,
+              "shippedImpact": true
+            },
+            "lotId": "LOT-009"
+          }
+        ]
+      },
+      "elapsedMs": 62
+    },
+    {
+      "tool": "ollama.request",
+      "args": {
+        "model": "qwen3:4b-instruct",
+        "phase": "rag-structured-initial",
+        "attempt": 1,
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 900
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.rag",
+      "args": {
+        "model": "qwen3:4b-instruct",
+        "phase": "initial",
+        "attempt": 1
+      },
+      "result": {
+        "model": "qwen3:4b-instruct",
+        "created_at": "2026-10-09T01:04:51.5053989Z",
+        "message": {
+          "role": "assistant",
+          "content": "{\"abstain\":true,\"answer\":\"해당 정보는 제공된 자료에서 확인할 수 없습니다.\",\"claims\":[],\"reasons\":[\"수분 검사값과 보류/출하 영향에 대한 직접적인 근거가 없음\",\"재검사 및 보류 해제 절차에 대한 명시적 규정이 부족함\"]}"
+        },
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 24625809300,
+        "load_duration": 16490700,
+        "prompt_eval_count": 1148,
+        "prompt_eval_cached_count": 411,
+        "prompt_eval_duration": 14230524000,
+        "eval_count": 77,
+        "eval_duration": 10244230000
+      },
+      "elapsedMs": 24639
+    },
+    {
+      "tool": "ollama.request",
+      "args": {
+        "model": "qwen3:4b-instruct",
+        "phase": "rag-structured-repair",
+        "attempt": 2,
+        "options": {
+          "temperature": 0,
+          "num_ctx": 4096,
+          "num_predict": 900
+        }
+      },
+      "result": {
+        "status": "requesting"
+      },
+      "elapsedMs": 0
+    },
+    {
+      "tool": "ollama.rag",
+      "args": {
+        "model": "qwen3:4b-instruct",
+        "phase": "repair",
+        "attempt": 2
+      },
+      "result": {
+        "model": "qwen3:4b-instruct",
+        "created_at": "2026-10-09T01:05:12.099457Z",
+        "message": {
+          "role": "assistant",
+          "content": "{\"abstain\":true,\"answer\":\"제공된 자료에서 수분 검사값, 보류 및 출하 영향, 재검사·보류 해제 절차에 대한 직접적인 근거가 없으며, 관련 정책 기준이 명시적으로 부족합니다.\",\"claims\":[],\"reasons\":[\"수분 검사값과 보류/출하 영향에 대한 직접적인 근거가 없음\",\"재검사 및 보류 해제 절차에 대한 명시적 규정이 부족함\"]}"
+        },
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 20590893000,
+        "load_duration": 26137800,
+        "prompt_eval_count": 1343,
+        "prompt_eval_cached_count": 1141,
+        "prompt_eval_duration": 4866039000,
+        "eval_count": 119,
+        "eval_duration": 15648860000
+      },
+      "elapsedMs": 20593
+    }
+  ],
+  "result": {
+    "summary": "구조화 답변을 보류했습니다. 기준 문서·저장 기록과 검증 사유를 확인하세요.",
+    "facts": [
+      {
+        "label": "LOT-003 물량 kg",
+        "value": 3600,
+        "evidenceIds": [
+          "LOT-003-quantity"
+        ]
+      },
+      {
+        "label": "LOT-003 온도 °C",
+        "value": 24,
+        "evidenceIds": [
+          "LOT-003-temperature"
+        ]
+      },
+      {
+        "label": "LOT-003 수분 %",
+        "value": 15.8,
+        "evidenceIds": [
+          "LOT-003-moisture"
+        ]
+      },
+      {
+        "label": "LOT-003 상태",
+        "value": "hold",
+        "evidenceIds": [
+          "LOT-003-status"
+        ]
+      },
+      {
+        "label": "LOT-003 원료",
+        "value": "RAW-2401",
+        "evidenceIds": [
+          "LOT-003-rawId"
+        ]
+      },
+      {
+        "label": "LOT-003 단계",
+        "value": "mixing",
+        "evidenceIds": [
+          "LOT-003-stage"
+        ]
+      },
+      {
+        "label": "데모 보관 온도 기준 °C",
+        "value": 28,
+        "evidenceIds": [
+          "SETTING-storageLimit"
+        ]
+      },
+      {
+        "label": "데모 수분 기준 %",
+        "value": 14,
+        "evidenceIds": [
+          "SETTING-moistureLimit"
+        ]
+      },
+      {
+        "label": "SO-001 requestedKg kg",
+        "value": 13000,
+        "evidenceIds": [
+          "SO-001-requestedKg"
+        ]
+      },
+      {
+        "label": "SO-001 allocatedKg kg",
+        "value": 12400,
+        "evidenceIds": [
+          "SO-001-allocatedKg"
+        ]
+      },
+      {
+        "label": "SO-001 unallocatedKg kg",
+        "value": 600,
+        "evidenceIds": [
+          "SO-001-unallocatedKg"
+        ]
+      },
+      {
+        "label": "SO-001 shippedKg kg",
+        "value": 4000,
+        "evidenceIds": [
+          "SO-001-shippedKg"
+        ]
+      },
+      {
+        "label": "SO-001 readyKg kg",
+        "value": 0,
+        "evidenceIds": [
+          "SO-001-readyKg"
+        ]
+      },
+      {
+        "label": "SO-001 workInProgressKg kg",
+        "value": 0,
+        "evidenceIds": [
+          "SO-001-workInProgressKg"
+        ]
+      },
+      {
+        "label": "SO-001 heldKg kg",
+        "value": 8400,
+        "evidenceIds": [
+          "SO-001-heldKg"
+        ]
+      },
+      {
+        "label": "SO-001 shippedImpactKg kg",
+        "value": 4000,
+        "evidenceIds": [
+          "SO-001-shippedImpactKg"
+        ]
+      },
+      {
+        "label": "SO-001 remainingKg kg",
+        "value": 9000,
+        "evidenceIds": [
+          "SO-001-remainingKg"
+        ]
+      },
+      {
+        "label": "SO-001 notReadyKg kg",
+        "value": 9000,
+        "evidenceIds": [
+          "SO-001-notReadyKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 requestedKg kg",
+        "value": 13000,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-requestedKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 allocatedKg kg",
+        "value": 12400,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-allocatedKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 unallocatedKg kg",
+        "value": 600,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-unallocatedKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 shippedKg kg",
+        "value": 4000,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-shippedKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 readyKg kg",
+        "value": 0,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-readyKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 workInProgressKg kg",
+        "value": 0,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-workInProgressKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 heldKg kg",
+        "value": 8400,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-heldKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 shippedImpactKg kg",
+        "value": 4000,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-shippedImpactKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 remainingKg kg",
+        "value": 9000,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-remainingKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 notReadyKg kg",
+        "value": 9000,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-notReadyKg"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 / LOT-001 배정 kg",
+        "value": 4800,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-LOT-001-allocation"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 / LOT-003 배정 kg",
+        "value": 3600,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-LOT-003-allocation"
+        ]
+      },
+      {
+        "label": "SO-001 / SO-001-L1 / LOT-009 배정 kg",
+        "value": 4000,
+        "evidenceIds": [
+          "SO-001-SO-001-L1-LOT-009-allocation"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "LOT-003-quantity",
+        "label": "LOT-003 물량 kg",
+        "value": 3600,
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "LOT-003-temperature",
+        "label": "LOT-003 온도 °C",
+        "value": 24,
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "LOT-003-moisture",
+        "label": "LOT-003 수분 %",
+        "value": 15.8,
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "LOT-003-status",
+        "label": "LOT-003 상태",
+        "value": "hold",
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "LOT-003-rawId",
+        "label": "LOT-003 원료",
+        "value": "RAW-2401",
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "LOT-003-stage",
+        "label": "LOT-003 단계",
+        "value": "mixing",
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "SETTING-storageLimit",
+        "label": "데모 보관 온도 기준 °C",
+        "value": 28
+      },
+      {
+        "id": "SETTING-moistureLimit",
+        "label": "데모 수분 기준 %",
+        "value": 14
+      },
+      {
+        "id": "ORDER-SO-001",
+        "label": "SO-001 합성 주문",
+        "value": {
+          "id": "SO-001",
+          "customer": "합성 거래처 A",
+          "lines": [
+            {
+              "id": "SO-001-L1",
+              "product": "육계 성장 사료",
+              "requestedKg": 13000,
+              "allocatedKg": 12400,
+              "unallocatedKg": 600,
+              "shippedKg": 4000,
+              "readyKg": 0,
+              "workInProgressKg": 0,
+              "heldKg": 8400,
+              "shippedImpactKg": 4000,
+              "remainingKg": 9000,
+              "notReadyKg": 9000,
+              "allocations": [
+                {
+                  "lotId": "LOT-001",
+                  "quantityKg": 4800,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 4800,
+                  "stage": "intake",
+                  "lotStatus": "hold",
+                  "status": "held",
+                  "state": "held",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-1"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": false
+                },
+                {
+                  "lotId": "LOT-003",
+                  "quantityKg": 3600,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 3600,
+                  "stage": "mixing",
+                  "lotStatus": "hold",
+                  "status": "held",
+                  "state": "held",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-2"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": false
+                },
+                {
+                  "lotId": "LOT-009",
+                  "quantityKg": 4000,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 4000,
+                  "stage": "shipped",
+                  "lotStatus": "warning",
+                  "status": "shipped",
+                  "state": "shipped",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-3"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": true
+                }
+              ],
+              "linkedLotIds": [
+                "LOT-001",
+                "LOT-003",
+                "LOT-009"
+              ],
+              "linkedAssetIds": [
+                "TRK-01"
+              ],
+              "dueTick": 60,
+              "overdue": false,
+              "status": "held",
+              "state": "held"
+            }
+          ],
+          "requestedKg": 13000,
+          "allocatedKg": 12400,
+          "unallocatedKg": 600,
+          "shippedKg": 4000,
+          "readyKg": 0,
+          "workInProgressKg": 0,
+          "heldKg": 8400,
+          "shippedImpactKg": 4000,
+          "remainingKg": 9000,
+          "notReadyKg": 9000,
+          "linkedLotIds": [
+            "LOT-001",
+            "LOT-003",
+            "LOT-009"
+          ],
+          "linkedAssetIds": [
+            "TRK-01"
+          ],
+          "dueTick": 60,
+          "overdue": false,
+          "status": "held",
+          "state": "held"
+        }
+      },
+      {
+        "id": "SO-001-requestedKg",
+        "label": "SO-001 requestedKg kg",
+        "value": 13000
+      },
+      {
+        "id": "SO-001-allocatedKg",
+        "label": "SO-001 allocatedKg kg",
+        "value": 12400
+      },
+      {
+        "id": "SO-001-unallocatedKg",
+        "label": "SO-001 unallocatedKg kg",
+        "value": 600
+      },
+      {
+        "id": "SO-001-shippedKg",
+        "label": "SO-001 shippedKg kg",
+        "value": 4000
+      },
+      {
+        "id": "SO-001-readyKg",
+        "label": "SO-001 readyKg kg",
+        "value": 0
+      },
+      {
+        "id": "SO-001-workInProgressKg",
+        "label": "SO-001 workInProgressKg kg",
+        "value": 0
+      },
+      {
+        "id": "SO-001-heldKg",
+        "label": "SO-001 heldKg kg",
+        "value": 8400
+      },
+      {
+        "id": "SO-001-shippedImpactKg",
+        "label": "SO-001 shippedImpactKg kg",
+        "value": 4000
+      },
+      {
+        "id": "SO-001-remainingKg",
+        "label": "SO-001 remainingKg kg",
+        "value": 9000
+      },
+      {
+        "id": "SO-001-notReadyKg",
+        "label": "SO-001 notReadyKg kg",
+        "value": 9000
+      },
+      {
+        "id": "ORDER-SO-001-SO-001-L1",
+        "label": "SO-001 / SO-001-L1 주문행",
+        "value": {
+          "id": "SO-001-L1",
+          "product": "육계 성장 사료",
+          "requestedKg": 13000,
+          "allocatedKg": 12400,
+          "unallocatedKg": 600,
+          "shippedKg": 4000,
+          "readyKg": 0,
+          "workInProgressKg": 0,
+          "heldKg": 8400,
+          "shippedImpactKg": 4000,
+          "remainingKg": 9000,
+          "notReadyKg": 9000,
+          "allocations": [
+            {
+              "lotId": "LOT-001",
+              "quantityKg": 4800,
+              "assetId": "TRK-01",
+              "product": "육계 성장 사료",
+              "lotQuantityKg": 4800,
+              "stage": "intake",
+              "lotStatus": "hold",
+              "status": "held",
+              "state": "held",
+              "blocked": true,
+              "blockingReasons": [
+                "원료 연계 수분 초과",
+                "수분 기록 15.8% / 저장된 기준 14% 초과"
+              ],
+              "alertIds": [
+                "ALT-1"
+              ],
+              "needsConfirmation": false,
+              "shippedImpact": false
+            },
+            {
+              "lotId": "LOT-003",
+              "quantityKg": 3600,
+              "assetId": "TRK-01",
+              "product": "육계 성장 사료",
+              "lotQuantityKg": 3600,
+              "stage": "mixing",
+              "lotStatus": "hold",
+              "status": "held",
+              "state": "held",
+              "blocked": true,
+              "blockingReasons": [
+                "원료 연계 수분 초과",
+                "수분 기록 15.8% / 저장된 기준 14% 초과"
+              ],
+              "alertIds": [
+                "ALT-2"
+              ],
+              "needsConfirmation": false,
+              "shippedImpact": false
+            },
+            {
+              "lotId": "LOT-009",
+              "quantityKg": 4000,
+              "assetId": "TRK-01",
+              "product": "육계 성장 사료",
+              "lotQuantityKg": 4000,
+              "stage": "shipped",
+              "lotStatus": "warning",
+              "status": "shipped",
+              "state": "shipped",
+              "blocked": true,
+              "blockingReasons": [
+                "원료 연계 수분 초과",
+                "수분 기록 15.8% / 저장된 기준 14% 초과"
+              ],
+              "alertIds": [
+                "ALT-3"
+              ],
+              "needsConfirmation": false,
+              "shippedImpact": true
+            }
+          ],
+          "linkedLotIds": [
+            "LOT-001",
+            "LOT-003",
+            "LOT-009"
+          ],
+          "linkedAssetIds": [
+            "TRK-01"
+          ],
+          "dueTick": 60,
+          "overdue": false,
+          "status": "held",
+          "state": "held"
+        }
+      },
+      {
+        "id": "SO-001-SO-001-L1-requestedKg",
+        "label": "SO-001 / SO-001-L1 requestedKg kg",
+        "value": 13000
+      },
+      {
+        "id": "SO-001-SO-001-L1-allocatedKg",
+        "label": "SO-001 / SO-001-L1 allocatedKg kg",
+        "value": 12400
+      },
+      {
+        "id": "SO-001-SO-001-L1-unallocatedKg",
+        "label": "SO-001 / SO-001-L1 unallocatedKg kg",
+        "value": 600
+      },
+      {
+        "id": "SO-001-SO-001-L1-shippedKg",
+        "label": "SO-001 / SO-001-L1 shippedKg kg",
+        "value": 4000
+      },
+      {
+        "id": "SO-001-SO-001-L1-readyKg",
+        "label": "SO-001 / SO-001-L1 readyKg kg",
+        "value": 0
+      },
+      {
+        "id": "SO-001-SO-001-L1-workInProgressKg",
+        "label": "SO-001 / SO-001-L1 workInProgressKg kg",
+        "value": 0
+      },
+      {
+        "id": "SO-001-SO-001-L1-heldKg",
+        "label": "SO-001 / SO-001-L1 heldKg kg",
+        "value": 8400
+      },
+      {
+        "id": "SO-001-SO-001-L1-shippedImpactKg",
+        "label": "SO-001 / SO-001-L1 shippedImpactKg kg",
+        "value": 4000
+      },
+      {
+        "id": "SO-001-SO-001-L1-remainingKg",
+        "label": "SO-001 / SO-001-L1 remainingKg kg",
+        "value": 9000
+      },
+      {
+        "id": "SO-001-SO-001-L1-notReadyKg",
+        "label": "SO-001 / SO-001-L1 notReadyKg kg",
+        "value": 9000
+      },
+      {
+        "id": "SO-001-SO-001-L1-LOT-001-allocation",
+        "label": "SO-001 / SO-001-L1 / LOT-001 배정 kg",
+        "value": 4800,
+        "lotId": "LOT-001",
+        "assetId": "TRK-01"
+      },
+      {
+        "id": "ORDER-LOT-LOT-001",
+        "label": "LOT-001 주문 연계 현재 Lot",
+        "value": {
+          "id": "LOT-001",
+          "stage": "intake",
+          "status": "hold",
+          "quantity": 4800
+        },
+        "lotId": "LOT-001"
+      },
+      {
+        "id": "SO-001-SO-001-L1-LOT-003-allocation",
+        "label": "SO-001 / SO-001-L1 / LOT-003 배정 kg",
+        "value": 3600,
+        "lotId": "LOT-003",
+        "assetId": "TRK-01"
+      },
+      {
+        "id": "ORDER-LOT-LOT-003",
+        "label": "LOT-003 주문 연계 현재 Lot",
+        "value": {
+          "id": "LOT-003",
+          "stage": "mixing",
+          "status": "hold",
+          "quantity": 3600
+        },
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "SO-001-SO-001-L1-LOT-009-allocation",
+        "label": "SO-001 / SO-001-L1 / LOT-009 배정 kg",
+        "value": 4000,
+        "lotId": "LOT-009",
+        "assetId": "TRK-01"
+      },
+      {
+        "id": "ORDER-LOT-LOT-009",
+        "label": "LOT-009 주문 연계 현재 Lot",
+        "value": {
+          "id": "LOT-009",
+          "stage": "shipped",
+          "status": "warning",
+          "quantity": 4000
+        },
+        "lotId": "LOT-009"
+      },
+      {
+        "id": "ALT-1",
+        "label": "주문 연계 현재 차단 ALT-1",
+        "value": {
+          "id": "ALT-1",
+          "lotId": "LOT-001",
+          "title": "원료 연계 수분 초과",
+          "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+          "blocking": true,
+          "shippedImpact": false
+        },
+        "lotId": "LOT-001"
+      },
+      {
+        "id": "ALT-2",
+        "label": "주문 연계 현재 차단 ALT-2",
+        "value": {
+          "id": "ALT-2",
+          "lotId": "LOT-003",
+          "title": "원료 연계 수분 초과",
+          "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+          "blocking": true,
+          "shippedImpact": false
+        },
+        "lotId": "LOT-003"
+      },
+      {
+        "id": "ALT-3",
+        "label": "주문 연계 기출하 영향 ALT-3",
+        "value": {
+          "id": "ALT-3",
+          "lotId": "LOT-009",
+          "title": "원료 연계 수분 초과",
+          "details": "합성 원료 RAW-2401의 연결 로트 · 기록 15.8% / 기준 14%",
+          "blocking": true,
+          "shippedImpact": true
+        },
+        "lotId": "LOT-009"
+      }
+    ],
+    "proposals": [],
+    "warnings": [
+      "합성 데모/사용자 입력 자료입니다. 실제 공장 적합 판정이 아닙니다.",
+      "근거 카드와 계산은 도구 결과입니다. 모델 자유 서술과 의미 매핑은 완전 검증되지 않았습니다.",
+      "문서는 작성한 합성 SOP입니다. 구조화 필드·값·인용만 검증하며 모델 자유 서술의 의미·실제 품질·업무 적합성은 검증하지 않습니다."
+    ],
+    "stateHash": "749747f63f5cbf31f7f8a50a78f7f3aef042817b38e6747c514f40c841219971",
+    "summaryVerified": false,
+    "orders": {
+      "synthetic": true,
+      "scope": "합성 판매주문·Lot 배분 데모. 납기는 가상 분이며 트럭 ID는 배분 연결만 표시합니다. 실제 고객·ERP·운송 경로·배송 완료 예측이 아닙니다. 창고 준비와 기존 출하 기록을 구분합니다.",
+      "tick": 0,
+      "orders": [
+        {
+          "id": "SO-001",
+          "customer": "합성 거래처 A",
+          "lines": [
+            {
+              "id": "SO-001-L1",
+              "product": "육계 성장 사료",
+              "requestedKg": 13000,
+              "allocatedKg": 12400,
+              "unallocatedKg": 600,
+              "shippedKg": 4000,
+              "readyKg": 0,
+              "workInProgressKg": 0,
+              "heldKg": 8400,
+              "shippedImpactKg": 4000,
+              "remainingKg": 9000,
+              "notReadyKg": 9000,
+              "allocations": [
+                {
+                  "lotId": "LOT-001",
+                  "quantityKg": 4800,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 4800,
+                  "stage": "intake",
+                  "lotStatus": "hold",
+                  "status": "held",
+                  "state": "held",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-1"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": false
+                },
+                {
+                  "lotId": "LOT-003",
+                  "quantityKg": 3600,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 3600,
+                  "stage": "mixing",
+                  "lotStatus": "hold",
+                  "status": "held",
+                  "state": "held",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-2"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": false
+                },
+                {
+                  "lotId": "LOT-009",
+                  "quantityKg": 4000,
+                  "assetId": "TRK-01",
+                  "product": "육계 성장 사료",
+                  "lotQuantityKg": 4000,
+                  "stage": "shipped",
+                  "lotStatus": "warning",
+                  "status": "shipped",
+                  "state": "shipped",
+                  "blocked": true,
+                  "blockingReasons": [
+                    "원료 연계 수분 초과",
+                    "수분 기록 15.8% / 저장된 기준 14% 초과"
+                  ],
+                  "alertIds": [
+                    "ALT-3"
+                  ],
+                  "needsConfirmation": false,
+                  "shippedImpact": true
+                }
+              ],
+              "linkedLotIds": [
+                "LOT-001",
+                "LOT-003",
+                "LOT-009"
+              ],
+              "linkedAssetIds": [
+                "TRK-01"
+              ],
+              "dueTick": 60,
+              "overdue": false,
+              "status": "held",
+              "state": "held"
+            }
+          ],
+          "requestedKg": 13000,
+          "allocatedKg": 12400,
+          "unallocatedKg": 600,
+          "shippedKg": 4000,
+          "readyKg": 0,
+          "workInProgressKg": 0,
+          "heldKg": 8400,
+          "shippedImpactKg": 4000,
+          "remainingKg": 9000,
+          "notReadyKg": 9000,
+          "linkedLotIds": [
+            "LOT-001",
+            "LOT-003",
+            "LOT-009"
+          ],
+          "linkedAssetIds": [
+            "TRK-01"
+          ],
+          "dueTick": 60,
+          "overdue": false,
+          "status": "held",
+          "state": "held"
+        }
+      ],
+      "totals": {
+        "requestedKg": 13000,
+        "allocatedKg": 12400,
+        "unallocatedKg": 600,
+        "shippedKg": 4000,
+        "readyKg": 0,
+        "workInProgressKg": 0,
+        "heldKg": 8400,
+        "shippedImpactKg": 4000,
+        "remainingKg": 9000,
+        "notReadyKg": 9000
+      }
+    },
+    "rag": {
+      "synthetic": true,
+      "retrieval": {
+        "enabled": true,
+        "corpus": "baseline",
+        "embeddingModel": "embeddinggemma",
+        "embeddingModelDigest": "3a2d262bdb75dd103c532a4cf9595dc033fd47a2710a061f7a364c7cbb475c9c",
+        "indexFingerprint": "281fa861658e51dbd5ba263f8a10754afdcc1ef83c553608efcb8b8fadb541b1",
+        "cacheHit": true,
+        "elapsedMs": 115,
+        "method": "Ollama embedding vectors / cosine similarity",
+        "topK": 6,
+        "chunks": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:4",
+            "quote": "보류 Lot는 재검사와 담당자 검토가 필요하다. 경보 확인, 새로운 검사 기록, 담당자의 보류 해제는 별도 단계다. 검색 답변은 검토 요청이며 검사·출하·보류 해제를 실행하지 않는다.",
+            "chunkSha256": "f1b0c0fa4e209f6e7ed74c9706434b9c207762a5af8549bed65c66861467d476",
+            "fields": [
+              "policy.reinspectionRequired",
+              "policy.separateReleaseRequired"
+            ],
+            "score": 0.589571
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:3",
+            "quote": "수분 기준: 14 %. 합성 데모에서 Lot 수분이 14 %를 초과하면 보류 대상으로 표시한다. 이 기준만으로 실제 제품의 적합성이나 부패 원인을 판정하지 않는다.",
+            "chunkSha256": "7c0dfdd210e78af3198f42e914351da329261f5c7f7da9a5dc35ee5805488928",
+            "fields": [
+              "policy.moistureLimit"
+            ],
+            "score": 0.563044
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:2",
+            "quote": "이 문서는 Grainworks 학습용 합성 SOP입니다. 실제 우성 또는 다른 회사의 정책·규격·안전 판정이 아닙니다.",
+            "chunkSha256": "a2aab1100f689f66f1a8255b6a1d2b6dc4ae752ab971d87650ac15db15252e5c",
+            "fields": [],
+            "score": 0.395763
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true,
+            "chunkId": "DEMO-QC@2:1",
+            "quote": "# 합성 품질관리 SOP · 개정 2",
+            "chunkSha256": "17dfcf841d2276c5766056cfb4601194290f2e8105210bed53e349f21e295366",
+            "fields": [],
+            "score": 0.391127
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:3",
+            "quote": "heldKg는 현재 미출하 보류량이다. shippedImpactKg는 이미 출하된 물량 중 경보에 연결된 영향량이다. 기출하 영향량을 현재 보류량에 더하지 않는다.",
+            "chunkSha256": "d8b04cddb97c2326b90caef205b0aa8189da5dc3c0ffc49ea2e89dab22582d4b",
+            "fields": [
+              "policy.shippedImpactSeparate"
+            ],
+            "score": 0.387937
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true,
+            "chunkId": "DEMO-ORDERS@1:4",
+            "quote": "readyKg는 차단되지 않은 창고 재고, workInProgressKg는 미출하 공정 물량, unallocatedKg는 Lot 미배정량이다. 이 값은 별도로 읽으며 주문 납기나 실제 출하를 보장하지 않는다.",
+            "chunkSha256": "1648e949491c98c2320cd0948ffcca72ca1db1ba438b4988ed2b440f35c30096",
+            "fields": [],
+            "score": 0.335582
+          }
+        ],
+        "documents": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "2",
+            "status": "current",
+            "file": "quality-r2.md",
+            "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          },
+          {
+            "documentId": "DEMO-ORDERS",
+            "title": "합성 주문 이행 용어",
+            "revision": "1",
+            "status": "current",
+            "file": "orders-r1.md",
+            "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+            "synthetic": true
+          }
+        ],
+        "manifestSha256": "492e5504f777e068635d94f44698d8cbdbd2838cb75114b8ff0dc561eeaa0220",
+        "excludedDocuments": [
+          {
+            "documentId": "DEMO-QC",
+            "title": "합성 품질관리 SOP",
+            "revision": "1",
+            "status": "retired",
+            "file": "quality-r1.md",
+            "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+            "synthetic": true
+          }
+        ],
+        "runtime": {
+          "indexEmbedding": null,
+          "queryEmbedding": {
+            "model": "embeddinggemma",
+            "total_duration": 73698100,
+            "load_duration": 13831300,
+            "prompt_eval_count": 55
+          }
+        }
+      },
+      "documents": [
+        {
+          "documentId": "DEMO-QC",
+          "title": "합성 품질관리 SOP",
+          "revision": "2",
+          "status": "current",
+          "file": "quality-r2.md",
+          "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+          "synthetic": true
+        },
+        {
+          "documentId": "DEMO-QC",
+          "title": "합성 품질관리 SOP",
+          "revision": "1",
+          "status": "retired",
+          "file": "quality-r1.md",
+          "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+          "synthetic": true
+        },
+        {
+          "documentId": "DEMO-ORDERS",
+          "title": "합성 주문 이행 용어",
+          "revision": "1",
+          "status": "current",
+          "file": "orders-r1.md",
+          "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+          "synthetic": true
+        }
+      ],
+      "claims": [],
+      "validation": {
+        "status": "abstained",
+        "structuredClaimsVerified": false,
+        "acceptedCount": 0,
+        "rejectedCount": 0,
+        "missingFields": [
+          "policy.moistureLimit",
+          "policy.reinspectionRequired",
+          "policy.separateReleaseRequired",
+          "lot.LOT-003.moisture",
+          "order.SO-001.heldKg",
+          "order.SO-001.shippedImpactKg"
+        ],
+        "conflicts": [],
+        "statePolicyMismatches": [],
+        "schemaErrors": [],
+        "recordErrors": [],
+        "modelAbstained": true,
+        "modelInvoked": true,
+        "scope": "Exact structured field/value, revision, retrieved citation and tool evidence checks only; model prose semantics unverified.",
+        "intentScope": "Bounded named-field demo grammar; requestedFieldsComplete does not prove complete understanding of an arbitrary question.",
+        "checks": {
+          "nonemptyClaims": false,
+          "requestedFieldsComplete": false,
+          "noRejectedClaims": true,
+          "noCurrentRevisionConflict": true,
+          "documentRuleMatchesState": true,
+          "validOutputShape": true,
+          "recordsAvailable": true,
+          "originalUnchanged": true
+        }
+      },
+      "requiredFields": [
+        "policy.moistureLimit",
+        "policy.reinspectionRequired",
+        "policy.separateReleaseRequired",
+        "lot.LOT-003.moisture",
+        "order.SO-001.heldKg",
+        "order.SO-001.shippedImpactKg"
+      ],
+      "answer": {
+        "text": "구조화 답변을 보류했습니다. 기준 문서·저장 기록과 검증 사유를 확인하세요.",
+        "abstain": true,
+        "reasons": [
+          "Missing supported field: policy.moistureLimit",
+          "Missing supported field: policy.reinspectionRequired",
+          "Missing supported field: policy.separateReleaseRequired",
+          "Missing supported field: lot.LOT-003.moisture",
+          "Missing supported field: order.SO-001.heldKg",
+          "Missing supported field: order.SO-001.shippedImpactKg",
+          "Model abstained"
+        ]
+      },
+      "preflight": {
+        "skipped": false,
+        "supportedFieldCount": 6,
+        "reason": null,
+        "reasonCode": null,
+        "conflicts": [],
+        "statePolicyMismatches": []
+      },
+      "modelAnswer": {
+        "text": "제공된 자료에서 수분 검사값, 보류 및 출하 영향, 재검사·보류 해제 절차에 대한 직접적인 근거가 없으며, 관련 정책 기준이 명시적으로 부족합니다.",
+        "verified": false,
+        "abstain": true,
+        "invoked": true
+      },
+      "runtime": {
+        "model": "qwen3:4b-instruct",
+        "embeddingModel": "embeddinggemma",
+        "backend": "LangGraph / Ollama structured RAG",
+        "readSelection": "Deterministic explicit-ID read-only tools; model generates cited structured claims",
+        "elapsedMs": 45852,
+        "modelInvocationSkipped": false,
+        "modelInvocationSkipReason": null,
+        "modelInvocationSkipReasonCode": null,
+        "supportedFieldCount": 6,
+        "repairAttempted": true,
+        "maxGenerationAttempts": 2,
+        "generationAttempts": [
+          {
+            "attempt": 1,
+            "phase": "initial",
+            "model": "qwen3:4b-instruct",
+            "done_reason": "stop",
+            "eval_count": 77,
+            "prompt_eval_count": 1148,
+            "total_duration": 24625809300,
+            "load_duration": 16490700,
+            "elapsedMs": 24639,
+            "rawResponse": {
+              "model": "qwen3:4b-instruct",
+              "created_at": "2026-10-09T01:04:51.5053989Z",
+              "message": {
+                "role": "assistant",
+                "content": "{\"abstain\":true,\"answer\":\"해당 정보는 제공된 자료에서 확인할 수 없습니다.\",\"claims\":[],\"reasons\":[\"수분 검사값과 보류/출하 영향에 대한 직접적인 근거가 없음\",\"재검사 및 보류 해제 절차에 대한 명시적 규정이 부족함\"]}"
+              },
+              "done": true,
+              "done_reason": "stop",
+              "total_duration": 24625809300,
+              "load_duration": 16490700,
+              "prompt_eval_count": 1148,
+              "prompt_eval_cached_count": 411,
+              "prompt_eval_duration": 14230524000,
+              "eval_count": 77,
+              "eval_duration": 10244230000
+            },
+            "validationStatus": "abstained",
+            "missingFields": [
+              "policy.moistureLimit",
+              "policy.reinspectionRequired",
+              "policy.separateReleaseRequired",
+              "lot.LOT-003.moisture",
+              "order.SO-001.heldKg",
+              "order.SO-001.shippedImpactKg"
+            ],
+            "rejectedCount": 0,
+            "validationReasons": []
+          },
+          {
+            "attempt": 2,
+            "phase": "repair",
+            "model": "qwen3:4b-instruct",
+            "done_reason": "stop",
+            "eval_count": 119,
+            "prompt_eval_count": 1343,
+            "total_duration": 20590893000,
+            "load_duration": 26137800,
+            "elapsedMs": 20593,
+            "rawResponse": {
+              "model": "qwen3:4b-instruct",
+              "created_at": "2026-10-09T01:05:12.099457Z",
+              "message": {
+                "role": "assistant",
+                "content": "{\"abstain\":true,\"answer\":\"제공된 자료에서 수분 검사값, 보류 및 출하 영향, 재검사·보류 해제 절차에 대한 직접적인 근거가 없으며, 관련 정책 기준이 명시적으로 부족합니다.\",\"claims\":[],\"reasons\":[\"수분 검사값과 보류/출하 영향에 대한 직접적인 근거가 없음\",\"재검사 및 보류 해제 절차에 대한 명시적 규정이 부족함\"]}"
+              },
+              "done": true,
+              "done_reason": "stop",
+              "total_duration": 20590893000,
+              "load_duration": 26137800,
+              "prompt_eval_count": 1343,
+              "prompt_eval_cached_count": 1141,
+              "prompt_eval_duration": 4866039000,
+              "eval_count": 119,
+              "eval_duration": 15648860000
+            },
+            "validationStatus": "abstained",
+            "missingFields": [
+              "policy.moistureLimit",
+              "policy.reinspectionRequired",
+              "policy.separateReleaseRequired",
+              "lot.LOT-003.moisture",
+              "order.SO-001.heldKg",
+              "order.SO-001.shippedImpactKg"
+            ],
+            "rejectedCount": 0,
+            "validationReasons": []
+          }
+        ],
+        "generation": {
+          "model": "qwen3:4b-instruct",
+          "done_reason": "stop",
+          "eval_count": 119,
+          "prompt_eval_count": 1343,
+          "total_duration": 20590893000,
+          "load_duration": 26137800
+        }
+      },
+      "originalUnchanged": true
+    },
+    "incomplete": true
+  }
+}

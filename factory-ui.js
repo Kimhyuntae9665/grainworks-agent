@@ -41,5 +41,5 @@ $('downtime-form').addEventListener('submit',e=>{e.preventDefault();try{
 }catch(err){$('downtime-error').hidden=false;$('downtime-error').textContent=err.message;$('downtime-result').replaceChildren();}});
 $('downtime-agent').addEventListener('click',()=>{document.querySelector('[data-agent-task="downtime"]').click();const a=assumptions();$('agent-downtime-station').value=a.stationId;$('agent-downtime-minutes').value=a.downtimeMinutes;$('agent-downtime-horizon').value=a.horizonMinutes;$('agent-question').value=a.stationId+'이 '+a.downtimeMinutes+'분 정지할 때 '+a.horizonMinutes+'분 동안 포장 완료 물량과 대기 상태를 비교해 주세요. 가정과 근거를 함께 설명해 주세요.';agent.scrollIntoView({behavior:'smooth',block:'start'});});
 views.addEventListener('click',e=>{if(e.target.id==='production-view')G.productionView();else if(e.target.id==='site-view')G.siteView();else return;views.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===e.target)));});
-document.querySelector('[data-agent-task="factory"]').click();
 render();setInterval(()=>{if(!document.hidden)render();},1000);
+if(location.hash==='#agent-workbench')requestAnimationFrame(()=>agent.scrollIntoView({block:'start'}));

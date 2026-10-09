@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="agent.css">
   <link rel="stylesheet" href="factory-ui.css">
   <link rel="stylesheet" href="order-ui.css">
+  <link rel="stylesheet" href="rag.css">
+  <script src="rag-ui.js" defer></script>
   <script src="agent-ui.js" defer></script>
   <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
   <script type="module" src="bootstrap.js"></script>
@@ -26,16 +28,24 @@
     <section class="agent-workbench" id="agent-workbench" aria-labelledby="agent-heading">
       <div class="agent-section-heading"><div><span class="eyebrow">AI OPERATIONS WORKBENCH</span><h2 id="agent-heading">어떤 작업을 확인할까요?</h2><p>현재 기록을 조회하고, 도구의 결과를 근거로 답합니다.</p></div><div class="agent-connection"><span id="agent-status" class="agent-status" data-state="checking" role="status">모델 연결 확인 중</span><button type="button" id="agent-refresh" class="quiet">다시 확인</button><small id="agent-model">로컬 모델 상태를 확인하고 있습니다.</small></div></div>
       <div class="agent-tasks" role="group" aria-label="AI 작업 선택">
+        <button type="button" data-agent-task="rag" aria-pressed="true"><span>근거 검색·검증</span><small>SOP 인용과 답변 항목 대조</small></button>
         <button type="button" data-agent-task="orders" aria-pressed="false"><span>주문 확인</span><small>주문·Lot·납기 근거</small></button>
         <button type="button" data-agent-task="factory" aria-pressed="false"><span>공정 확인</span><small>설비 상태와 관련 Lot</small></button>
         <button type="button" data-agent-task="downtime" aria-pressed="false"><span>설비 정지 비교</span><small>가정한 처리량과 대기</small></button>
-        <button type="button" data-agent-task="shipment" aria-pressed="true"><span>출하 확인</span><small>보류 Lot과 배정 트럭</small></button>
+        <button type="button" data-agent-task="shipment" aria-pressed="false"><span>출하 확인</span><small>보류 Lot과 배정 트럭</small></button>
         <button type="button" data-agent-task="reconcile" aria-pressed="false"><span>장부 대조</span><small>두 CSV와 단위 차이</small></button>
         <button type="button" data-agent-task="document" aria-pressed="false"><span>문서 확인</span><small>기록과 문서의 근거</small></button>
         <button type="button" data-agent-task="handover" aria-pressed="false"><span>인수인계</span><small>미해결 항목과 다음 작업</small></button>
         <button type="button" data-agent-task="simulate" aria-pressed="false"><span>조건 비교</span><small>가상 재검사 조건</small></button>
       </div>
-      <div class="agent-compose-layout"><form id="agent-form" class="agent-composer"><label for="agent-question">확인할 질문</label><textarea id="agent-question" rows="3" required maxlength="2000">LOT-007이 출하 가능한지 확인하고, 연결된 트럭과 창고의 근거 및 다음 확인 작업을 알려주세요.</textarea>
+      <div class="agent-compose-layout"><form id="agent-form" class="agent-composer"><label for="agent-question">확인할 질문</label><textarea id="agent-question" rows="3" required maxlength="2000">문서의 수분 기준과 재검사 및 보류 해제 절차, LOT-003 현재 수분과 SO-001 현재 보류량 및 기출하 영향량을 확인해줘.</textarea>
+        <div id="agent-rag-inputs" class="agent-task-inputs rag-inputs">
+          <div class="rag-input-heading"><strong>기록과 문서를 구분해서 확인합니다.</strong><span id="rag-status" role="status">문서 검색 모델 확인 중</span></div>
+          <ol class="rag-route"><li><b>01</b><span>현재 Lot·주문<small>저장된 기록 조회</small></span></li><li><b>02</b><span>절차·판정 기준<small>모의 SOP 벡터 검색</small></span></li><li><b>03</b><span>모델 답변 항목<small>값·인용·충돌 검사</small></span></li></ol>
+          <div class="rag-options"><label class="rag-toggle"><input id="rag-enabled" type="checkbox" checked>문서 검색 사용 (RAG)</label><label>확인할 문서 묶음<select id="rag-corpus"><option value="baseline">기본 SOP · 모의 업무 절차</option><option value="conflict">기준 충돌 · 검토 필요 사례</option><option value="injection">문서 내 명령 · 방어 확인 사례</option></select></label></div>
+          <div class="rag-presets" role="group" aria-label="근거 검증 질문 예시"><button type="button" class="quiet" data-rag-example="normal">검사·주문 영향</button><button type="button" class="quiet" data-rag-example="absent">근거 없는 기준</button><button type="button" class="quiet" data-rag-example="cause">원인 미확인</button><button type="button" class="quiet" data-rag-example="unknown">없는 Lot</button><button type="button" class="quiet" data-rag-example="conflict">기준 충돌</button><button type="button" class="quiet" data-rag-example="injection">문서 내 명령</button></div>
+          <p>모든 SOP는 이 프로젝트의 가상 자료입니다. 검색을 끄면 같은 질문에 대한 문서 근거의 차이를 확인할 수 있습니다. 검색 점수는 정답 확률이 아닙니다.</p>
+        </div>
         <div id="agent-downtime-inputs" class="agent-task-inputs" hidden><div class="downtime-fields"><label>비교 설비<select id="agent-downtime-station"><option value="MIX-01">MIX-01 · 배합</option><option value="PACK-01">PACK-01 · 포장</option><option value="REC-01">REC-01 · 입고</option><option value="QC-01">QC-01 · 검사</option></select></label><label>정지 시간 (분)<input id="agent-downtime-minutes" type="number" min="0" max="240" value="10"></label><label>비교 시간 (분)<input id="agent-downtime-horizon" type="number" min="1" max="240" value="20"></label></div><p>같은 Lot 기록의 복사본으로 조건을 비교합니다. 설비 능력과 주문 납기는 가정입니다. 창고 준비와 가상 기한을 비교하며 새 출하나 납기 달성을 예측하지 않습니다.</p></div>
         <div id="agent-reconcile-inputs" class="agent-task-inputs" hidden><p>샘플은 편집할 수 있습니다. kg와 t를 같은 단위로 비교하고, LOT-008의 수량 차이를 확인합니다.</p><div class="agent-csv-pair"><div><label for="agent-left-csv">창고 장부 CSV</label><textarea id="agent-left-csv" spellcheck="false" rows="5">lotId,quantity,unit
 LOT-007,4500,kg
@@ -55,6 +65,7 @@ LOT-008 / 3,200 kg / TRK-01 배정 / 정상.</textarea><p>붙여넣은 문서와
         <p id="agent-input-error" class="agent-error" role="alert" hidden></p>
       </form><aside class="agent-how"><span class="eyebrow">READ → REASON → REVIEW</span><h3>답변에서 근거까지,<br>같은 기록으로 확인합니다.</h3><ol><li><strong>기록 조회</strong><span>Lot · 경보 · 현장 대상 · 입력 자료</span></li><li><strong>도구로 확인</strong><span>대조 · 조건 계산 · 조치 검증</span></li><li><strong>사람이 검토</strong><span>제안은 기존 수동 조치 창으로 연결</span></li></ol><p>Agent에는 운영 상태를 변경할 권한이 없습니다. 규칙 기반 운영 요약과 별도로 실제 모델을 호출합니다.</p></aside></div>
       <section id="agent-result-panel" class="agent-result-panel" aria-labelledby="agent-result-heading"><div class="agent-result-header"><h3 id="agent-result-heading">작업 결과</h3><span id="agent-run-meta">아직 실행하지 않았습니다.</span></div><div id="agent-progress" class="agent-progress" role="status" hidden><span class="agent-progress-dot" aria-hidden="true"></span><div><strong id="agent-progress-title">현재 상태를 저장하고 있습니다.</strong><p id="agent-progress-description">실행이 시작되면 모델 상태와 실제 도구 호출을 표시합니다.</p></div></div><div id="agent-results" class="agent-results"><div class="agent-empty"><strong>확인할 작업을 선택해 실행하세요.</strong><p>모델의 답변, 조회 근거, 검토할 제안과 실제 도구 호출 기록이 여기에 표시됩니다. 연결이 없으면 실행되지 않으며 이전 답변을 대신 표시하지 않습니다.</p></div></div></section>
+      <details class="rag-benchmark"><summary>실제 로컬 모델 비교 기록 · 같은 질문에서 RAG 사용 전후 확인</summary><p>작은 합성 사례를 같은 생성 모델·상태로 실행한 관찰 기록입니다. 정답률이나 실제 현장 성과가 아닙니다.</p><div id="rag-benchmark-results">비교 기록을 확인하고 있습니다.</div><button type="button" class="quiet" id="rag-benchmark-refresh">비교 기록 다시 확인</button><a href="docs/rag/README.md" target="_blank" rel="noopener">구조와 검증 범위 ↗</a></details>
       <p class="agent-boundary">가상 데이터 개인 프로젝트 · 실제 ERP/MES·장비 미연동 · 모델 답변은 근거와 함께 확인해야 합니다.</p>
     </section>
     <div class="field-heading" id="factory-section"><div><span class="eyebrow">FACTORY & CONTROL DESK</span><h2>현장에서 원본 기록을 확인합니다.</h2></div><a href="#agent-workbench">AI 작업대로 이동 ↓</a></div>

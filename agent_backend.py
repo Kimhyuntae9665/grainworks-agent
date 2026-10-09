@@ -204,6 +204,9 @@ def shipment_synthesis_context(question,trace,tools,requested_lots):
 
 
 def execute_run(task, question, state, inputs, trace_callback, chat=ollama_json):
+    if task=='rag':
+        from rag_backend import execute_rag
+        return execute_rag(question,state,inputs,trace_callback,chat=chat)
     from langgraph.graph import StateGraph, START, END
     tools=DomainTools(state,inputs)
     trace=[]
@@ -427,11 +430,14 @@ class AgentService:
     def submit(self, payload):
         if not isinstance(payload,dict) or 'state' in payload: raise ValueError('Request state is forbidden; save through /api/state first')
         task=payload.get('task');question=payload.get('question');inputs=payload.get('inputs',{})
-        if task not in ['shipment','reconcile','handover','simulate','document','factory','downtime','orders']: raise ValueError('Unknown task')
+        if task not in ['shipment','reconcile','handover','simulate','document','factory','downtime','orders','rag']: raise ValueError('Unknown task')
         if not isinstance(question,str) or not 1<=len(question.strip())<=2000: raise ValueError('Question length 1..2000')
-        allowed=set() if task=='orders' else {'stationId','downtimeMinutes','horizonMinutes'} if task in ['factory','downtime'] else {'leftCsv','rightCsv','documentText'}
+        allowed={'ragEnabled','corpus'} if task=='rag' else set() if task=='orders' else {'stationId','downtimeMinutes','horizonMinutes'} if task in ['factory','downtime'] else {'leftCsv','rightCsv','documentText'}
         if not isinstance(inputs,dict) or set(inputs)-allowed: raise ValueError('Unsupported inputs')
-        if task in ['factory','downtime']:
+        if task=='rag':
+            from rag_backend import validate_inputs
+            validate_inputs(inputs)
+        elif task in ['factory','downtime']:
             if 'stationId' in inputs and inputs['stationId'] not in STATION_IDS: raise ValueError('Unknown station ID')
             for key,low in [('downtimeMinutes',0),('horizonMinutes',1)]:
                 if key in inputs:
@@ -440,6 +446,10 @@ class AgentService:
         elif any(not isinstance(v,str) or len(v)>100000 for v in inputs.values()): raise ValueError('Input text limit exceeded')
         status=backend_status()
         if not status['available']: raise RuntimeError(status['detail'])
+        if task=='rag' and inputs.get('ragEnabled',True):
+            from rag_backend import rag_status
+            rag_ready=rag_status()
+            if not rag_ready['available']: raise RuntimeError(rag_ready['detail'])
         state=self.store.read()['state']
         if not state: raise ValueError('No saved snapshot')
         run_id='RUN-'+uuid.uuid4().hex

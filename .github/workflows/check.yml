@@ -16,6 +16,7 @@ jobs:
       - run: python server.test.py
       - run: python agent_backend.test.py
       - run: python agent_api.test.py
+      - run: python rag_backend.test.py
       - run: python document_intake.test.py
       - run: python factory_tools.test.py
       - run: python order_tools.test.py

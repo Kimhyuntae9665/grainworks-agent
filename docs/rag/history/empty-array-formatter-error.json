@@ -1,0 +1,184 @@
+{
+  "evaluation": "actual_local_qwen_structured_rag_paired_smoke",
+  "createdAt": "2026-10-09T00:46:15.035576+00:00",
+  "modelInfo": {
+    "name": "qwen3:4b-instruct",
+    "model": "qwen3:4b-instruct",
+    "modified_at": "2026-10-07T09:23:46.6391786+09:00",
+    "size": 2497293803,
+    "digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen3",
+      "families": [
+        "qwen3"
+      ],
+      "parameter_size": "4.0B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 2560,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "tools",
+      "thinking",
+      "completion"
+    ]
+  },
+  "embeddingModelInfo": {
+    "name": "embeddinggemma:latest",
+    "model": "embeddinggemma:latest",
+    "modified_at": "2026-10-09T09:14:57.0865039+09:00",
+    "size": 621875917,
+    "digest": "3a2d262bdb75dd103c532a4cf9595dc033fd47a2710a061f7a364c7cbb475c9c",
+    "details": {
+      "parent_model": "embeddinggemma:300m-bf16",
+      "format": "gguf",
+      "family": "gemma3",
+      "families": [
+        "gemma3"
+      ],
+      "parameter_size": "307.58M",
+      "quantization_level": "BF16",
+      "context_length": 2048,
+      "embedding_length": 768,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "embedding"
+    ]
+  },
+  "ollama": {
+    "version": "0.40.0"
+  },
+  "sourceSha256": {
+    "rag_backend.py": "336a53a973100879a5e50cf3c48fd208b950c16da1933cb1a603f7c9024e6863",
+    "agent_backend.py": "784ba56cb9e1ad2a3d000197ffb78a627eaa83dbfe2322399dc119d97cb98fd4",
+    "domain_tools.py": "aa6743c1e3ac3db5ee12beba3d4d9285b63accb4e48e40350a4bffedc33c5f14",
+    "order_tools.py": "681b27c2fa1c17e0e3bb482e3190ac5d4f02b53cb86bb87b0480a48bab3b0a0c",
+    "order_model.js": "0e895b44a3cd7cc1721530992c4e8f2f4d8fa95f6fcd9967f2b2d1713894bd55",
+    "evaluate_rag.py": "06c419f2ed26aad2b9d64c9eeb33917a8387f45d87053d1e036ce83c0dedbe9f",
+    "fixtures/rag/injection-test.md": "a47ccc97d306d1d1eb849c8b5c2293223def8d5c2b33927b67085c3b16e4f9d1",
+    "fixtures/rag/orders-r1.md": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+    "fixtures/rag/quality-r1.md": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+    "fixtures/rag/quality-r2.md": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+    "fixtures/rag/quality-r3-conflict.md": "e8bd9dd863fb9cd9f3be938afe2f90ab658c19cd0130453400a5f3e8c06a56a8",
+    "fixtures/rag/evaluation-state.json": "1111a933c766dcca5e0d8c145868567d16eaf5cdf83af092e5708173771eae4d",
+    "fixtures/rag/manifest.json": "492e5504f777e068635d94f44698d8cbdbd2838cb75114b8ff0dc561eeaa0220"
+  },
+  "limitations": [
+    "Authored synthetic smoke cases only; no production accuracy or speed claim.",
+    "Same questions/snapshot/generation model compared with retrieval off/on; missing document evidence is deliberately unavailable in the disabled mode.",
+    "Pass checks apply to bounded structured claims/citations and abstention, not complete prose semantics.",
+    "Small set, fixed order, shared local CPU and warm caches; latency is observed, not an isolated benchmark.",
+    "Mocked vector/model tests are separate; this evaluator has no fake transport."
+  ],
+  "cases": [
+    {
+      "case": "source-absent",
+      "ragEnabled": false,
+      "corpus": "baseline",
+      "question": "문서의 보존제 B-77 허용 농도 기준은 얼마인가요?",
+      "stateHashBefore": "749747f63f5cbf31f7f8a50a78f7f3aef042817b38e6747c514f40c841219971",
+      "trace": [
+        {
+          "tool": "rag.retrieve",
+          "args": {
+            "corpus": "baseline",
+            "enabled": false
+          },
+          "result": {
+            "enabled": false,
+            "corpus": "baseline",
+            "embeddingModel": "embeddinggemma",
+            "chunks": [],
+            "documents": [
+              {
+                "documentId": "DEMO-QC",
+                "title": "합성 품질관리 SOP",
+                "revision": "2",
+                "status": "current",
+                "file": "quality-r2.md",
+                "sha256": "0d096dd17ca7643a5cb71c58985489b3bb59e1d0475553cda3add7acd1edbb9f",
+                "synthetic": true
+              },
+              {
+                "documentId": "DEMO-QC",
+                "title": "합성 품질관리 SOP",
+                "revision": "1",
+                "status": "retired",
+                "file": "quality-r1.md",
+                "sha256": "ffc0c1d4785fcc54349aa61c899207aef89fa41f0ca90896318f7dc3e227227f",
+                "synthetic": true
+              },
+              {
+                "documentId": "DEMO-ORDERS",
+                "title": "합성 주문 이행 용어",
+                "revision": "1",
+                "status": "current",
+                "file": "orders-r1.md",
+                "sha256": "7a299d5e9092300447e346e717531924913baa649162ee1d83d2709ab6dbbfd9",
+                "synthetic": true
+              }
+            ],
+            "manifestSha256": "492e5504f777e068635d94f44698d8cbdbd2838cb75114b8ff0dc561eeaa0220",
+            "cacheHit": false,
+            "indexFingerprint": null,
+            "elapsedMs": 0,
+            "method": "RAG disabled for paired evaluation"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.request",
+          "args": {
+            "model": "qwen3:4b-instruct",
+            "phase": "rag-structured-initial",
+            "attempt": 1,
+            "options": {
+              "temperature": 0,
+              "num_ctx": 4096,
+              "num_predict": 900
+            }
+          },
+          "result": {
+            "status": "requesting"
+          },
+          "elapsedMs": 0
+        },
+        {
+          "tool": "ollama.rag",
+          "args": {
+            "model": "qwen3:4b-instruct",
+            "phase": "initial",
+            "attempt": 1
+          },
+          "result": {
+            "error": "HTTP Error 500: Ollama: llama-server chat error: map[code:500 message:The model produced output that does not match the expected peg-native format type:server_error]"
+          },
+          "elapsedMs": 109506
+        }
+      ],
+      "passed": false,
+      "error": "HTTP Error 500: Ollama: llama-server chat error: map[code:500 message:The model produced output that does not match the expected peg-native format type:server_error]",
+      "stateHashAfter": "749747f63f5cbf31f7f8a50a78f7f3aef042817b38e6747c514f40c841219971",
+      "elapsedMs": 109525
+    }
+  ],
+  "summary": {
+    "runs": 1,
+    "checksPassed": 0,
+    "byMode": {
+      "disabled": {
+        "runs": 1,
+        "checksPassed": 0
+      },
+      "enabled": {
+        "runs": 0,
+        "checksPassed": 0
+      }
+    },
+    "interpretation": "Smoke-check outcomes only; not accuracy improvement or a production benchmark."
+  }
+}
