@@ -3,7 +3,7 @@
   "pages": [
     {
       "page": 1,
-      "characters": 388,
+      "characters": 421,
       "minFontPt": 11.0,
       "links": [
         "https://www.woosungfeed.co.kr/m11.php"
@@ -17,12 +17,11 @@
     },
     {
       "page": 3,
-      "characters": 884,
+      "characters": 927,
       "minFontPt": 11.0,
       "links": [
         "https://github.com/Kimhyuntae9665/grainworks-agent",
-        "https://github.com/Kimhyuntae9665/grainworks-agent",
-        "https://woosung.recruiter.co.kr/career/jobs/128746"
+        "https://github.com/Kimhyuntae9665/grainworks-agent/blob/main/docs/rag/verification.md"
       ]
     }
   ],
@@ -70,6 +69,29 @@
         176.24713584288054,
         436.0,
         287.5057283142389
+      ],
+      "stroke": "#52728a"
+    },
+    {
+      "page": 3,
+      "file": "docs\\rag\\ui-normal.jpg",
+      "image": [
+        54.95364238410593,
+        184.0,
+        818.0927152317881,
+        356.0
+      ],
+      "sourceCrop": [
+        104,
+        496,
+        1145,
+        949
+      ],
+      "outerBorder": [
+        51.95364238410593,
+        181.0,
+        824.0927152317881,
+        362.0
       ],
       "stroke": "#52728a"
     }
@@ -391,214 +413,351 @@
     },
     {
       "page": 3,
-      "kind": "architecture",
+      "kind": "screenshot",
       "number": 1,
-      "title": "Python API · 근거 조회",
+      "title": "SOP 기준·절차",
       "anchor": [
-        211,
-        373
+        58.88300220750549,
+        311.7041942604857
       ],
       "leader": [
         [
-          211,
-          373
+          58.88300220750549,
+          311.7041942604857
         ],
         [
-          211,
-          403
+          38,
+          311.7041942604857
         ],
         [
-          185.5,
-          403
+          38,
+          550
         ],
         [
-          185.5,
-          414
+          150,
+          550
+        ],
+        [
+          150,
+          554
         ]
       ],
       "label": [
-        60,
-        419
+        50,
+        558
       ],
-      "detail": "주문·Lot 기록과 계산 결과를 조회합니다.",
+      "detail": "기준 14%와 재검사·별도 해제를 대조합니다.",
       "region": [
-        141,
-        199,
-        140,
-        174
+        58.88300220750549,
+        239.01103752759383,
+        546.9668874172186,
+        145.38631346578367
+      ],
+      "sourceRegion": [
+        109,
+        566,
+        805,
+        751
+      ],
+      "sourceCrop": [
+        104,
+        496,
+        1145,
+        949
       ]
     },
     {
       "page": 3,
-      "kind": "architecture",
+      "kind": "screenshot",
       "number": 2,
-      "title": "LangGraph · 도구 연결",
+      "title": "현재 검사·주문 수치",
       "anchor": [
-        494,
-        373
+        359.71479028697576,
+        537.6423841059603
       ],
       "leader": [
         [
-          494,
-          373
+          359.71479028697576,
+          537.6423841059603
         ],
         [
-          494,
-          403
+          359.71479028697576,
+          550
         ],
         [
-          488.5,
-          403
+          440,
+          550
         ],
         [
-          488.5,
-          414
+          440,
+          554
         ]
       ],
       "label": [
-        363,
-        419
+        332,
+        558
       ],
-      "detail": "모델이 고른 허용 도구를 호출합니다.",
+      "detail": "15.8%·8,400kg·4,000kg은 현재 기록입니다.",
       "region": [
-        424,
-        199,
-        140,
-        174
+        58.88300220750549,
+        386.75496688741725,
+        546.9668874172186,
+        150.88741721854305
+      ],
+      "sourceRegion": [
+        109,
+        754,
+        805,
+        946
+      ],
+      "sourceCrop": [
+        104,
+        496,
+        1145,
+        949
       ]
     },
     {
       "page": 3,
-      "kind": "architecture",
+      "kind": "screenshot",
       "number": 3,
-      "title": "Ollama · 로컬 실행",
+      "title": "값과 출처를 함께 확인",
       "anchor": [
-        776,
-        373
+        870.6887417218544,
+        412.21721854304633
       ],
       "leader": [
         [
-          776,
-          373
+          870.6887417218544,
+          412.21721854304633
         ],
         [
-          776,
-          403
+          890,
+          412.21721854304633
         ],
         [
-          791.5,
-          403
+          890,
+          550
         ],
         [
-          791.5,
-          414
+          733,
+          550
+        ],
+        [
+          733,
+          554
         ]
       ],
       "label": [
-        666,
-        419
+        624,
+        558
       ],
-      "detail": "Qwen 모델을 이 PC에서 실행합니다.",
+      "detail": "출처 ID·버전이 다르면 답변을 승인하지 않습니다.",
       "region": [
-        706,
-        199,
-        140,
-        174
+        623.1390728476822,
+        239.01103752759383,
+        247.5496688741722,
+        298.63134657836645
+      ],
+      "sourceRegion": [
+        827,
+        566,
+        1142,
+        946
+      ],
+      "sourceCrop": [
+        104,
+        496,
+        1145,
+        949
       ]
     },
     {
       "page": 3,
-      "kind": "architecture",
+      "kind": "responsibility",
+      "number": 1,
+      "title": "기록·문서 검색",
+      "anchor": [
+        1029,
+        408
+      ],
+      "leader": [
+        [
+          1029,
+          408
+        ],
+        [
+          1040,
+          408
+        ]
+      ],
+      "label": [
+        1044,
+        390
+      ],
+      "detail": "ID 조회 · EmbeddingGemma",
+      "region": [
+        913,
+        391,
+        116,
+        34
+      ]
+    },
+    {
+      "page": 3,
+      "kind": "responsibility",
+      "number": 2,
+      "title": "답변 항목 초안",
+      "anchor": [
+        1029,
+        456
+      ],
+      "leader": [
+        [
+          1029,
+          456
+        ],
+        [
+          1040,
+          456
+        ]
+      ],
+      "label": [
+        1044,
+        438
+      ],
+      "detail": "Qwen3 4B · Ollama",
+      "region": [
+        913,
+        439,
+        116,
+        34
+      ]
+    },
+    {
+      "page": 3,
+      "kind": "responsibility",
+      "number": 3,
+      "title": "값·출처 대조",
+      "anchor": [
+        1029,
+        504
+      ],
+      "leader": [
+        [
+          1029,
+          504
+        ],
+        [
+          1040,
+          504
+        ]
+      ],
+      "label": [
+        1044,
+        486
+      ],
+      "detail": "Python 검증 · LangGraph",
+      "region": [
+        913,
+        487,
+        116,
+        34
+      ]
+    },
+    {
+      "page": 3,
+      "kind": "responsibility",
       "number": 4,
-      "title": "Qwen · 설명 생성",
+      "title": "원문 확인·결정",
       "anchor": [
-        1057,
-        373
+        1029,
+        552
       ],
       "leader": [
         [
-          1057,
-          373
+          1029,
+          552
         ],
         [
-          1057,
-          403
-        ],
-        [
-          1094.5,
-          403
-        ],
-        [
-          1094.5,
-          414
+          1040,
+          552
         ]
       ],
       "label": [
-        969,
-        419
+        1044,
+        534
       ],
-      "detail": "조회한 근거로 설명을 씁니다. 사람 검토 필요.",
+      "detail": "재검사·해제는 수동",
       "region": [
-        987,
-        199,
-        140,
-        174
+        913,
+        535,
+        116,
+        34
       ]
     }
   ],
-  "allScreenshotBorders": "PASS — continuous four outer edges; separate from transparent internal annotation rectangles",
+  "allScreenshotBorders": "continuous four outer edges; full-page and 100% visual review passed",
   "synthetic": true,
-  "sha256": "5e335900929472585478d4a93c1af646318396b1589e9c84610ec3beec5e23ad",
-  "narrativeAccuracy": "Single recorded case; not a general AI accuracy claim",
-  "actualModelElapsedMs": 53397,
-  "visualReview": "PASS — all three pages viewed full-page and 100%; region boxes checked against actual targets",
-  "originalAssetsUnchanged": {
-    "docs/orders/order-hero.png": "0a93577faf2630d6a40f6f75e30bcd0a94d3779def4e1296942114858ee2f5ce",
-    "docs/portfolio/evidence/order-detail.png": "2fb944e662f097e69d0a2ddc12e5ee2065a74b2f488c9b0e529d12f440f99266",
-    "docs/portfolio/flow/architecture-flow.png": "72797b381a7aae862f49bbd07f5d1e6082446a95cac99417bcfa6de4ab19b0f5"
+  "sha256": "94537811c515d348fc00e9fe5164140fbf0f54d14e2ce544779668900def0205",
+  "narrativeAccuracy": "Paired synthetic case; field/value/source checks, not general AI accuracy",
+  "actualModelElapsedMs": 56345,
+  "ragEvidence": {
+    "run": "docs/rag/ui-normal-live.json",
+    "pairedEvaluation": "docs/evaluation/rag-live.json",
+    "acceptedFields": 6,
+    "modelCallsAcrossEvaluation": 6,
+    "preflightSkipsAcrossEvaluation": 4,
+    "summaryVerified": false,
+    "originalUnchanged": true,
+    "pairedQuestionAndStateEqual": true,
+    "sourceHashesMatched": 13
   },
-  "jobLinkage": [
-    {
-      "page": 1,
-      "position": "제목 아래 한 문장",
-      "sentence": "공고의 데이터·AI 기반 업무를 위해, 생산·품질과 주문의 영향을 함께 확인하는 시스템을 만들었습니다."
-    },
-    {
-      "page": 2,
-      "position": "제목 아래 한 문장",
-      "sentence": "공고의 데이터 기반 업무를 위해, 주문과 품질 보류의 영향을 함께 조회하는 화면을 만들었습니다."
-    },
-    {
-      "page": 3,
-      "position": "제목 아래 한 문장",
-      "sentence": "공고의 AI 기반 업무를 위해, Qwen3 4B·Ollama·LangGraph에 근거 조회 도구를 연결했습니다."
-    }
-  ],
-  "jobSource": {
-    "url": "https://woosung.recruiter.co.kr/career/jobs/128746",
-    "verifiedOn": "2026-10-07",
-    "basis": "사내 시스템·인프라 운영 및 데이터·AI 기반 업무",
-    "reuse": "Prior verified official JD; layout-only revision"
-  },
-  "roleAccuracy": {
-    "sources": [
-      "order_tools.py:1",
-      "order_tools.py:52",
-      "agent_backend.py:307"
+  "visualReview": {
+    "status": "passed",
+    "date": "2026-10-10",
+    "views": [
+      "contact sheet",
+      "all pages at 100%"
     ],
-    "PythonAPI": "Reads exact order/Lot evidence and JS-calculated quantities; does not own order arithmetic",
-    "LangGraph": "Invokes allowed tools selected in native model calls",
-    "Ollama": "Local model runtime",
-    "Qwen": "Generates narrative; human comparison required"
+    "observations": [
+      "page 1 factory and page 2 order frames/guides unchanged",
+      "page 3 real six-row RAG table readable; source image unchanged",
+      "region boxes enclose the intended groups; leaders start at borders",
+      "no text/control masking, ambiguous crossings, caption/footer overlap",
+      "SOP/RAG terms explained; field checks separated from unverified prose"
+    ]
   },
-  "proseReview": {
-    "scope": "Body unchanged from v11; no new narrative",
-    "route": "not rerun for geometry-only change",
-    "previousLightGateExitCode": 0
+  "checks": {
+    "originalScreenshotHashes": {
+      "docs/orders/order-hero.png": "0a93577faf2630d6a40f6f75e30bcd0a94d3779def4e1296942114858ee2f5ce",
+      "docs/portfolio/evidence/order-detail.png": "2fb944e662f097e69d0a2ddc12e5ee2065a74b2f488c9b0e529d12f440f99266",
+      "docs/rag/ui-normal.jpg": "83d892ef10cc23de8fecdf3f9bc252e7d13014207876aa9c1a0382c887acfd70"
+    },
+    "existingFactoryAndOrderFramesPreserved": true,
+    "allGuideAnchorsOnRegionBorders": true,
+    "qrDecodedFromFinalRender": "https://github.com/Kimhyuntae9665/grainworks-agent",
+    "pdfAliasMatchesVersion": true,
+    "jobLinkageEveryPage": true,
+    "threePages": true
   },
-  "orchestration": "Root-only: one PDF builder owns tightly coupled layout, geometry and final visual review; no app behavior changed",
-  "revision": "v12 / 2026-10-08",
-  "calloutReview": "PASS — 10 thin region rectangles, number tabs outside each rectangle, all leaders start on rectangle boundary; no critical text or controls obscured",
-  "qrDecodedAt100Percent": "https://github.com/Kimhyuntae9665/grainworks-agent",
-  "contentComparison": "PASS — all three pages retain v11 text and original image assets; only annotation geometry and number tabs changed"
+  "humanize": {
+    "route": "report/light",
+    "changeRate": 0.027,
+    "gateExitCode": 0,
+    "numbersDropped": 0,
+    "modalityLost": 0,
+    "run": "work/i-am-not-ai/2026-10-10-rag-v13"
+  },
+  "companyRoleEvidence": {
+    "source": "https://woosung.recruiter.co.kr/career/jobs/128746",
+    "duty": "사내 시스템·인프라 운영 및 데이터·AI 기반 업무",
+    "detailEvidence": "previously saved official JD image read in this run; current page title accessible, current detail not extracted"
+  },
+  "lgVisitContext": {
+    "page": 1,
+    "status": "user_reported 2026-10-09",
+    "scope": "manufacturing simulation interest; no exact date or equipment/deployment claim"
+  },
+  "executionScope": "document-only change, lightweight local render; existing actual Qwen/EmbeddingGemma run reused with 2026-10-09 date; no fresh model run claimed"
 }

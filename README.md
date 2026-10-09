@@ -50,7 +50,7 @@
 
 ## 포트폴리오와 실행 근거
 
-- [3페이지 포트폴리오](docs/portfolio/portfolio.pdf) - v12: 큰 실제 화면의 영역 테두리와 연결 설명, 배정 전후·실제 LLM 구조와 오류 검증
+- [3페이지 포트폴리오](docs/portfolio/portfolio.pdf) - v13: 기존 공장·주문 화면 유지, 큰 실제 RAG 검증 표, 사용 전후와 코드·AI·사람의 역할
 - [주문 연결 실행·검수 기록](docs/orders/README.md)
 - [새 설비 조회·정지 비교·품질 영향의 실제 모델 기록](docs/factory/README.md)
 - [실제 모델 평가 기록](docs/evaluation/live-model.json) · [평가 설명](docs/evaluation/README.md)
@@ -95,7 +95,7 @@ AI 초안의 ‘검토’를 누르면 최신 저장 상태의 해시와 제안�
 
 ![로컬 AI 연결 구조](docs/portfolio/flow/architecture-flow.png)
 
-**Python API ↔ LangGraph ↔ Ollama ↔ Qwen3 4B.** Ollama가 모델을 로컬 실행하고, LangGraph가 조회·계산 도구를 반복 호출합니다. [구조 설명·SVG·로고 출처](docs/portfolio/flow/README.md)는 포트폴리오 3쪽에 반영했습니다. 첫 장은 현장 화면을 크게 배치했습니다.
+**Python API ↔ LangGraph ↔ Ollama ↔ Qwen3 4B.** Ollama가 모델을 로컬 실행하고, 기존 Agent의 LangGraph 흐름이 허용 조회·계산 도구를 호출합니다. [구조 설명·SVG·로고 출처](docs/portfolio/flow/README.md)는 상세 자료로 보존했습니다. 포트폴리오 v13의 3쪽은 실제 RAG 검증 표와 코드 조회 → AI 생성 → 코드 검증 → 사람 조치의 역할로 구성했습니다. RAG의 기록 선택은 코드의 명시적 ID 조회이며 모델의 도구 선택과 구분합니다. 첫 장의 공장 화면은 유지했습니다.
 
 
 ```mermaid

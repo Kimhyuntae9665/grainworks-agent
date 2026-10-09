@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'docs/portfolio';ORD=ROOT/'docs/orders';EVID=OUT/'evidence'
-PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_AI_포트폴리오_v12.pdf'
+PDF=OUT/'김현태_우성_IT_AX_생산품질_주문_RAG_포트폴리오_v13.pdf'
 REPO='https://github.com/Kimhyuntae9665/grainworks-agent'
 MES='https://www.woosungfeed.co.kr/m11.php'
 JD='https://woosung.recruiter.co.kr/career/jobs/128746'
@@ -26,6 +26,24 @@ def build():
  text=(OUT/'final-orders.txt').read_text(encoding='utf-8').split('<!-- HUMANIZE-SUMMARY')[0]
  p=re.split(r'^\[([a-z_.]+)\]\s*$',text,flags=re.M)
  b={p[i]:p[i+1].strip() for i in range(1,len(p),2)}
+ text=(OUT/'final-rag.txt').read_text(encoding='utf-8').split('<!-- HUMANIZE-SUMMARY')[0]
+ p=re.split(r'^\[([a-z_.]+)\]\s*$',text,flags=re.M)
+ b.update({p[i]:p[i+1].strip() for i in range(1,len(p),2)})
+ rag_live=json.loads((ROOT/'docs/rag/ui-normal-live.json').read_text(encoding='utf-8-sig'))
+ rag_eval=json.loads((ROOT/'docs/evaluation/rag-live.json').read_text(encoding='utf-8'))
+ rag=rag_live['result']['rag']
+ assert rag_live['status']=='completed' and rag['validation']['status']=='passed'
+ assert len(rag['claims'])==6 and all(x['status']=='accepted' for x in rag['claims'])
+ assert rag['originalUnchanged'] and rag_live['result']['summaryVerified'] is False
+ assert rag_eval['summary']['modelCalls']==6 and rag_eval['summary']['preflightSkips']==4
+ pair={x['ragEnabled']:x for x in rag_eval['cases'] if x['case']=='normal'}
+ assert pair[False]['question']==pair[True]['question']
+ assert pair[False]['stateHashBefore']==pair[True]['stateHashBefore']
+ assert rag_eval['summary']['runs']==10 and rag_eval['summary']['checksPassed']==10
+ assert len(rag_eval['sourceSha256'])==13
+ assert all(hashlib.sha256((ROOT/file).read_bytes()).hexdigest()==sha for file,sha in rag_eval['sourceSha256'].items())
+ assert pair[False]['result']['rag']['validation']['status']=='abstained'
+ assert pair[True]['result']['rag']['validation']['status']=='passed'
  qa=json.loads((ORD/'deterministic-qa.json').read_text(encoding='utf-8'))
  live=json.loads((ORD/'live-ui-order.json').read_text(encoding='utf-8'))
  ui=json.loads((ORD/'ui-qa.json').read_text(encoding='utf-8'))
@@ -92,14 +110,14 @@ def build():
   for da in [-.55,.55]:c.line(x2,H-t2,x2-8*math.cos(ang+da),H-(t2-8*math.sin(ang+da)))
  def base(page,label):
   rect(0,0,W,H,PAPER);txt('GRAINWORKS / IT & AX',48,22,13,BLUE,True)
-  txt('김현태 · 우성 IT/AX 지원 · 2026.10.08',810,22,13,MUTED)
+  txt('김현태 · 우성 IT/AX 지원 · 2026.10.10',810,22,13,MUTED)
   rect(48,57,1184,1,LINE);rect(48,682,1184,1,LINE)
   txt(label,48,691,11,MUTED);txt(f'{page} / 3',1190,691,11,MUTED)
  # 01: Enlarge the real factory/order/quality viewport, with short action guides.
  base(1,'01  실제 화면·조작·근거 확인')
  txt(b['cover.title'],48,78,30,INK,True)
  txt(b['cover.subtitle'],48,123,17,BLUE)
- txt('실제 화면 일부 확대 · 우성 공개 MES 흐름 참고 · 합성 데이터 · ERP/MES 연동 없음',48,150,11,MUTED)
+ txt('실제 화면 일부 확대 · '+b['rag.motivation'],48,150,11,MUTED)
  link('공개 MES 사례 ↗',MES,1100,150,11)
  crop=(0,144,1265,630)
  hero=pic(ORD/'order-hero.png',48,169,1184,444,1,crop=crop)
@@ -156,29 +174,52 @@ def build():
   annotate(2,(ax,at),route,(790,lt),number,title,detail,col,heading_size=14,detail_size=12,region=region)
   callouts[-1].update({'sourcePixel':pixel,'sourceRegion':source_box})
  c.showPage()
- # 03: Logo flow is a verified runtime, not a vendor inventory or company deployment.
- base(3,'03  실제 오픈소스 LLM·검증·운영 경계')
- txt(b['agent.title'],48,78,30,INK,True)
- txt('공고의 AI 기반 업무를 위해, Qwen3 4B·Ollama·LangGraph에 근거 조회 도구를 연결했습니다.',48,125,16,BLUE)
- flow=OUT/'flow/architecture-flow.png'
- c.drawImage(ImageReader(Image.open(flow)),48,H-168-222,width=1184,height=222,mask='auto')
- for number,anchor_x,card_x,title,detail,col in [
-  (1,211,48,'Python API · 근거 조회','주문·Lot 기록과 계산 결과를 조회합니다.',BLUE),
-  (2,494,351,'LangGraph · 도구 연결','모델이 고른 허용 도구를 호출합니다.','#287968'),
-  (3,776,654,'Ollama · 로컬 실행','Qwen 모델을 이 PC에서 실행합니다.',BLUE),
-  (4,1057,957,'Qwen · 설명 생성','조회한 근거로 설명을 씁니다. 사람 검토 필요.',AMBER)]:
-  rect(card_x,414,275,48,'#edf4f8',LINE)
-  center=card_x+137.5
-  region=(anchor_x-70,199,140,174)
-  annotate(3,(anchor_x,373),[(anchor_x,403),(center,403),(center,414)],(card_x+12,419),number,title,detail,col,badge=False,kind='architecture',region=region)
- txt('AI를 붙인 뒤, 실제 오류를 확인했습니다.',48,474,18,INK,True)
- para(b['agent.failure'],48,509,558,15,limit=95)
- txt('본인: 방향·요구사항·가독성 검토 / Codex: 구현·자동 검사·실행 검증',48,597,11,MUTED)
- para(b['agent.validation'],48,613,558,13.5,limit=54)
- txt('업무 지원 기능과 현재 경계',654,474,18,INK,True)
- txt('주문 질의 · CSV 단위 대조 · 문서 근거 · 인수인계 · 설비 비교',654,510,13,BLUE,True)
- para(b['agent.boundary'],654,539,578,14,limit=63)
- para(b['agent.next'],654,612,440,13.5,limit=47)
+ # 03: Real evidence, a paired comparison, and explicit responsibility boundaries.
+ base(3,'03  RAG 사용 전후·답변 검증·사람의 조치')
+ txt(b['rag.title'],48,78,30,INK,True)
+ txt(b['rag.link'],48,125,16,BLUE)
+ txt(b['rag.caption'],48,154,11,MUTED)
+ crop=(104,496,1145,949)
+ evidence=pic(ROOT/'docs/rag/ui-normal.jpg',48,178,832,368,3,crop=crop)
+ ex,et,ew,eh=evidence
+ def source_region(box):
+  sl,st,sr,sb=box
+  return (ex+ew*(sl-crop[0])/(crop[2]-crop[0]),et+eh*(st-crop[1])/(crop[3]-crop[1]),ew*(sr-sl)/(crop[2]-crop[0]),eh*(sb-st)/(crop[3]-crop[1]))
+ for number,box,label,title,detail,col in [
+  (1,(109,566,805,751),(50,558),'SOP 기준·절차','기준 14%와 재검사·별도 해제를 대조합니다.',BLUE),
+  (2,(109,754,805,946),(332,558),'현재 검사·주문 수치','15.8%·8,400kg·4,000kg은 현재 기록입니다.','#287968'),
+  (3,(827,566,1142,946),(624,558),'값과 출처를 함께 확인','출처 ID·버전이 다르면 답변을 승인하지 않습니다.',AMBER)]:
+  rx,rt,rw,rh=region=source_region(box)
+  if number==1:
+   anchor=(rx,rt+rh/2);route=[(38,anchor[1]),(38,550),(150,550),(150,554)]
+  elif number==2:
+   anchor=(rx+rw*.55,rt+rh);route=[(anchor[0],550),(440,550),(440,554)]
+  else:
+   anchor=(rx+rw,rt+rh*.58);route=[(890,anchor[1]),(890,550),(733,550),(733,554)]
+  annotate(3,anchor,route,label,number,title,detail,col,heading_size=13,detail_size=11,detail_offset=23,region=region)
+  callouts[-1].update({'sourceRegion':box,'sourceCrop':list(crop)})
+ txt('같은 질문, RAG 사용 전후',913,174,17,INK,True)
+ for x,title,big,detail,col in [
+  (913,'사용 전 · RAG 끔','답변 보류','Qwen 호출 후\n문서 근거가 없어\n기준·절차 답변 보류',AMBER),
+  (1076,'사용 후 · RAG 켬','6항목 통과','SOP + 현재 기록\n값·출처를 대조한\n6항목만 제시','#287968')]:
+  rect(x,207,156,117,'#fff9ef'if col==AMBER else'#eef6f2',LINE)
+  txt(title,x+10,216,12,col,True);txt(big,x+10,239,19,col,True)
+  para(detail,x+10,270,136,11.5,limit=53)
+ txt('같은 합성 질문·상태의 비교 · 일반 정확도 아님',913,331,11,MUTED)
+ txt('누가 어떤 일을 맡는가',913,357,17,INK,True)
+ for i,role,title,detail,col in [
+  (1,'코드 · 조회','기록·문서 검색','ID 조회 · EmbeddingGemma',BLUE),
+  (2,'AI · 생성','답변 항목 초안','Qwen3 4B · Ollama','#287968'),
+  (3,'코드 · 검증','값·출처 대조','Python 검증 · LangGraph',BLUE),
+  (4,'사람 · 조치','원문 확인·결정','재검사·해제는 수동',AMBER)]:
+  t=391+(i-1)*48;region=(913,t,116,34)
+  rect(*region,'#edf4f8')
+  txt(role,921,t+8,13,col,True)
+  annotate(3,(1029,t+17),[(1040,t+17)],(1044,t-1),i,title,detail,col,heading_size=12,detail_size=11,detail_offset=19,kind='responsibility',region=region)
+  if i<4:arrow(965,t+35,965,t+45,col)
+ para(b['rag.scope'],48,607,832,12,limit=40)
+ para(b['rag.contribution'],48,643,832,11.5,limit=34)
+ para(b['rag.validation'],913,579,203,11.5,limit=75)
  qr=qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_Q,box_size=8,border=4);qr.add_data(REPO);qr.make(fit=True)
  matrix=qr.get_matrix();cell=104/len(matrix);rect(1128,568,104,104,'#ffffff')
  c.setFillColor(HexColor('#000000'))
@@ -186,8 +227,7 @@ def build():
   for col,on in enumerate(bits):
    if on:c.rect(1128+col*cell,H-568-(row+1)*cell,cell,cell,fill=1,stroke=0)
  c.linkURL(REPO,(1128,H-672,1232,H-568),relative=0)
- link('소스·실행·검수 기록 ↗',REPO,654,657,12)
- link('공식 IT/AX 공고 ↗',JD,862,657,12)
+ link('실행·검증 원본 ↗',REPO+'/blob/main/docs/rag/verification.md',913,657,11)
  c.showPage();c.save()
  shutil.copy2(PDF,OUT/'portfolio.pdf')
  doc=fitz.open(PDF);assert len(doc)==3
@@ -203,7 +243,7 @@ def build():
  for i in range(1,4):
   im=Image.open(OUT/f'preview-page-{i}.png');im.thumbnail((640,360));contact.paste(im,((i-1)*640,0))
  contact.save(OUT/'contact-sheet.png')
- report={'pageCount':3,'pages':pages,'screenshots':frames,'observationGuides':callouts,'allScreenshotBorders':'continuous four outer edges; final visual review pending','synthetic':True,'sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),'narrativeAccuracy':'Single recorded case; not a general AI accuracy claim','actualModelElapsedMs':live['elapsedMs'],'visualReview':'pending'}
+ report={'pageCount':3,'pages':pages,'screenshots':frames,'observationGuides':callouts,'allScreenshotBorders':'continuous four outer edges; final visual review pending','synthetic':True,'sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),'narrativeAccuracy':'Paired synthetic case; field/value/source checks, not general AI accuracy','actualModelElapsedMs':rag_live['elapsedMs'],'ragEvidence':{'run':'docs/rag/ui-normal-live.json','pairedEvaluation':'docs/evaluation/rag-live.json','acceptedFields':6,'modelCallsAcrossEvaluation':6,'preflightSkipsAcrossEvaluation':4,'summaryVerified':False,'originalUnchanged':True,'pairedQuestionAndStateEqual':True,'sourceHashesMatched':13},'visualReview':'pending'}
  (OUT/'pdf-qa.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print(json.dumps({'pdf':str(PDF),'pages':3,'sha256':report['sha256']},ensure_ascii=False))
 if __name__=='__main__':build()
