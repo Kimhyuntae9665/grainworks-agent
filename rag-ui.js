@@ -88,7 +88,7 @@
           else {
             const validation = run.result?.rag?.validation;
             cell.append(el('strong', '', validation ? statusNames[validation.status] || validation.status : '실행 실패'));
-            if (run.result?.rag?.runtime?.modelInvocationSkipped) cell.append(el('small', '', (run.result.rag.runtime.modelInvocationSkipReasonCode === 'revision-conflict' ? '기준 충돌' : run.result.rag.runtime.modelInvocationSkipReasonCode === 'state-rule-mismatch' ? '문서·현재 기준 불일치' : '근거 부족') + '로 모델 미호출 · 사전 검사'));
+            if (run.result?.rag?.runtime?.modelInvocationSkipped) cell.append(el('small', '', (run.result.rag.runtime.modelInvocationSkipReasonCode === 'revision-conflict' ? '기준 충돌로' : run.result.rag.runtime.modelInvocationSkipReasonCode === 'state-rule-mismatch' ? '문서·현재 기준 불일치로' : '근거 부족으로') + ' 모델 미호출 · 사전 검사'));
             cell.append(el('small', '', '관찰 시간 ' + (run.elapsedMs / 1000).toFixed(1) + '초 · ' + (run.passed ? '예정한 검사 결과와 일치' : '검사 실패 · 원본 확인 필요')));
             if (run.result?.rag?.runtime?.repairAttempted) cell.append(el('small', '', '최초 검증 실패 후 실제 모델 재작성 1회 포함'));
             const threshold = rows(run.result?.rag?.claims).find(claim => claim.field === 'policy.moistureLimit');
